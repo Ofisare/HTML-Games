@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Coin Pusher</title><style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#263653,#0b1020 75%);color:#f8fafc;text-align:center}
+header{padding:12px 12px 4px}h1{margin:0;font-size:1.5rem}p{margin:5px;color:#cbd5e1;font-size:.87rem}
+.stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px}.stat{background:#1d2b44;border:1px solid #526481;border-radius:12px;padding:8px 14px;font-weight:700}
+#stage{display:block;width:min(96vw,530px);height:auto;margin:auto;touch-action:none;border:3px solid #64748b;border-radius:16px;background:#101827;box-shadow:0 12px 40px #0008}
+.controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:12px}button{background:#fbbf24;color:#1c1917;border:0;border-radius:11px;padding:12px 17px;font-size:1rem;font-weight:750;cursor:pointer}button.secondary{background:#334155;color:white}
+#msg{min-height:24px;font-weight:700;color:#fde68a}small{display:block;color:#94a3b8;padding:4px 12px 18px}
+</style></head><body>
+<header><h1>🪙 Coin Pusher</h1><p>Tippe auf die obere Spielfläche, um eine Münze einzuwerfen!</p></header>
+<div class="stats"><div class="stat">🪙 Vorrat: <span id="stock">60</span></div><div class="stat">🏆 Gewinn: <span id="won">0</span></div><div class="stat">⭐ Rekord: <span id="best">0</span></div></div>
+<canvas id="stage" width="500" height="640" aria-label="Coin Pusher Spielfeld"></canvas>
+<div class="controls"><button id="drop">🪙 Münze einwerfen</button><button class="secondary" id="auto">▶ Auto-Einwurf</button><button class="secondary" id="reset">Neustart</button></div><div id="msg"></div>
+<small>Herunterfallende Münzen vorne zählen als Gewinn und kommen zurück in den Vorrat. Seitlich verlorene Münzen sind weg. Keine Echtgeld-Einsätze.</small>
+<script>
+(()=>{'use strict';
+const c=document.getElementById('stage'),ctx=c.getContext('2d'),stockEl=document.getElementById('stock'),wonEl=document.getElementById('won'),bestEl=document.getElementById('best'),msg=document.getElementById('msg');
+const W=500,H=640,L=43,R=457,TOP=96,FRONT=548,rad=13;
+let coins=[],stock=60,won=0,best=0,aim=250,auto=false,last=0,acc=0,dropWait=0,phase=0,notice=0;
+try{best=+(localStorage.getItem('coinPusherBest')||0)}catch(e){}
+const rand=(a,b)=>a+Math.random()*(b-a);
+function coin(x,y,vx=0,vy=0){coins.push({x,y,vx,vy,r:rad,glow:Math.random()*6.28})}
+function init(){coins=[];stock=60;won=0;aim=250;auto=false;phase=0;dropWait=0;document.getElementById('auto').textContent='▶ Auto-Einwurf';for(let row=0;row<8;row++)for(let col=0;col<11;col++){let x=75+col*34+(row%2)*12,y=220+row*37;if(x<R-rad&&y<FRONT-18)coin(x+rand(-3,3),y+rand(-4,4))}update();say('Viel Glück!',120)}
+function update(){stockEl.textContent=stock;wonEl.textContent=won;bestEl.textContent=best}
+function say(s,t=130){msg.textContent=s;notice=t}
+function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),TOP+5,0,2.3);dropWait=13;update()}
+function step(){
+phase+=.032;const pusher=173+Math.sin(phase)*48;dropWait=Math.max(0,dropWait-1);
+if(auto&&dropWait===0&&stock>0)drop();
+for(let a of coins){
+let push= a.y>pusher-16&&a.y<pusher+26&&a.x>L&&a.x<R;
+if(push){let penetration=pusher+26-a.y;if(penetration>0){a.y+=Math.min(3.7,penetration*.18);a.vy=Math.max(a.vy,.75)}}
+a.vx*=.86;a.vy*=.88;a.x+=a.vx;a.y+=a.vy;
+if(a.y<TOP+rad){a.y=TOP+rad;a.vy=Math.max(0,a.vy)}
+if(a.x<L+rad&&a.y<FRONT){a.x=L+rad;a.vx=Math.abs(a.vx)*.2}
+if(a.x>R-rad&&a.y<FRONT){a.x=R-rad;a.vx=-Math.abs(a.vx)*.2}
+}
+for(let pass=0;pass<3;pass++)for(let i=0;i<coins.length;i++)for(let j=i+1;j<coins.length;j++){
+const a=coins[i],b=coins[j],dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,min=rad*2-1;
+if(d2<min*min){const d=Math.sqrt(d2)||.001,nx=dx/d,ny=dy/d,over=(min-d)*.5;
+a.x-=nx*over;a.y-=ny*over;b.x+=nx*over;b.y+=ny*over;
+const impulse=Math.max(0,(a.vx-b.vx)*nx+(a.vy-b.vy)*ny)*.13;
+a.vx-=nx*impulse;b.vx+=nx*impulse;a.vy-=ny*impulse;b.vy+=ny*impulse;
+}}
+for(let i=coins.length-1;i>=0;i--){let a=coins[i];if(a.y>FRONT+rad){coins.splice(i,1);if(a.x>82&&a.x<418){won++;stock+=2;if(won>best){best=won;try{localStorage.setItem('coinPusherBest',best)}catch(e){}}say('🎉 +2 Münzen!',55)}update()}}
+if(notice>0&&--notice===0)msg.textContent='';
+}
+function draw(){
+const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#293a57');g.addColorStop(1,'#111827');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ctx.fillStyle='#070c17';ctx.fillRect(0,FRONT,W,H-FRONT);
+ctx.fillStyle='#364a69';ctx.fillRect(L,TOP,R-L,FRONT-TOP);
+ctx.fillStyle='#253852';ctx.fillRect(L+5,TOP+5,R-L-10,FRONT-TOP-10);
+for(let y=TOP;y<FRONT;y+=36){ctx.strokeStyle='#ffffff09';ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke()}
+const pusher=173+Math.sin(phase)*48;ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
+ctx.fillStyle='#111827';ctx.fillRect(0,TOP,L,FRONT-TOP);ctx.fillRect(R,TOP,W-R,FRONT-TOP);
+ctx.fillStyle='#e2e8f0';ctx.font='bold 15px system-ui';ctx.fillText('MÜNZEN',210,52);
+ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aim,66);ctx.lineTo(aim,TOP-3);ctx.stroke();ctx.beginPath();ctx.arc(aim,70,6,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();
+for(let a of coins){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle='#fff2a3';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,8,0,Math.PI*2);ctx.strokeStyle='#ad7b24';ctx.stroke()}
+ctx.fillStyle='#18243b';ctx.fillRect(0,FRONT-3,82,27);ctx.fillRect(418,FRONT-3,82,27);ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
+ctx.fillStyle='#94a3b8';ctx.font='12px system-ui';ctx.fillText('SEITLICHER VERLUST',12,610);ctx.fillText('SEITLICHER VERLUST',355,610);
+}
+function frame(t){if(!last)last=t;acc+=Math.min(60,t-last);last=t;while(acc>=16.667){step();acc-=16.667}draw();requestAnimationFrame(frame)}
+function target(e){let b=c.getBoundingClientRect();aim=Math.max(L+rad,Math.min(R-rad,(e.clientX-b.left)*W/b.width))}
+c.addEventListener('pointerdown',e=>{target(e);drop()});c.addEventListener('pointermove',e=>{if(e.buttons)target(e)});
+document.getElementById('drop').onclick=drop;document.getElementById('auto').onclick=()=>{auto=!auto;document.getElementById('auto').textContent=auto?'⏸ Auto stoppen':'▶ Auto-Einwurf'};document.getElementById('reset').onclick=init;
+init();requestAnimationFrame(frame);
+})();
+</script></body></html>
