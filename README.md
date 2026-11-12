@@ -12,7 +12,7 @@ Eine kleine, mobilfreundliche Sammlung von HTML5-Spielen. Kein Server-Code, kein
 ## Struktur
 
 - `index.html`: Startseite mit Spielekacheln
-- `games/bottle-filling.html`: Bottle Filling Game (bestehende Version mit Solver)
+- `games/*.html`: verschiedene Spiele
 - `favicon.svg`: kleines Website-Symbol
 
 ## Weitere Spiele ergänzen
