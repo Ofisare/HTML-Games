@@ -6,27 +6,45 @@ header{padding:12px 12px 4px}h1{margin:0;font-size:1.5rem}p{margin:5px;color:#cb
 .stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px}.stat{background:#1d2b44;border:1px solid #526481;border-radius:12px;padding:8px 14px;font-weight:700}
 #stage{display:block;width:min(96vw,530px);height:auto;margin:auto;touch-action:none;border:3px solid #64748b;border-radius:16px;background:#101827;box-shadow:0 12px 40px #0008}
 .controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:12px}button{background:#fbbf24;color:#1c1917;border:0;border-radius:11px;padding:12px 17px;font-size:1rem;font-weight:750;cursor:pointer}button.secondary{background:#334155;color:white}
-#msg{min-height:24px;font-weight:700;color:#fde68a}small{display:block;color:#94a3b8;padding:4px 12px 18px}
+#msg{min-height:24px;font-weight:700;color:#fde68a}.progress{max-width:530px;margin:12px auto;padding:12px;background:#1a2740;border:1px solid #435576;border-radius:15px;text-align:left}.progress h2{font-size:1rem;margin:0 0 8px}.progress .meter{height:9px;background:#34435e;border-radius:10px;overflow:hidden}.progress .meter span{display:block;background:#4ade80;height:100%}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px auto;max-width:530px}.tabs button{flex:1;min-width:90px;padding:10px 8px}.panel{max-width:530px;margin:0 auto 12px;text-align:left;background:#1a2740;border:1px solid #435576;border-radius:15px;padding:14px}.panel[hidden]{display:none}.entry{padding:9px 0;border-bottom:1px solid #ffffff1c}.entry:last-child{border:0}.entry button{font-size:.83rem;padding:7px 10px;float:right}.sub{font-size:.85rem;color:#b9c8e2}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{padding:6px 9px;border-radius:9px;background:#2e405e;font-size:.87rem}.chip.found{background:#215647}small{display:block;color:#94a3b8;padding:4px 12px 18px}
 </style></head><body>
 <header><a href="../index.html" style="display:inline-block;color:#a7f3d0;text-decoration:none;margin-bottom:8px;font-weight:700">← Zurück zur Spieleübersicht</a><h1>🪙 Coin Pusher</h1><p>Tippe auf die obere Spielfläche, um eine Münze einzuwerfen!</p></header>
 <div class="stats"><div class="stat">🪙 Vorrat: <span id="stock">60</span></div><div class="stat">🏆 Gewinn: <span id="won">0</span></div><div class="stat">⭐ Rekord: <span id="best">0</span></div></div>
+<div class="progress"><div id="levelText">Stufe 1 · 0 / 100 XP</div><div class="meter"><span id="xpBar" style="width:0%"></span></div><div class="sub" id="walletText">💰 0 Münzen · 💎 0 Edelsteine</div></div>
 <canvas id="stage" width="500" height="640" aria-label="Coin Pusher Spielfeld"></canvas>
-<div class="controls"><button id="drop">🪙 Münze einwerfen</button><button class="secondary" id="auto">▶ Auto-Einwurf</button><button class="secondary" id="reset">Neustart</button></div><div id="msg"></div>
+<div class="controls"><button id="drop">🪙 Münze einwerfen</button><button class="secondary" id="auto">▶ Auto-Einwurf</button><button class="secondary" id="reset">Neustart</button></div><div id="msg"></div><div class="tabs"><button class="secondary" data-tab="missions">🎯 Missionen</button><button class="secondary" data-tab="album">📖 Album</button><button class="secondary" data-tab="upgrades">⬆ Verbesserungen</button></div><section id="missions" class="panel"></section><section id="album" class="panel" hidden></section><section id="upgrades" class="panel" hidden></section>
 <small>Herunterfallende Münzen vorne zählen als Gewinn und kommen zurück in den Vorrat. Seitlich verlorene Münzen sind weg. Keine Echtgeld-Einsätze.</small>
 <script>
 (()=>{'use strict';
 const c=document.getElementById('stage'),ctx=c.getContext('2d'),stockEl=document.getElementById('stock'),wonEl=document.getElementById('won'),bestEl=document.getElementById('best'),msg=document.getElementById('msg');
 const W=500,H=640,L=43,R=457,TOP=96,FRONT=548,rad=24;
+const KEY='coinPusherProgressV1';
+const catalog=[['🐚','Muschel'],['⭐','Seestern'],['🦀','Krabbe'],['🐠','Tropenfisch'],['🐙','Oktopus'],['🧜','Meerjungfrau'],['⚓','Anker'],['👑','Meereskrone'],['🪸','Koralle']];
+const upgradeInfo=[['reserve','Münzvorrat','Mehr Münzen beim Nachfüllen',30],['reward','Gewinnbonus','Mehr Münzen pro Gewinn',45],['luck','Schatzchance','Häufiger Sammelobjekte',55]];
+let prog={wallet:0,gems:0,xp:0,level:1,collection:[],up:{reserve:0,reward:0,luck:0},missions:[],stats:{win:0,drop:0,collect:0},sets:0};
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&saved.up&&saved.stats)prog={...prog,...saved,up:{...prog.up,...saved.up},stats:{...prog.stats,...saved.stats}}}catch(e){}
+const missionTypes=[['win','Münzen gewinnen',15,30],['drop','Münzen einwerfen',20,25],['collect','Schätze sammeln',2,50]];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(prog))}catch(e){}}
+function newMission(type){const [key,title,base,reward]=missionTypes[type];const target=base+Math.floor((prog.level-1)/3)*(key==='collect'?1:5);return {key,title,target,reward:reward+prog.level*5,start:prog.stats[key]||0}}
+if(!prog.missions.length)prog.missions=missionTypes.map((_,i)=>newMission(i));
+function gainXP(n){prog.xp+=n;while(prog.xp>=prog.level*100){prog.xp-=prog.level*100;prog.level++;stock+=8+prog.up.reserve*4;say('🎉 Stufe '+prog.level+'! Bonusmünzen!',150)}}
+function progress(kind,n=1){prog.stats[kind]=(prog.stats[kind]||0)+n;for(let i=0;i<prog.missions.length;i++){let m=prog.missions[i];if(m.key===kind&&prog.stats[kind]-m.start>=m.target){prog.wallet+=m.reward;gainXP(35);prog.missions[i]=newMission(missionTypes.findIndex(x=>x[0]===kind));say('🎯 Mission geschafft! +'+m.reward+' Münzen',160)}}save();renderProgress()}
+function renderProgress(){document.getElementById('levelText').textContent='Stufe '+prog.level+' · '+prog.xp+' / '+(prog.level*100)+' XP';document.getElementById('xpBar').style.width=(100*prog.xp/(prog.level*100))+'%';document.getElementById('walletText').textContent='💰 '+prog.wallet+' Münzen · 💎 '+prog.gems+' Edelsteine';document.getElementById('missions').innerHTML='<h2>🎯 Aktive Missionen</h2>'+prog.missions.map(m=>{let n=Math.min(m.target,prog.stats[m.key]-m.start);return '<div class="entry"><b>'+m.title+'</b><div class="sub">'+n+' / '+m.target+' · Belohnung: '+m.reward+' Münzen</div><div class="meter"><span style="width:'+(100*n/m.target)+'%"></span></div></div>'}).join('');
+const names=new Set(prog.collection);document.getElementById('album').innerHTML='<h2>📖 Schätze des Meeres ('+names.size+'/'+catalog.length+')</h2><p class="sub">Alle 9 einzigartigen Schätze sammeln: 200 Bonusmünzen und 100 XP. Doppelte Schätze bringen 15 Münzen.</p><div class="chips">'+catalog.map(([icon,name])=>'<span class="chip '+(names.has(name)?'found':'')+'">'+(names.has(name)?icon:'❔')+' '+(names.has(name)?name:'Unentdeckt')+'</span>').join('')+'</div>';
+document.getElementById('upgrades').innerHTML='<h2>⬆ Dauerhafte Verbesserungen</h2>'+upgradeInfo.map(([key,name,desc,base])=>{let level=prog.up[key],cost=Math.round(base*Math.pow(1.7,level));return '<div class="entry"><button data-buy="'+key+'" '+(prog.wallet<cost?'disabled':'')+'>💰 '+cost+'</button><b>'+name+' · Stufe '+level+'</b><div class="sub">'+desc+'</div></div>'}).join('')+'<p class="sub">Verbesserungen bleiben beim Neustart erhalten.</p>';
+}
+function collectTreasure(){const [icon,name]=catalog[Math.floor(Math.random()*catalog.length)];prog.stats.collect++;if(prog.collection.includes(name)){prog.wallet+=15;say(icon+' Doppelter Schatz: +15 Münzen',150)}else{prog.collection.push(name);prog.gems++;prog.wallet+=25;gainXP(20);say(icon+' Neu im Album: '+name+'!',170)}if(prog.collection.length===catalog.length){prog.wallet+=200;gainXP(100);prog.collection=[];prog.sets++;say('🏆 Album vollständig! +200 Münzen',220)}progress('collect',0)}
+
 let coins=[],stock=60,won=0,best=0,aim=250,auto=false,last=0,acc=0,dropWait=0,phase=0,notice=0;
 try{best=+(localStorage.getItem('coinPusherBest')||0)}catch(e){}
 const rand=(a,b)=>a+Math.random()*(b-a);
-function coin(x,y,vx=0,vy=0){coins.push({x,y,vx,vy,r:rad,glow:Math.random()*6.28})}
-function init(){coins=[];stock=60;won=0;aim=250;auto=false;phase=0;dropWait=0;document.getElementById('auto').textContent='▶ Auto-Einwurf';for(let row=0;row<5;row++)for(let col=0;col<7;col++){let x=76+col*57+(row%2)*7,y=255+row*55;if(x<R-rad&&y<FRONT-12)coin(x+rand(-2,2),y+rand(-2,2))}update();say('Viel Glück!',120)}
+function coin(x,y,vx=0,vy=0,special=false){coins.push({x,y,vx,vy,r:rad,special,glow:Math.random()*6.28})}
+function init(){coins=[];stock=60;won=0;aim=250;auto=false;phase=0;dropWait=0;document.getElementById('auto').textContent='▶ Auto-Einwurf';for(let row=0;row<5;row++)for(let col=0;col<7;col++){let x=76+col*57+(row%2)*7,y=208+row*62;if(x<R-rad&&y<FRONT-12)coin(x+rand(-2,2),y+rand(-2,2))}update();renderProgress();say('Viel Glück!',120)}
 function update(){stockEl.textContent=stock;wonEl.textContent=won;bestEl.textContent=best}
 function say(s,t=130){msg.textContent=s;notice=t}
-function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),225+Math.sin(phase)*44+rad+5,0,0);dropWait=13;update()}
+function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),154+Math.sin(phase)*44+rad+5,0,0,Math.random()<.065+prog.up.luck*.025);dropWait=13;progress('drop');update()}
 function step(){
-const previousPusher=225+Math.sin(phase)*44;phase+=.047;const pusher=225+Math.sin(phase)*44;const advancing=pusher>previousPusher;dropWait=Math.max(0,dropWait-1);
+const previousPusher=154+Math.sin(phase)*44;phase+=.047;const pusher=154+Math.sin(phase)*44;const advancing=pusher>previousPusher;dropWait=Math.max(0,dropWait-1);
 if(auto&&dropWait===0&&stock>0)drop();
 for(let a of coins){
 // Nur der vorwärtsfahrende Schieber übt Druck aus.
@@ -47,7 +65,7 @@ a.x-=nx*over;a.y-=ny*over;b.x+=nx*over;b.y+=ny*over;
 const impulse=Math.max(0,(a.vx-b.vx)*nx+(a.vy-b.vy)*ny)*.13;
 a.vx-=nx*impulse;b.vx+=nx*impulse;a.vy-=ny*impulse;b.vy+=ny*impulse;
 }}
-for(let i=coins.length-1;i>=0;i--){let a=coins[i];const sideLoss=a.y>=FRONT-115&&(a.x<L-rad*.35||a.x>R+rad*.35);if(sideLoss||a.y>FRONT+rad*.35){coins.splice(i,1);if(!sideLoss&&a.x>75&&a.x<425){won++;stock+=2;if(won>best){best=won;try{localStorage.setItem('coinPusherBest',best)}catch(e){}}say('🎉 +2 Münzen!',55)}update()}}
+for(let i=coins.length-1;i>=0;i--){let a=coins[i];const sideLoss=a.y>=FRONT-115&&(a.x<L-rad*.35||a.x>R+rad*.35);if(sideLoss||a.y>FRONT+rad*.35){coins.splice(i,1);if(!sideLoss&&a.x>75&&a.x<425){won++;stock+=2+prog.up.reward;prog.wallet+=1+prog.up.reward;gainXP(2);if(a.special)collectTreasure();progress('win');if(won>best){best=won;try{localStorage.setItem('coinPusherBest',best)}catch(e){}}if(!a.special)say('🎉 Gewinn!',55)}update()}}
 if(notice>0&&--notice===0)msg.textContent='';
 }
 function draw(){
@@ -56,18 +74,21 @@ ctx.fillStyle='#070c17';ctx.fillRect(0,FRONT,W,H-FRONT);
 ctx.fillStyle='#364a69';ctx.fillRect(L,TOP,R-L,FRONT-TOP);
 ctx.fillStyle='#253852';ctx.fillRect(L+5,TOP+5,R-L-10,FRONT-TOP-10);
 for(let y=TOP;y<FRONT;y+=36){ctx.strokeStyle='#ffffff09';ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke()}
-const pusher=225+Math.sin(phase)*44;ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
+const pusher=154+Math.sin(phase)*44;ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
 ctx.fillStyle='#111827';ctx.fillRect(0,TOP,L,FRONT-115-TOP);ctx.fillRect(R,TOP,W-R,FRONT-115-TOP);ctx.fillStyle='#ef4444';ctx.fillRect(0,FRONT-115,L,5);ctx.fillRect(R,FRONT-115,W-R,5);
 ctx.fillStyle='#e2e8f0';ctx.font='bold 15px system-ui';ctx.fillText('MÜNZEN',210,52);
 ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aim,66);ctx.lineTo(aim,TOP-3);ctx.stroke();ctx.beginPath();ctx.arc(aim,70,6,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();
-for(let a of coins){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle='#fff2a3';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,15,0,Math.PI*2);ctx.strokeStyle='#ad7b24';ctx.lineWidth=2;ctx.stroke()}
-ctx.fillStyle='#18243b';ctx.fillRect(0,FRONT-3,82,27);ctx.fillRect(418,FRONT-3,82,27);ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
-ctx.fillStyle='#94a3b8';ctx.font='12px system-ui';ctx.fillText('SEITLICHER VERLUST',12,610);ctx.fillText('SEITLICHER VERLUST',355,610);
+for(let a of coins){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle=a.special?'#a7f3d0':'#fff2a3';ctx.lineWidth=a.special?4:2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,15,0,Math.PI*2);ctx.strokeStyle=a.special?'#14b8a6':'#ad7b24';ctx.lineWidth=2;ctx.stroke();if(a.special){ctx.fillStyle='#064e3b';ctx.font='bold 20px system-ui';ctx.textAlign='center';ctx.fillText('◆',a.x,a.y+7);ctx.textAlign='start'}}
+ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(L,FRONT);ctx.lineTo(R,FRONT);ctx.stroke();ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
+ctx.fillStyle='#94a3b8';ctx.font='12px system-ui';ctx.fillText('Seitliche Münzen gehen verloren',151,613);
 }
 function frame(t){if(!last)last=t;acc+=Math.min(60,t-last);last=t;while(acc>=16.667){step();acc-=16.667}draw();requestAnimationFrame(frame)}
 function target(e){let b=c.getBoundingClientRect();aim=Math.max(L+rad,Math.min(R-rad,(e.clientX-b.left)*W/b.width))}
 c.addEventListener('pointerdown',e=>{target(e);drop()});c.addEventListener('pointermove',e=>{if(e.buttons)target(e)});
-document.getElementById('drop').onclick=drop;document.getElementById('auto').onclick=()=>{auto=!auto;document.getElementById('auto').textContent=auto?'⏸ Auto stoppen':'▶ Auto-Einwurf'};document.getElementById('reset').onclick=init;
+document.getElementById('drop').onclick=drop;document.getElementById('auto').onclick=()=>{auto=!auto;document.getElementById('auto').textContent=auto?'⏸ Auto stoppen':'▶ Auto-Einwurf'};document.getElementById('reset').onclick=()=>{if(confirm('Spielfeld neu starten? Album, Missionen und Verbesserungen bleiben erhalten.'))init()};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!==b.dataset.tab)});
+document.getElementById('upgrades').addEventListener('click',e=>{const b=e.target.closest('[data-buy]');if(!b)return;const key=b.dataset.buy,info=upgradeInfo.find(x=>x[0]===key);if(!info)return;const cost=Math.round(info[3]*Math.pow(1.7,prog.up[key]));if(prog.wallet<cost)return;prog.wallet-=cost;prog.up[key]++;if(key==='reserve')stock+=10;save();renderProgress();update();say('⬆ Verbesserung gekauft!',110)});
+
 init();requestAnimationFrame(frame);
 })();
 </script></body></html>
