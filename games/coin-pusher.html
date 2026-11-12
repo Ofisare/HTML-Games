@@ -16,25 +16,25 @@ header{padding:12px 12px 4px}h1{margin:0;font-size:1.5rem}p{margin:5px;color:#cb
 <script>
 (()=>{'use strict';
 const c=document.getElementById('stage'),ctx=c.getContext('2d'),stockEl=document.getElementById('stock'),wonEl=document.getElementById('won'),bestEl=document.getElementById('best'),msg=document.getElementById('msg');
-const W=500,H=640,L=43,R=457,TOP=96,FRONT=548,rad=31;
+const W=500,H=640,L=43,R=457,TOP=96,FRONT=548,rad=24;
 let coins=[],stock=60,won=0,best=0,aim=250,auto=false,last=0,acc=0,dropWait=0,phase=0,notice=0;
 try{best=+(localStorage.getItem('coinPusherBest')||0)}catch(e){}
 const rand=(a,b)=>a+Math.random()*(b-a);
 function coin(x,y,vx=0,vy=0){coins.push({x,y,vx,vy,r:rad,glow:Math.random()*6.28})}
-function init(){coins=[];stock=60;won=0;aim=250;auto=false;phase=0;dropWait=0;document.getElementById('auto').textContent='▶ Auto-Einwurf';for(let row=0;row<5;row++)for(let col=0;col<6;col++){let x=95+col*62+(row%2)*7,y=235+row*59;if(x<R-rad&&y<FRONT-12)coin(x+rand(-2,2),y+rand(-2,2))}update();say('Viel Glück!',120)}
+function init(){coins=[];stock=60;won=0;aim=250;auto=false;phase=0;dropWait=0;document.getElementById('auto').textContent='▶ Auto-Einwurf';for(let row=0;row<5;row++)for(let col=0;col<7;col++){let x=76+col*57+(row%2)*7,y=255+row*55;if(x<R-rad&&y<FRONT-12)coin(x+rand(-2,2),y+rand(-2,2))}update();say('Viel Glück!',120)}
 function update(){stockEl.textContent=stock;wonEl.textContent=won;bestEl.textContent=best}
 function say(s,t=130){msg.textContent=s;notice=t}
-function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),TOP+5,0,2.3);dropWait=13;update()}
+function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),225+Math.sin(phase)*88+rad+5,0,0);dropWait=13;update()}
 function step(){
-phase+=.047;const pusher=255+Math.sin(phase)*75;dropWait=Math.max(0,dropWait-1);
+const previousPusher=225+Math.sin(phase)*88;phase+=.047;const pusher=225+Math.sin(phase)*88;const advancing=pusher>previousPusher;dropWait=Math.max(0,dropWait-1);
 if(auto&&dropWait===0&&stock>0)drop();
 for(let a of coins){
-let push= a.y>pusher-16&&a.y<pusher+26&&a.x>L&&a.x<R;
-if(push){let penetration=pusher+26-a.y;if(penetration>0){a.y=Math.max(a.y,pusher+26);a.vy=Math.max(a.vy,1.35)}}
-// Die Förderbewegung wirkt über die gesamte Münzfläche:
- // Münzen werden tatsächlich nach vorne transportiert, nicht nur am Schieber berührt.
- const forward=(.25+Math.max(0,Math.cos(phase))*.52);
- if(a.y>TOP+rad+8) a.vy+=forward;
+// Nur der vorwärtsfahrende Schieber übt Druck aus.
+// Keine künstliche Vorwärtsbeschleunigung: stehende Münzen bleiben liegen.
+if(advancing && a.y>=previousPusher+13 && a.y<pusher+rad+13){
+ a.y=pusher+rad+13;
+ a.vy=Math.max(a.vy,pusher-previousPusher);
+}
  a.vx*=.83;a.vy*=.84;a.x+=a.vx;a.y+=a.vy;
 if(a.y<TOP+rad){a.y=TOP+rad;a.vy=Math.max(0,a.vy)}
 if(a.x<L+rad&&a.y<FRONT){a.x=L+rad;a.vx=Math.abs(a.vx)*.2}
@@ -56,11 +56,11 @@ ctx.fillStyle='#070c17';ctx.fillRect(0,FRONT,W,H-FRONT);
 ctx.fillStyle='#364a69';ctx.fillRect(L,TOP,R-L,FRONT-TOP);
 ctx.fillStyle='#253852';ctx.fillRect(L+5,TOP+5,R-L-10,FRONT-TOP-10);
 for(let y=TOP;y<FRONT;y+=36){ctx.strokeStyle='#ffffff09';ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke()}
-const pusher=255+Math.sin(phase)*75;ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
+const pusher=225+Math.sin(phase)*88;ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
 ctx.fillStyle='#111827';ctx.fillRect(0,TOP,L,FRONT-TOP);ctx.fillRect(R,TOP,W-R,FRONT-TOP);
 ctx.fillStyle='#e2e8f0';ctx.font='bold 15px system-ui';ctx.fillText('MÜNZEN',210,52);
 ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aim,66);ctx.lineTo(aim,TOP-3);ctx.stroke();ctx.beginPath();ctx.arc(aim,70,6,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();
-for(let a of coins){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle='#fff2a3';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,21,0,Math.PI*2);ctx.strokeStyle='#ad7b24';ctx.lineWidth=2;ctx.stroke()}
+for(let a of coins){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle='#fff2a3';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,15,0,Math.PI*2);ctx.strokeStyle='#ad7b24';ctx.lineWidth=2;ctx.stroke()}
 ctx.fillStyle='#18243b';ctx.fillRect(0,FRONT-3,82,27);ctx.fillRect(418,FRONT-3,82,27);ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
 ctx.fillStyle='#94a3b8';ctx.font='12px system-ui';ctx.fillText('SEITLICHER VERLUST',12,610);ctx.fillText('SEITLICHER VERLUST',355,610);
 }
