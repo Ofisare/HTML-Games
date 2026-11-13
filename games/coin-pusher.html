@@ -90,7 +90,7 @@ for(let pass=0;pass<7;pass++){
 // fällt sie auf die untere Ebene. Position bleibt exakt erhalten.
 for(const a of coins){
  if(a.onPusher){
-  if(a.y>=pusher+rad*.35){a.onPusher=false;a.vy=Math.max(a.vy,.6)}
+  if(a.y>=pusher+23+rad*.32){a.onPusher=false;a.vy=Math.max(a.vy,.6)}
  }else if(advancing && a.y+rad>previousPusher+13 && a.y<pusher+rad+13 && a.x>L&&a.x<R){
   // Der Schieber schiebt nur während seines Vorwärtshubs.
   const target=pusher+rad+13;
@@ -117,11 +117,13 @@ ctx.fillStyle='#e2e8f0';ctx.font='bold 15px system-ui';ctx.fillText('MÜNZEN',21
 ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aim,66);ctx.lineTo(aim,TOP-3);ctx.stroke();ctx.beginPath();ctx.arc(aim,70,6,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();
 function drawCoins(layer){for(let a of layer){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle=a.special?'#a7f3d0':'#fff2a3';ctx.lineWidth=a.special?4:2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,15,0,Math.PI*2);ctx.strokeStyle=a.special?'#14b8a6':'#ad7b24';ctx.lineWidth=2;ctx.stroke();if(a.special){ctx.fillStyle='#064e3b';ctx.font='bold 20px system-ui';ctx.textAlign='center';ctx.fillText('◆',a.x,a.y+7);ctx.textAlign='start'}}
 }
+// Die Gewinnlinie liegt unter den Münzen.
+ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(L,FRONT);ctx.lineTo(R,FRONT);ctx.stroke();
 drawCoins(coins.filter(c=>!c.onPusher));
 const pusher=pusherY();ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
 
 drawCoins(coins.filter(c=>c.onPusher));
-ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(L,FRONT);ctx.lineTo(R,FRONT);ctx.stroke();ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
+ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
 for(const e of effects){ctx.save();ctx.globalAlpha=Math.min(1,e.life/17);if(e.kind==='spark'){
  ctx.fillStyle=e.special?'#5eead4':(e.life%3<1?'#fff7ae':'#fbbf24');ctx.beginPath();ctx.arc(e.x,e.y,Math.max(1.2,e.life/13),0,Math.PI*2);ctx.fill();
  }else{ctx.textAlign='center';ctx.font='bold 23px system-ui';ctx.fillStyle=e.special?'#5eead4':'#fde68a';ctx.fillText(e.special?'💎 +1':'🪙 +1',e.x,e.y);}
