@@ -112,11 +112,15 @@ ctx.fillStyle='#070c17';ctx.fillRect(0,FRONT,W,H-FRONT);
 ctx.fillStyle='#364a69';ctx.fillRect(L,TOP,R-L,FRONT-TOP);
 ctx.fillStyle='#253852';ctx.fillRect(L+5,TOP+5,R-L-10,FRONT-TOP-10);
 for(let y=TOP;y<FRONT;y+=36){ctx.strokeStyle='#ffffff09';ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(R,y);ctx.stroke()}
-const pusher=pusherY();ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
 ctx.fillStyle='#111827';ctx.fillRect(0,TOP,L,FRONT-115-TOP);ctx.fillRect(R,TOP,W-R,FRONT-115-TOP);ctx.fillStyle='#ef4444';ctx.fillRect(0,FRONT-115,L,5);ctx.fillRect(R,FRONT-115,W-R,5);
 ctx.fillStyle='#e2e8f0';ctx.font='bold 15px system-ui';ctx.fillText('MÜNZEN',210,52);
 ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(aim,66);ctx.lineTo(aim,TOP-3);ctx.stroke();ctx.beginPath();ctx.arc(aim,70,6,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();
-for(let a of coins.filter(c=>!c.onPusher).concat(coins.filter(c=>c.onPusher))){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle=a.special?'#a7f3d0':'#fff2a3';ctx.lineWidth=a.special?4:2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,15,0,Math.PI*2);ctx.strokeStyle=a.special?'#14b8a6':'#ad7b24';ctx.lineWidth=2;ctx.stroke();if(a.special){ctx.fillStyle='#064e3b';ctx.font='bold 20px system-ui';ctx.textAlign='center';ctx.fillText('◆',a.x,a.y+7);ctx.textAlign='start'}}
+function drawCoins(layer){for(let a of layer){ctx.beginPath();ctx.ellipse(a.x+2,a.y+3,rad,rad*.82,0,0,Math.PI*2);ctx.fillStyle='#0b1220';ctx.fill();ctx.beginPath();ctx.arc(a.x,a.y,rad,0,Math.PI*2);let cg=ctx.createRadialGradient(a.x-5,a.y-6,2,a.x,a.y,rad);cg.addColorStop(0,'#fff0a3');cg.addColorStop(.55,'#eebd43');cg.addColorStop(1,'#98601c');ctx.fillStyle=cg;ctx.fill();ctx.strokeStyle=a.special?'#a7f3d0':'#fff2a3';ctx.lineWidth=a.special?4:2;ctx.stroke();ctx.beginPath();ctx.arc(a.x,a.y,15,0,Math.PI*2);ctx.strokeStyle=a.special?'#14b8a6':'#ad7b24';ctx.lineWidth=2;ctx.stroke();if(a.special){ctx.fillStyle='#064e3b';ctx.font='bold 20px system-ui';ctx.textAlign='center';ctx.fillText('◆',a.x,a.y+7);ctx.textAlign='start'}}
+}
+drawCoins(coins.filter(c=>!c.onPusher));
+const pusher=pusherY();ctx.fillStyle='#64748b';ctx.fillRect(L+3,TOP+1,R-L-6,pusher-TOP+20);ctx.fillStyle='#a7b8d2';ctx.fillRect(L+3,pusher+10,R-L-6,13);ctx.fillStyle='#dbeafe';ctx.fillRect(L+3,pusher+10,R-L-6,3);
+
+drawCoins(coins.filter(c=>c.onPusher));
 ctx.strokeStyle='#fbbf24';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(L,FRONT);ctx.lineTo(R,FRONT);ctx.stroke();ctx.fillStyle='#fbbf24';ctx.font='bold 14px system-ui';ctx.fillText('⬇ GEWINN ⬇',195,583);
 for(const e of effects){ctx.save();ctx.globalAlpha=Math.min(1,e.life/17);if(e.kind==='spark'){
  ctx.fillStyle=e.special?'#5eead4':(e.life%3<1?'#fff7ae':'#fbbf24');ctx.beginPath();ctx.arc(e.x,e.y,Math.max(1.2,e.life/13),0,Math.PI*2);ctx.fill();
