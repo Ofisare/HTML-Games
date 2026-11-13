@@ -43,7 +43,7 @@ function coin(x,y,vx=0,vy=0,special=false){coins.push({x,y,vx,vy,r:rad,special,g
 function init(){coins=[];effects=[];stock=60;won=0;aim=250;auto=false;phase=0;dropWait=0;document.getElementById('auto').textContent='▶ Auto-Einwurf';for(let row=0;row<5;row++)for(let col=0;col<7;col++){let x=76+col*57+(row%2)*7,y=208+row*62;if(x<R-rad&&y<FRONT-12)coin(x+rand(-2,2),y+rand(-2,2))}update();renderProgress();say('Viel Glück!',120)}
 function update(){stockEl.textContent=stock;wonEl.textContent=won;bestEl.textContent=best}
 function say(s,t=130){msg.textContent=s;notice=t}
-function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),Math.max(TOP+rad,pusherY()-rad-4),0,0,Math.random()<.065+prog.up.luck*.025);
+function drop(){if(stock<=0){say('Keine Münzen mehr! Starte neu.');return}if(dropWait>0)return;stock--;coin(Math.max(L+rad,Math.min(R-rad,aim)),TOP+rad+2,0,0,Math.random()<.065+prog.up.luck*.025);
 const fresh=coins[coins.length-1];fresh.onPusher=true;fresh.vy=0;dropWait=13;progress('drop');update()}
 function step(){
 const previousPusher=pusherY();phase+=.047;const pusher=pusherY();const advancing=pusher>previousPusher;dropWait=Math.max(0,dropWait-1);
