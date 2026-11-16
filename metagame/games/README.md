@@ -24,6 +24,7 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 | --- | --- | --- |
 | `holzfaellen.html` | Waldarbeiter-Logikrätsel | Bäume fällen, Holz einsammeln, zur Hütte zurückkehren |
 | `steinbruch.html` | Minesweeper-artiger Stollen | Stollen sicher aufdecken; Steinbelohnung |
+| `saegewerk.html` | Shikaku: Holzbrett in Rechtecke mit genau einer Flächenzahl aufteilen | Vollständig gültiger Zuschnitt; Bretter fürs Insellager |
 | `bauhelfer.html` | Block-Puzzle | Bauzeit durch vervollständigte Reihen/Spalten verkürzen, bis Bau abgeschlossen ist |
 
 ## Checkliste vor Veröffentlichung
