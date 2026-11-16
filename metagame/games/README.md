@@ -35,3 +35,12 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 - [ ] Belohnungen/Teilfortschritte werden nicht doppelt vergeben.
 - [ ] Gemeinsamer Spielstand bleibt kompatibel.
 - [ ] JavaScript-Syntax prüfen und möglichst auf Android/Firefox testen.
+
+
+## Bauernhof – Bewässerung (Numberlink)
+
+- Datei: `bauernhof.html`; Aufruf im Info-Tab von Bauernhof **und Getreidefeld**, außerdem durch Doppeltippen auf ein Getreidefeld.
+- Jeweils zwei gleichfarbige Anschlüsse mit durchgehenden, nicht kreuzenden Wegen verbinden; alle Felder müssen abgedeckt werden.
+- Nach erfolgreichen Aufträgen wächst das Spielfeld von 5×5 auf höchstens 8×8, mit 4–8 Leitungspaaren.
+- Erfolgsbelohnung: 3–7 Nahrung, begrenzt durch die Lagerkapazität; Erfolg wird im Inselspielstand als `farmWins` gespeichert.
+- Allgemeiner Minispielstandard: gespeicherte ❓-Hilfe, Abbrechen ohne Belohnung, mittiges Erfolgspopup mit Rückkehr zur Insel.
