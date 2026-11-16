@@ -60,3 +60,5 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 - Bäume mit konstanter Wahrscheinlichkeit; Gras und Getreide saisonal gewichtet.
 - Ernteziel und Belohnung steigen mit erfolgreichen Aufträgen. Gespeicherter Zähler `farmWins`.
 - ❓-Hilfe, Abbrechen ohne Belohnung, Erfolgspopup mit Rückkehr zur Insel.
+
+Jahreszeiten-Ernte: Doppeltipp auf Getreidefeld startet das Bauernhofspiel. Geerntete Pflanzen rutschen animiert nach; neu nachfallende Pflanzen behalten ihre jeweilige Jahreszeitenoptik.
