@@ -44,3 +44,19 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 - Nach erfolgreichen Aufträgen wächst das Spielfeld von 5×5 auf höchstens 8×8, mit 4–8 Leitungspaaren.
 - Erfolgsbelohnung: 3–7 Nahrung, begrenzt durch die Lagerkapazität; Erfolg wird im Inselspielstand als `farmWins` gespeichert.
 - Allgemeiner Minispielstandard: gespeicherte ❓-Hilfe, Abbrechen ohne Belohnung, mittiges Erfolgspopup mit Rückkehr zur Insel.
+
+## Brunnen und Bewässerung (Numberlink)
+
+- Das Numberlink-Spiel `brunnen.html` gehört zum Brunnen (Info-Tab), nicht mehr zum Bauernhof oder Getreidefeld.
+- Brunnen produzieren Wasser, Bauernhöfe verbrauchen Wasser für Nahrung; Getreidefelder erhöhen die Effizienz.
+- Numberlink zeigt gleich hohe Zeilen und kennzeichnet verbundene Endpunkte mit einem Häkchen.
+- Erfolgsbelohnung ist Wasser; Erfolge werden unter `wellWins` gespeichert.
+
+## Bauernhof – Jahreszeiten-Ernte
+
+- Datei: `bauernhof.html`, im Info-Tab des Bauernhofs aufrufbar. Das Numberlink-Spiel bleibt beim Brunnen.
+- 6×6-Feld, 12 Züge, drei pro Jahreszeit. Gleichartige Pflanzen ab drei Feldern verbinden; diagonale Nachbarschaft erlaubt.
+- Pflanzen rutschen nach unten; neue Pflanzen erscheinen in der neuen Jahreszeit, ältere behalten ihre Jahreszeitenoptik.
+- Bäume mit konstanter Wahrscheinlichkeit; Gras und Getreide saisonal gewichtet.
+- Ernteziel und Belohnung steigen mit erfolgreichen Aufträgen. Gespeicherter Zähler `farmWins`.
+- ❓-Hilfe, Abbrechen ohne Belohnung, Erfolgspopup mit Rückkehr zur Insel.

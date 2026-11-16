@@ -1,0 +1,46 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bewässerung – Bauernhof</title><style>
+:root{font-family:system-ui,sans-serif;color:#f1eee0;background:#102c2d}*{box-sizing:border-box}body{margin:0;padding:14px;max-width:650px;margin:auto}header{display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:1.4rem;margin:10px 0}button,a{font:inherit;border-radius:10px;padding:10px 13px;border:1px solid #8da59a;background:#275651;color:white;cursor:pointer}a{display:inline-block;text-decoration:none}button:disabled{opacity:.5}#help{background:#203f40;border-radius:12px;padding:12px;margin:12px 0}#help[hidden],#win[hidden]{display:none}#board{display:grid;gap:3px;touch-action:none;user-select:none;grid-auto-rows:minmax(0,1fr);margin:14px auto;width:min(96vw,520px);aspect-ratio:1;background:#1d4140;padding:5px;border-radius:12px} .cell{position:relative;background:#b8a16c;border-radius:5px;display:grid;place-items:center;font-weight:900;font-size:clamp(14px,4vw,24px);color:#1c2623;overflow:hidden}.cell.path{background:var(--path);box-shadow:inset 0 0 0 2px #ffffff33;} .cell.path::before{content:"";position:absolute;inset:28%;background:#ffffff70;border-radius:5px;z-index:0;}.cell.endpoint{background:var(--path);border:3px solid #f8f5dc}.cell.endpoint::after{content:"●";font-size:1.3em;color:#1d2928;position:relative;z-index:2}.cell.endpoint.connected{border-color:#ffffff;box-shadow:inset 0 0 0 3px #1a523d,0 0 0 2px #f7f2c9}.cell.endpoint.connected::after{content:"✓";font-size:1.1em;color:#173e32;background:#f7f2c9;border-radius:50%;width:1.5em;height:1.5em;display:grid;place-items:center}.cell.preview{outline:3px solid #fff;outline-offset:-3px}#status{min-height:2em}#win{position:fixed;inset:0;background:#000a;display:grid;place-items:center;padding:20px;z-index:10}#win .dialog{background:#1e4742;border:2px solid #a3c9a3;border-radius:20px;padding:28px;text-align:center;max-width:370px;box-shadow:0 10px 35px #0008}#win a{background:#2b8750;font-weight:bold}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}small{color:#d4d5c9}
+</style></head><body><header><h1>💧 Brunnen – Wasserleitungen</h1><button id="helpToggle" aria-label="Hilfe umschalten">❓</button></header><section id="help"><p>Verbinde jeweils zwei gleichfarbige Wasseranschlüsse durch Ziehen mit dem Finger. Kanäle dürfen sich nicht kreuzen und müssen am Ende <b>alle Felder</b> bewässern.</p><p>Beginne an einem farbigen Punkt. Du kannst einen Kanal neu ziehen, indem du erneut an seinem Startpunkt beginnst. Fehler kosten nichts.</p></section><div id="status"></div><div id="board"></div><div class="actions"><button id="reset">↻ Rätsel zurücksetzen</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div><small>Die Schwierigkeit steigt nach erfolgreichen Bewässerungen. Belohnung: Wasser fürs Insellager.</small>
+<div id="win" hidden><div class="dialog"><h2>🎉 Erfolgreich!</h2><p>Alle Felder sind bewässert!</p><p id="reward"></p><a href="../index.html">🏝️ Zurück zur Insel</a></div></div>
+<script>
+(()=>{'use strict';
+const KEY='enchanted-islands-v01',HELPKEY='islands-farm-help',colors=['#e8b34f','#6ec7d5','#db87ac','#94d078','#bc9be3','#ee946f','#81a7f0','#d8c75b'];
+let state;try{state=JSON.parse(localStorage.getItem(KEY))||null}catch{}let wins=Math.max(0,Number(state?.wellWins)||0);
+const n=wins<3?5:wins<6?6:wins<10?7:8, pairs=wins<3?4:wins<6?5:wins<10?6:wins<15?7:8,reward=wins<3?3:wins<6?4:wins<10?5:wins<15?6:7;
+let endpoints=[],paths=[],dragging=null,solved=false;
+const board=document.querySelector('#board'),status=document.querySelector('#status');
+let showHelp;try{showHelp=localStorage.getItem(HELPKEY)!=='false'}catch{showHelp=true}
+function renderHelp(){document.querySelector('#help').hidden=!showHelp;document.querySelector('#helpToggle').setAttribute('aria-expanded',String(showHelp))}
+document.querySelector('#helpToggle').onclick=()=>{showHelp=!showHelp;try{localStorage.setItem(HELPKEY,String(showHelp))}catch{}renderHelp()};renderHelp();
+function rng(){return Math.random()}
+function make(){
+let cells=[];for(let y=0;y<n;y++){if(y%2===0){for(let x=0;x<n;x++)cells.push([x,y])}else{for(let x=n-1;x>=0;x--)cells.push([x,y])}}
+if(rng()<.5)cells=cells.map(([x,y])=>[y,x]);
+if(rng()<.5)cells=cells.map(([x,y])=>[n-1-x,y]);
+if(rng()<.5)cells=cells.map(([x,y])=>[x,n-1-y]);
+let remaining=n*n,offset=0;let sizes=[];
+for(let i=0;i<pairs;i++){let left=pairs-i-1,minLeft=left*2;let low=2,high=Math.min(remaining-minLeft,Math.max(4,Math.ceil(n*n/pairs*1.6)));let size=i===pairs-1?remaining:low+Math.floor(rng()*(high-low+1));sizes.push(size);remaining-=size}
+endpoints=[];for(let i=0;i<pairs;i++){let chunk=cells.slice(offset,offset+sizes[i]);offset+=sizes[i];endpoints.push({a:chunk[0],b:chunk[chunk.length-1]})}
+paths=endpoints.map(()=>[])
+}
+const key=(x,y)=>x+','+y;
+function endpointAt(x,y){return endpoints.findIndex(e=>key(...e.a)===key(x,y)||key(...e.b)===key(x,y))}
+function cellAt(x,y){let r=board.getBoundingClientRect(),cx=Math.floor((x-r.left)/r.width*n),cy=Math.floor((y-r.top)/r.height*n);return cx>=0&&cy>=0&&cx<n&&cy<n?[cx,cy]:null}
+function draw(){board.style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;board.style.gridTemplateRows=`repeat(${n},minmax(0,1fr))`;let frag=document.createDocumentFragment();for(let y=0;y<n;y++)for(let x=0;x<n;x++){let d=document.createElement('div');d.className='cell';let ep=endpointAt(x,y),p=paths.findIndex(path=>path.some(c=>c[0]===x&&c[1]===y));if(p>=0){d.classList.add('path');d.style.setProperty('--path',colors[p%colors.length])}if(ep>=0){d.classList.add('endpoint');d.style.setProperty('--path',colors[ep%colors.length]);let path=paths[ep];if(path.length>1&&endpointAt(...path[0])===ep&&endpointAt(...path[path.length-1])===ep&&key(...path[0])!==key(...path[path.length-1]))d.classList.add('connected')}frag.append(d)}board.replaceChildren(frag);let occupied=new Set(paths.flat().map(p=>key(...p)));status.textContent=`${paths.filter((p,i)=>p.length>1&&key(...p[p.length-1])===key(...endpoints[i].b)||p.length>1&&key(...p[p.length-1])===key(...endpoints[i].a)).length} / ${pairs} Leitungen verbunden · ${occupied.size}/${n*n} Felder belegt`}
+function extend(c){if(!dragging||!c)return;let i=dragging.i,path=paths[i],last=path[path.length-1];if(!last||Math.abs(last[0]-c[0])+Math.abs(last[1]-c[1])!==1)return;let prev=path.length>1?path[path.length-2]:null;if(prev&&key(...prev)===key(...c)){path.pop();draw();return}if(path.some(p=>key(...p)===key(...c)))return;let ep=endpointAt(...c);if(ep>=0&&ep!==i)return;if(paths.some((p,j)=>j!==i&&p.some(q=>key(...q)===key(...c))))return;
+if(ep===i&&key(...c)===key(...dragging.start))return;
+path.push(c);draw();if(ep===i){dragging=null;check()}
+}
+function check(){if(solved)return;let all=paths.every((p,i)=>p.length>1&&endpointAt(...p[0])===i&&endpointAt(...p[p.length-1])===i&&key(...p[0])!==key(...p[p.length-1]));let occupied=new Set(paths.flat().map(p=>key(...p)));if(!all||occupied.size!==n*n)return;solved=true;
+let earned=reward;
+if(state&&state.version===1){state.wellWins=(Number(state.wellWins)||0)+1;if(!state.res)state.res={};let cap=100+(state.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((a,b)=>a+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);earned=Math.max(0,Math.min(reward,cap-(Number(state.res.water)||0)));state.res.water=(Number(state.res.water)||0)+earned;try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}}
+document.querySelector('#reward').textContent=`💧 +${earned} Wasser${earned<reward?' (Lager voll)':''}`;document.querySelector('#win').hidden=false
+}
+board.addEventListener('pointerdown',e=>{if(solved)return;let c=cellAt(e.clientX,e.clientY);if(!c)return;let i=endpointAt(...c);if(i<0)return;e.preventDefault();board.setPointerCapture(e.pointerId);paths[i]=[c];dragging={i,start:c};draw()});
+board.addEventListener('pointermove',e=>{if(dragging){e.preventDefault();extend(cellAt(e.clientX,e.clientY))}});
+board.addEventListener('pointerup',e=>{if(dragging){extend(cellAt(e.clientX,e.clientY));dragging=null;check()}});
+board.addEventListener('pointercancel',()=>dragging=null);
+document.querySelector('#reset').onclick=()=>{paths=endpoints.map(()=>[]);dragging=null;draw()};
+make();draw();
+})();
+</script></body></html>
