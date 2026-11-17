@@ -15,7 +15,59 @@ main{background:#246a8a}
 @media(max-width:800px){main{height:68dvh;min-height:430px}#buildBar button{width:64px;height:64px}aside{padding:12px}}
 .tools button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:77px}.tools button .cost{font-size:.76rem;line-height:1.35;color:#e1f0e7}.tools button .cost.missing{color:#ffb6a8;font-weight:700}.tools button .cost.ok{color:#d2f5c9}.tools button.active .cost{color:#263b2e}.tools button .cost .shortage{color:#ffb6a8}.tools button.active .cost .shortage{color:#8b1919}.build-cost{margin:7px 0;padding:8px;border-radius:8px;background:#305357;font-size:.9rem}
 #foundInventory{margin-top:18px;padding-top:12px;border-top:1px solid #56777a}#foundInventory h2{margin:4px 0 10px}.found-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:9px}.found-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:125px;border:1px solid #60878a;border-radius:12px;background:#284a50;padding:12px 8px;color:#f4f3e7;text-align:center}.found-tile .found-icon{font-size:2rem;line-height:1.2}.found-tile .found-amount{font-size:.85rem;color:#d4dfdb}.found-tile.active{outline:3px solid #e3ca7d}.found-tile:disabled{opacity:.55}.found-note{font-size:.88rem;color:#d0e0d9;margin-top:9px}.topback{display:block;padding:9px 14px;background:#102a2d;color:#e6d38e;font-size:.9rem}.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin:0 0 12px}.tabs button{padding:10px 2px;font-size:.87rem;border-radius:7px}.tabpage[hidden]{display:none!important}.tabpage{min-height:150px}.tabpage .panel{margin-top:0}.helptext{line-height:1.55}.tabpage h2{margin:8px 0 12px}#overlay{display:none!important}@media(max-width:800px){.tabs{position:sticky;top:0;z-index:5;background:#19383c;padding:4px 0}}
-</style></head><body><a class="topback" href="../index.html">← Zur Spielesammlung</a><header><h1>🏝️ Die Verzauberten Inseln <small>· Prototyp 1.0</small></h1><div class="stats" id="stats"></div></header><div class="layout"><main id="viewport"><canvas id="map"></canvas><div id="buildBar"><button id="cancelBuild" title="Bau abbrechen" aria-label="Bau abbrechen">✖</button><button id="rotateBuild" title="Gebäude drehen" aria-label="Gebäude drehen" hidden>↻</button><button id="confirmBuild" title="Bau bestätigen" aria-label="Bau bestätigen">✔</button></div></main><aside>
+</style><script>
+/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+(()=>{'use strict';
+  const isIsland = !location.pathname.includes('/games/');
+  const versionFile = isIsland ? 'version.json' : '../version.json';
+  let latest = new URLSearchParams(location.search).get('v') || '';
+  let checking = false;
+  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
+  function versionedUrl(input){
+    const u=new URL(input,location.href);
+    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
+    return u.href;
+  }
+  window.islandVersionedUrl=versionedUrl;
+  async function checkVersion(){
+    if(checking || document.visibilityState==='hidden')return;
+    checking=true;
+    try{
+      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      if(!response.ok)return;
+      const data=await response.json();
+      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
+      latest=data.version;
+      const loaded=new URLSearchParams(location.search).get('v');
+      if(loaded===latest)return;
+      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
+      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
+      if(isIsland){
+        const key='island-reload-attempt-'+latest;
+        const last=Number(sessionStorage.getItem(key)||0);
+        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
+        sessionStorage.setItem(key,String(Date.now()));
+        const url=new URL(location.href);url.searchParams.set('v',latest);
+        location.replace(url.href);
+      }
+    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+    finally{checking=false;}
+  }
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href]');
+    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
+    const dest=new URL(a.href,location.href);
+    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
+    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
+  },true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
+  window.addEventListener('pageshow',()=>checkVersion());
+  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
+  setInterval(checkVersion,60000);
+  checkVersion();
+})();
+</script>
+</head><body><a class="topback" href="../index.html">← Zur Spielesammlung</a><header><h1>🏝️ Die Verzauberten Inseln <small>· Prototyp 1.0</small></h1><div class="stats" id="stats"></div></header><div class="layout"><main id="viewport"><canvas id="map"></canvas><div id="buildBar"><button id="cancelBuild" title="Bau abbrechen" aria-label="Bau abbrechen">✖</button><button id="rotateBuild" title="Gebäude drehen" aria-label="Gebäude drehen" hidden>↻</button><button id="confirmBuild" title="Bau bestätigen" aria-label="Bau bestätigen">✔</button></div></main><aside>
 <nav class="tabs" aria-label="Insel-Menü"><button type="button" class="active" data-tab="bau" title="Bau" aria-label="Bau">🔨</button><button type="button" data-tab="expeditionen" title="Expeditionen" aria-label="Expeditionen">🧭</button><button type="button" data-tab="info" title="Info" aria-label="Info">📋</button><button type="button" data-tab="hilfe" title="Hilfe" aria-label="Hilfe">❔</button><button type="button" data-tab="settings" title="Einstellungen" aria-label="Einstellungen">⚙️</button></nav>
 <section class="tabpage" id="tab-bau"><h2>Baumenü</h2><div class="tools" id="tools"></div><section id="foundInventory"><h2>📦 Fundinventar</h2><div id="foundTiles" class="found-grid"></div><p id="foundNote" class="found-note"></p></section><div id="message" role="status"></div></section>
 <section class="tabpage" id="tab-expeditionen" hidden><section class="panel" id="geology"><h2>🧭 Expeditionen · Geologe</h2><div id="geologyContent"></div></section></section>
@@ -151,7 +203,7 @@ renderTools();save();renderStats();renderDetails();draw()}
 function cancelBuild(){if(depositMode){depositMode=null;preview=null;notify('Fundplatzierung abgebrochen. Kein Fund verbraucht.')}if(demolition){demolition=false;demolitionDraft=[];notify('Abrissmodus beendet.')}if(edit){edit=null;notify('Verschieben abgebrochen.')}else notify('Baumodus beendet.');mode=null;preview=null;roadDraft=[];treeDraft=[];fieldDraft=[];renderTools();renderGeology();renderFoundInventory();renderDetails();draw()}
 function center(){let a=coords(12,12);panX=vp.clientWidth/2-a.x*scale;panY=vp.clientHeight*.45-a.y*scale}function zoom(v){scale=Math.max(.5,Math.min(2.6,scale*v));draw()}canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);touches.set(e.pointerId,point(e));if(touches.size===1){let p=point(e);drag={start:p,last:p,lastTile:tileAt(p),moved:false,buildMove:!!mode||!!depositMode};if(demolition){demolitionAdd(tileAt(p));draw()}else if(depositMode){preview=tileAt(p)}else if(mode){preview=tileAt(p);if(mode==='road'&&!edit)roadAdd(preview,null,true);if(mode==='tree'&&!edit)treeAdd(preview,null,true);if(mode==='field'&&!edit)fieldAdd(preview,null,true);draw()}}else if(touches.size===2){let a=[...touches.values()];pinch={dist:Math.max(1,Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)),scale,mid:{x:(a[0].x+a[1].x)/2,y:(a[0].y+a[1].y)/2},panX,panY};drag=null}});
 canvas.addEventListener('pointermove',e=>{if(!touches.has(e.pointerId))return;let p=point(e);touches.set(e.pointerId,p);if(touches.size===2&&pinch){let a=[...touches.values()],dist=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);let mid={x:(a[0].x+a[1].x)/2,y:(a[0].y+a[1].y)/2};let nextScale=Math.max(.45,Math.min(2.6,pinch.scale*dist/pinch.dist));panX=mid.x-(pinch.mid.x-pinch.panX)*nextScale/pinch.scale;panY=mid.y-(pinch.mid.y-pinch.panY)*nextScale/pinch.scale;scale=nextScale;draw();return}if(!drag)return;let dx=p.x-drag.last.x,dy=p.y-drag.last.y;if(Math.hypot(p.x-drag.start.x,p.y-drag.start.y)>9)drag.moved=true;if(demolition){demolitionAdd(tileAt(p))}else if(depositMode){preview=tileAt(p)}else if(mode){preview=tileAt(p);if(mode==='road'&&!edit)roadAdd(preview,drag.lastTile);if(mode==='tree'&&!edit)treeAdd(preview,drag.lastTile);if(mode==='field'&&!edit)fieldAdd(preview,drag.lastTile)}else if(drag.moved){panX+=dx;panY+=dy}drag.last=p;drag.lastTile=tileAt(p);draw()});
-canvas.addEventListener('pointerup',e=>{let p=point(e);if(touches.size===1&&drag){if(demolition){demolitionAdd(tileAt(p))}else if(depositMode){preview=tileAt(p)}else if(mode){preview=tileAt(p);if(mode==='road'&&!edit)roadAdd(preview,drag.lastTile);if(mode==='tree'&&!edit)treeAdd(preview,drag.lastTile);if(mode==='field'&&!edit)fieldAdd(preview,drag.lastTile)}else if(!drag.moved){let t=tileAt(p);if(depositMode){preview=t;touches.delete(e.pointerId);drag=null;draw();return}let field=s.fields.some(q=>q.x===t.x&&q.y===t.y),tree=s.trees.some(q=>q.x===t.x&&q.y===t.y),rock=s.rocks.some(q=>q.x===t.x&&q.y===t.y),coal=s.coalDeposits.some(q=>q.x===t.x&&q.y===t.y),ore=s.oreDeposits.some(q=>q.x===t.x&&q.y===t.y),gold=s.goldDeposits.some(q=>q.x===t.x&&q.y===t.y),now=Date.now();if((tree||rock||field||coal||ore||gold)&&lastTreeTap&&lastTreeTap.x===t.x&&lastTreeTap.y===t.y&&now-lastTreeTap.time<450){lastTreeTap=null;window.location.href=field?'games/bauernhof.html':tree?'games/holzfaellen.html':rock?'games/steinbruch.html':coal?'games/coalmine.html':ore?'games/oremine.html':'games/goldmine.html';return}else{lastTreeTap=(tree||rock||field||coal||ore||gold)?{x:t.x,y:t.y,time:now}:null;place(t)}}}touches.delete(e.pointerId);drag=null;if(touches.size<2)pinch=null;draw()});
+canvas.addEventListener('pointerup',e=>{let p=point(e);if(touches.size===1&&drag){if(demolition){demolitionAdd(tileAt(p))}else if(depositMode){preview=tileAt(p)}else if(mode){preview=tileAt(p);if(mode==='road'&&!edit)roadAdd(preview,drag.lastTile);if(mode==='tree'&&!edit)treeAdd(preview,drag.lastTile);if(mode==='field'&&!edit)fieldAdd(preview,drag.lastTile)}else if(!drag.moved){let t=tileAt(p);if(depositMode){preview=t;touches.delete(e.pointerId);drag=null;draw();return}let field=s.fields.some(q=>q.x===t.x&&q.y===t.y),tree=s.trees.some(q=>q.x===t.x&&q.y===t.y),rock=s.rocks.some(q=>q.x===t.x&&q.y===t.y),coal=s.coalDeposits.some(q=>q.x===t.x&&q.y===t.y),ore=s.oreDeposits.some(q=>q.x===t.x&&q.y===t.y),gold=s.goldDeposits.some(q=>q.x===t.x&&q.y===t.y),now=Date.now();if((tree||rock||field||coal||ore||gold)&&lastTreeTap&&lastTreeTap.x===t.x&&lastTreeTap.y===t.y&&now-lastTreeTap.time<450){lastTreeTap=null;window.location.href=window.islandVersionedUrl(field?'games/bauernhof.html':tree?'games/holzfaellen.html':rock?'games/steinbruch.html':coal?'games/coalmine.html':ore?'games/oremine.html':'games/goldmine.html');return}else{lastTreeTap=(tree||rock||field||coal||ore||gold)?{x:t.x,y:t.y,time:now}:null;place(t)}}}touches.delete(e.pointerId);drag=null;if(touches.size<2)pinch=null;draw()});
 canvas.addEventListener('pointercancel',e=>{touches.delete(e.pointerId);drag=null;pinch=null});
 document.querySelector('#confirmBuild').onclick=e=>{e.stopPropagation();if(depositMode)placeDeposit(preview);else if(mode==='field'&&!edit)fieldCommit();else if(mode==='tree'&&!edit)treeCommit();else if(mode==='road'&&!edit)place(preview);else if(demolition)confirmDemolition();else if(mode&&preview)place(preview)};
 document.querySelector('#cancelBuild').onclick=e=>{e.stopPropagation();cancelBuild()};
