@@ -62,3 +62,12 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 - ❓-Hilfe, Abbrechen ohne Belohnung, Erfolgspopup mit Rückkehr zur Insel.
 
 Jahreszeiten-Ernte: Doppeltipp auf Getreidefeld startet das Bauernhofspiel. Geerntete Pflanzen rutschen animiert nach; neu nachfallende Pflanzen behalten ihre jeweilige Jahreszeitenoptik.
+
+
+## Geologe – Tiefengrabung (`geologe.html`)
+- Im Bau-Tab bei einer laufenden Expedition über „Grabungsspiel starten“ öffnen.
+- 8×8 Match-3, Tausch horizontal/vertikal, Animationen für Tausch, Entfernen, Fall und Schichtwechsel.
+- Keine neuen Materialien von oben; vollständige leere oberste Reihen werden durch neue Tiefenschichten von unten ersetzt.
+- Pro abgebaute Reihe werden 5 Sekunden von `geology.active.endsAt` abgezogen und sofort im Spielstand gespeichert.
+- Falls keine Kombination möglich ist, verschiebt sich das Board um vier Spalten seitlich, ohne die Tiefe zu ändern.
+- Tiefenabhängige Materialien, Spezialsteine und Kettenreaktionen. Hilfe oben rechts, Abbrechen ohne Strafe, Erfolgspopup nach Expeditionsende.
