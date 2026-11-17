@@ -1,6 +1,58 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Waldarbeiter – Die Verzauberten Inseln</title><style>
 :root{font-family:system-ui,sans-serif;color:#f2f5ed;background:#122e32}*{box-sizing:border-box}body{margin:0;padding:12px;max-width:650px;margin-inline:auto}h1{font-size:1.45rem;margin:8px 0}.heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.help-toggle{padding:5px 12px;font-size:1.35rem;font-weight:bold;min-width:43px;background:#345b62}.help-toggle[aria-expanded="true"]{background:#247f68}.muted{color:#bfd2c9}#board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;background:#30594c;padding:6px;border-radius:14px;touch-action:manipulation;user-select:none} .tile{aspect-ratio:1;min-width:0;border:0;border-radius:7px;background:#80aa6c;display:grid;place-items:center;font-size:clamp(20px,7vw,39px);position:relative;padding:0;box-shadow:inset 0 -3px #0002}.tile:nth-child(odd){background:#8bb774}.tile.sel{outline:3px solid #ffe174;z-index:1}.tile.possible{box-shadow:inset 0 0 0 3px #e8ef7d}.tile:disabled{opacity:1;color:inherit}.tile .small{position:absolute;right:3px;bottom:1px;font-size:10px;color:#14372c}button{font:inherit;color:white;background:#36776a;border:1px solid #6ba995;border-radius:10px;padding:12px;cursor:pointer}button:disabled{opacity:.35}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}.row button{flex:1}.panel{background:#23484b;padding:12px;border-radius:12px;margin:10px 0}#status{min-height:2.5em;color:#ffe49c}#result[hidden]{display:none}#result{position:fixed;inset:0;z-index:40;background:rgba(5,20,24,.82);display:flex;align-items:center;justify-content:center;padding:18px;margin:0;border:0;border-radius:0}#result .success-dialog{width:min(100%,410px);background:#23484b;border:2px solid #d9b96c;border-radius:18px;padding:24px;text-align:center;box-shadow:0 15px 55px #0009}#result h2{margin-top:0}#result button{width:100%;font-weight:700}.pill{background:#3b6b5a;border-radius:20px;padding:5px 10px}a{color:#ffdc8c} .secondary{background:#4b6067} .primary{background:#278c50} .tile:focus-visible{outline:3px solid white}.fall-arrow{position:absolute;inset:2px;display:grid;place-items:center;padding:0;border:2px solid #fff3a2;border-radius:8px;background:#165b4de8;color:#fff8bc;font-size:clamp(19px,6vw,34px);font-weight:900;z-index:3;box-shadow:0 2px 7px #0008}.tile.fall-target{box-shadow:inset 0 0 0 3px #fff3a2}#help[hidden]{display:none}
-</style></head><body><a href="../index.html">← Zurück zur Insel</a><div class="heading"><h1>🪓 Waldarbeiter-Puzzle</h1><button id="helpToggle" class="help-toggle" type="button" aria-label="Spielerklärung ein- oder ausblenden" aria-controls="help" aria-expanded="true">?</button></div><div id="help" class="panel muted"><p>Fälle alle Bäume, sammle die liegenden Stämme ein und erreiche danach die Hütte. Felsen und andere Bäume blockieren die Fallrichtung.</p><p>Tippe auf einen benachbarten Baum. Die Pfeile direkt auf dem Spielfeld zeigen mögliche Fallrichtungen. Ein Stamm braucht zwei freie Felder. Tippe auf einen Pfeil, um den Baum zu fällen. Beim Weiterlaufen verschwindet die Auswahl. Tippe auf benachbarte Stammstücke, um sie einzusammeln.</p></div><div class="row"><span class="pill" id="count"></span><span class="pill" id="steps"></span></div><div id="board" aria-label="Spielfeld"></div><div class="panel"><div id="status" role="status">Tippe auf ein benachbartes Feld, um dich zu bewegen.</div></div><div id="result" hidden role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-dialog"><h2 id="successTitle">🎉 Erfolgreich!</h2><p id="reward"></p><button class="primary" id="claimAgain">🪓 Holz einsammeln &amp; noch eine Runde</button><button class="primary" id="claim">🏝️ Holz einsammeln und zurück zur Insel</button></div></div><div class="row"><button id="restart" class="secondary">↻ Neu starten</button><button id="abort" class="secondary">Abbrechen – zurück zur Insel</button></div>
+</style><script>
+/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+(()=>{'use strict';
+  const isIsland = !location.pathname.includes('/games/');
+  const versionFile = isIsland ? 'version.json' : '../version.json';
+  let latest = new URLSearchParams(location.search).get('v') || '';
+  let checking = false;
+  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
+  function versionedUrl(input){
+    const u=new URL(input,location.href);
+    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
+    return u.href;
+  }
+  window.islandVersionedUrl=versionedUrl;
+  async function checkVersion(){
+    if(checking || document.visibilityState==='hidden')return;
+    checking=true;
+    try{
+      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      if(!response.ok)return;
+      const data=await response.json();
+      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
+      latest=data.version;
+      const loaded=new URLSearchParams(location.search).get('v');
+      if(loaded===latest)return;
+      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
+      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
+      if(isIsland){
+        const key='island-reload-attempt-'+latest;
+        const last=Number(sessionStorage.getItem(key)||0);
+        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
+        sessionStorage.setItem(key,String(Date.now()));
+        const url=new URL(location.href);url.searchParams.set('v',latest);
+        location.replace(url.href);
+      }
+    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+    finally{checking=false;}
+  }
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href]');
+    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
+    const dest=new URL(a.href,location.href);
+    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
+    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
+  },true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
+  window.addEventListener('pageshow',()=>checkVersion());
+  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
+  setInterval(checkVersion,60000);
+  checkVersion();
+})();
+</script>
+</head><body><a href="../index.html">← Zurück zur Insel</a><div class="heading"><h1>🪓 Waldarbeiter-Puzzle</h1><button id="helpToggle" class="help-toggle" type="button" aria-label="Spielerklärung ein- oder ausblenden" aria-controls="help" aria-expanded="true">?</button></div><div id="help" class="panel muted"><p>Fälle alle Bäume, sammle die liegenden Stämme ein und erreiche danach die Hütte. Felsen und andere Bäume blockieren die Fallrichtung.</p><p>Tippe auf einen benachbarten Baum. Die Pfeile direkt auf dem Spielfeld zeigen mögliche Fallrichtungen. Ein Stamm braucht zwei freie Felder. Tippe auf einen Pfeil, um den Baum zu fällen. Beim Weiterlaufen verschwindet die Auswahl. Tippe auf benachbarte Stammstücke, um sie einzusammeln.</p></div><div class="row"><span class="pill" id="count"></span><span class="pill" id="steps"></span></div><div id="board" aria-label="Spielfeld"></div><div class="panel"><div id="status" role="status">Tippe auf ein benachbartes Feld, um dich zu bewegen.</div></div><div id="result" hidden role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-dialog"><h2 id="successTitle">🎉 Erfolgreich!</h2><p id="reward"></p><button class="primary" id="claimAgain">🪓 Holz einsammeln &amp; noch eine Runde</button><button class="primary" id="claim">🏝️ Holz einsammeln und zurück zur Insel</button></div></div><div class="row"><button id="restart" class="secondary">↻ Neu starten</button><button id="abort" class="secondary">Abbrechen – zurück zur Insel</button></div>
 <script>
 (()=>{'use strict';const KEY='enchanted-islands-v01', HELP_KEY='enchanted-islands-forest-help-visible', SIZE=7;
 // Random forests are validated by a complete puzzle solver before play.
@@ -83,7 +135,7 @@ function render(){
  }
 }
 function finish(){finished=true;let wood=Math.max(2,Math.min(8,target+3-Math.floor(moves/12)));el('reward').textContent=`Du hast alle ${target} Bäume gefällt und die Hütte erreicht. Belohnung: ${wood} Holz.`;el('result').hidden=false;el('claim').focus();el('claim').dataset.wood=wood;message('Auftrag geschafft! Holz jetzt ins Lager übertragen.');render()}
-function claim(again=false){if(!finished||claimed)return;claimed=true;const reward=Number(el('claim').dataset.wood);try{let state=JSON.parse(localStorage.getItem(KEY));if(!state||state.version!==1||!state.res)throw Error('Kein gültiger Inselspielstand');const oldWood=Number(state.res.wood)||0;const cap=100+(state.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((sum,b)=>sum+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);const gained=Math.min(reward,Math.max(0,cap-oldWood));state.res.wood=oldWood+gained;state.forestCompleted=Math.max(0,Number(state.forestCompleted)||0)+1;localStorage.setItem(KEY,JSON.stringify(state));if(again){load(false)}else location.href='../index.html?woodReward='+gained}catch(e){claimed=false;message('Speichern fehlgeschlagen: '+e.message+'. Öffne zuerst das Metagame und versuche es erneut.')}}
-el('helpToggle').onclick=()=>{helpVisible=!helpVisible;try{localStorage.setItem(HELP_KEY,String(helpVisible))}catch(e){}renderHelp()};renderHelp();el('restart').onclick=()=>load(true);el('abort').onclick=()=>{location.href='../index.html'};el('claim').onclick=()=>claim(false);el('claimAgain').onclick=()=>claim(true);load(false);
+function claim(again=false){if(!finished||claimed)return;claimed=true;const reward=Number(el('claim').dataset.wood);try{let state=JSON.parse(localStorage.getItem(KEY));if(!state||state.version!==1||!state.res)throw Error('Kein gültiger Inselspielstand');const oldWood=Number(state.res.wood)||0;const cap=100+(state.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((sum,b)=>sum+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);const gained=Math.min(reward,Math.max(0,cap-oldWood));state.res.wood=oldWood+gained;state.forestCompleted=Math.max(0,Number(state.forestCompleted)||0)+1;localStorage.setItem(KEY,JSON.stringify(state));if(again){load(false)}else location.href=window.islandVersionedUrl('../index.html?woodReward='+gained)}catch(e){claimed=false;message('Speichern fehlgeschlagen: '+e.message+'. Öffne zuerst das Metagame und versuche es erneut.')}}
+el('helpToggle').onclick=()=>{helpVisible=!helpVisible;try{localStorage.setItem(HELP_KEY,String(helpVisible))}catch(e){}renderHelp()};renderHelp();el('restart').onclick=()=>load(true);el('abort').onclick=()=>{location.href=window.islandVersionedUrl('../index.html')};el('claim').onclick=()=>claim(false);el('claimAgain').onclick=()=>claim(true);load(false);
 })();
 </script></body></html>

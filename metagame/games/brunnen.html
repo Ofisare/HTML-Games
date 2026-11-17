@@ -1,6 +1,58 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bewässerung – Bauernhof</title><style>
 :root{font-family:system-ui,sans-serif;color:#f1eee0;background:#102c2d}*{box-sizing:border-box}body{margin:0;padding:14px;max-width:650px;margin:auto}header{display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:1.4rem;margin:10px 0}button,a{font:inherit;border-radius:10px;padding:10px 13px;border:1px solid #8da59a;background:#275651;color:white;cursor:pointer}a{display:inline-block;text-decoration:none}button:disabled{opacity:.5}#help{background:#203f40;border-radius:12px;padding:12px;margin:12px 0}#help[hidden],#win[hidden]{display:none}#board{display:grid;gap:3px;touch-action:none;user-select:none;grid-auto-rows:minmax(0,1fr);margin:14px auto;width:min(96vw,520px);aspect-ratio:1;background:#1d4140;padding:5px;border-radius:12px} .cell{position:relative;background:#b8a16c;border-radius:5px;display:grid;place-items:center;font-weight:900;font-size:clamp(14px,4vw,24px);color:#1c2623;overflow:hidden}.cell.path{background:var(--path);box-shadow:inset 0 0 0 2px #ffffff33;} .cell.path::before{content:"";position:absolute;inset:28%;background:#ffffff70;border-radius:5px;z-index:0;}.cell.endpoint{background:var(--path);border:3px solid #f8f5dc}.cell.endpoint::after{content:"●";font-size:1.3em;color:#1d2928;position:relative;z-index:2}.cell.endpoint.connected{border-color:#ffffff;box-shadow:inset 0 0 0 3px #1a523d,0 0 0 2px #f7f2c9}.cell.endpoint.connected::after{content:"✓";font-size:1.1em;color:#173e32;background:#f7f2c9;border-radius:50%;width:1.5em;height:1.5em;display:grid;place-items:center}.cell.preview{outline:3px solid #fff;outline-offset:-3px}#status{min-height:2em}#win{position:fixed;inset:0;background:#000a;display:grid;place-items:center;padding:20px;z-index:10}#win .dialog{background:#1e4742;border:2px solid #a3c9a3;border-radius:20px;padding:28px;text-align:center;max-width:370px;box-shadow:0 10px 35px #0008}#win a{background:#2b8750;font-weight:bold}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}small{color:#d4d5c9}
-</style></head><body><header><h1>💧 Brunnen – Wasserleitungen</h1><button id="helpToggle" aria-label="Hilfe umschalten">❓</button></header><section id="help"><p>Verbinde jeweils zwei gleichfarbige Wasseranschlüsse durch Ziehen mit dem Finger. Kanäle dürfen sich nicht kreuzen und müssen am Ende <b>alle Felder</b> bewässern.</p><p>Beginne an einem farbigen Punkt. Du kannst einen Kanal neu ziehen, indem du erneut an seinem Startpunkt beginnst. Fehler kosten nichts.</p></section><div id="status"></div><div id="board"></div><div class="actions"><button id="reset">↻ Rätsel zurücksetzen</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div><small>Die Schwierigkeit steigt nach erfolgreichen Bewässerungen. Belohnung: Wasser fürs Insellager.</small>
+</style><script>
+/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+(()=>{'use strict';
+  const isIsland = !location.pathname.includes('/games/');
+  const versionFile = isIsland ? 'version.json' : '../version.json';
+  let latest = new URLSearchParams(location.search).get('v') || '';
+  let checking = false;
+  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
+  function versionedUrl(input){
+    const u=new URL(input,location.href);
+    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
+    return u.href;
+  }
+  window.islandVersionedUrl=versionedUrl;
+  async function checkVersion(){
+    if(checking || document.visibilityState==='hidden')return;
+    checking=true;
+    try{
+      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      if(!response.ok)return;
+      const data=await response.json();
+      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
+      latest=data.version;
+      const loaded=new URLSearchParams(location.search).get('v');
+      if(loaded===latest)return;
+      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
+      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
+      if(isIsland){
+        const key='island-reload-attempt-'+latest;
+        const last=Number(sessionStorage.getItem(key)||0);
+        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
+        sessionStorage.setItem(key,String(Date.now()));
+        const url=new URL(location.href);url.searchParams.set('v',latest);
+        location.replace(url.href);
+      }
+    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+    finally{checking=false;}
+  }
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href]');
+    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
+    const dest=new URL(a.href,location.href);
+    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
+    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
+  },true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
+  window.addEventListener('pageshow',()=>checkVersion());
+  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
+  setInterval(checkVersion,60000);
+  checkVersion();
+})();
+</script>
+</head><body><header><h1>💧 Brunnen – Wasserleitungen</h1><button id="helpToggle" aria-label="Hilfe umschalten">❓</button></header><section id="help"><p>Verbinde jeweils zwei gleichfarbige Wasseranschlüsse durch Ziehen mit dem Finger. Kanäle dürfen sich nicht kreuzen und müssen am Ende <b>alle Felder</b> bewässern.</p><p>Beginne an einem farbigen Punkt. Du kannst einen Kanal neu ziehen, indem du erneut an seinem Startpunkt beginnst. Fehler kosten nichts.</p></section><div id="status"></div><div id="board"></div><div class="actions"><button id="reset">↻ Rätsel zurücksetzen</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div><small>Die Schwierigkeit steigt nach erfolgreichen Bewässerungen. Belohnung: Wasser fürs Insellager.</small>
 <div id="win" hidden><div class="dialog"><h2>🎉 Erfolgreich!</h2><p>Alle Felder sind bewässert!</p><p id="reward"></p><a href="../index.html">🏝️ Zurück zur Insel</a><button id="again">💧 Noch eine Runde</button></div></div>
 <script>
 (()=>{'use strict';

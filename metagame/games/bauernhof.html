@@ -1,6 +1,58 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jahreszeiten-Ernte</title><style>
 *{box-sizing:border-box}body{margin:0 auto;max-width:620px;padding:14px;font:16px system-ui;background:#122d2c;color:#f8f3e7}header{display:flex;justify-content:space-between;align-items:center}h1{font-size:1.4rem}button,a{font:inherit;color:white;background:#275c54;border:1px solid #8baea0;border-radius:10px;padding:11px 14px;text-decoration:none}#help{padding:12px;background:#23413d;border-radius:12px}#help[hidden],#overlay[hidden]{display:none}.stats{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.stats span{background:#254a44;padding:8px 11px;border-radius:8px}#board{width:min(94vw,540px);aspect-ratio:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));gap:4px;padding:6px;border-radius:13px;touch-action:none;user-select:none;background:#4a3724}.tile{min-width:0;min-height:0;border-radius:7px;display:grid;place-items:center;font-size:clamp(25px,6.7vw,47px);position:relative;border:2px solid #725b3b}.tile[data-season="0"]{background:#92b76a}.tile[data-season="1"]{background:#d6b66b}.tile[data-season="2"]{background:#bd895c}.tile[data-season="3"]{background:#c4d8db;border-color:#e8f4f5}.tile[data-season="3"]:after{content:'❄';position:absolute;right:2px;top:0;font-size:12px;color:white}.tile.falling{animation:fall-in 390ms cubic-bezier(.18,.7,.25,1) both;animation-delay:var(--delay,0ms)}@keyframes fall-in{from{transform:translateY(var(--from,0px));opacity:.55}to{transform:translateY(0);opacity:1}}.tile.chosen{outline:4px solid #fff9b5;outline-offset:-5px;filter:brightness(1.15)}#board.winter{background:#708e99}#board.spring{background:#4a6137}#board.summer{background:#8a6c32}#board.autumn{background:#744a30}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}#overlay{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:10;padding:16px}#overlay article{background:#20463e;padding:28px;border-radius:18px;text-align:center;max-width:380px;width:100%;border:2px solid #b6d7aa}#overlay a{display:block;background:#26804b;font-weight:bold;margin-top:14px}#overlay button{margin-top:10px}small{color:#c4d5cb}
-</style></head><body><header><h1>🌾 Jahreszeiten-Ernte</h1><button id="toggle">❓</button></header><section id="help">Verbinde mit dem Finger <b>mindestens drei gleiche Pflanzen</b>. Diagonal ist erlaubt. Nach jeder Ernte rutschen Pflanzen nach unten. Du hast <b>12 Züge</b>, drei pro Jahreszeit. Pflanzen behalten die Farben ihrer Entstehungszeit. Ernte genug Getreide für dein Ziel! Bäume sind in allen Jahreszeiten gleich häufig.</section><div class="stats"><span id="season"></span><span id="moves"></span><span id="goal"></span></div><div id="board"></div><p id="notice" aria-live="polite"></p><div class="actions"><button id="restart">↻ Ernte neu beginnen</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div><p><small>Keine Zeitbegrenzung. Ein Zug zählt erst ab drei verbundenen Pflanzen.</small></p><div id="overlay" hidden><article><h2 id="heading"></h2><p id="summary"></p><a href="../index.html">🏝️ Zurück zur Insel</a><button id="retry" hidden>↻ Erneut versuchen</button></article></div>
+</style><script>
+/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+(()=>{'use strict';
+  const isIsland = !location.pathname.includes('/games/');
+  const versionFile = isIsland ? 'version.json' : '../version.json';
+  let latest = new URLSearchParams(location.search).get('v') || '';
+  let checking = false;
+  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
+  function versionedUrl(input){
+    const u=new URL(input,location.href);
+    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
+    return u.href;
+  }
+  window.islandVersionedUrl=versionedUrl;
+  async function checkVersion(){
+    if(checking || document.visibilityState==='hidden')return;
+    checking=true;
+    try{
+      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      if(!response.ok)return;
+      const data=await response.json();
+      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
+      latest=data.version;
+      const loaded=new URLSearchParams(location.search).get('v');
+      if(loaded===latest)return;
+      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
+      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
+      if(isIsland){
+        const key='island-reload-attempt-'+latest;
+        const last=Number(sessionStorage.getItem(key)||0);
+        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
+        sessionStorage.setItem(key,String(Date.now()));
+        const url=new URL(location.href);url.searchParams.set('v',latest);
+        location.replace(url.href);
+      }
+    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+    finally{checking=false;}
+  }
+  document.addEventListener('click',e=>{
+    const a=e.target.closest('a[href]');
+    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
+    const dest=new URL(a.href,location.href);
+    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
+    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
+  },true);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
+  window.addEventListener('pageshow',()=>checkVersion());
+  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
+  setInterval(checkVersion,60000);
+  checkVersion();
+})();
+</script>
+</head><body><header><h1>🌾 Jahreszeiten-Ernte</h1><button id="toggle">❓</button></header><section id="help">Verbinde mit dem Finger <b>mindestens drei gleiche Pflanzen</b>. Diagonal ist erlaubt. Nach jeder Ernte rutschen Pflanzen nach unten. Du hast <b>12 Züge</b>, drei pro Jahreszeit. Pflanzen behalten die Farben ihrer Entstehungszeit. Ernte genug Getreide für dein Ziel! Bäume sind in allen Jahreszeiten gleich häufig.</section><div class="stats"><span id="season"></span><span id="moves"></span><span id="goal"></span></div><div id="board"></div><p id="notice" aria-live="polite"></p><div class="actions"><button id="restart">↻ Ernte neu beginnen</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div><p><small>Keine Zeitbegrenzung. Ein Zug zählt erst ab drei verbundenen Pflanzen.</small></p><div id="overlay" hidden><article><h2 id="heading"></h2><p id="summary"></p><a href="../index.html">🏝️ Zurück zur Insel</a><button id="retry" hidden>↻ Erneut versuchen</button></article></div>
 <script>
 (()=>{'use strict';
 const KEY='enchanted-islands-v01',HELP='islands-farm-harvest-help',N=6,SEASONS=['🌱 Frühling','☀️ Sommer','🍂 Herbst','❄️ Winter'],CLASSES=['spring','summer','autumn','winter'],EMOJI=['🌿','🌾','🌳'];
