@@ -7,8 +7,32 @@ function saveReward(){let actual=0;try{let s=JSON.parse(localStorage.getItem(KEY
 function win(){if(finished)return;finished=true;let got=saveReward();document.querySelector('#winText').textContent='+'+got+' '+NAME+' ins Insellager geliefert'+(got<reward?' (Lager voll)':'')+'.';overlay.hidden=false;document.querySelector('#again').focus()}
 document.querySelector('#restart').onclick=reset;document.querySelector('#again').onclick=()=>{location.reload()};document.querySelector('#reward').textContent='🎁 '+reward+' '+NAME;document.querySelector('#level').textContent='Stufe '+level;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-const N=7,COL=['#343c40','#59676c','#a9a29b','#577d88'];let cells=[],found=0,target=10+level*3;
-function reset(){finished=false;overlay.hidden=true;found=0;cells=Array.from({length:N*N},()=>Math.floor(Math.random()*4));render()}
+const N=7,COL=['#343c40','#59676c','#a9a29b','#577d88'];let cells=[],found=0,target=10+level*3;const COLORS=4;
+let falling=false;
+function animateGravity(origins,oldCells){
+  render();
+  const nodes=[...board.children],height=board.getBoundingClientRect().height/N;
+  const animations=[];
+  nodes.forEach((node,i)=>{
+    const from=origins[i];
+    if(from===i)return;
+    const y=Math.floor(i/N),fromY=from===null?-1-Math.floor(i/N)%3:Math.floor(from/N);
+    const distance=(fromY-y)*height;
+    animations.push(node.animate([{transform:`translateY(${distance}px)`,opacity:from===null?0.5:1},{transform:'translateY(0)',opacity:1}],{duration:390+Math.max(0,y-fromY)*25,easing:'cubic-bezier(.2,.7,.3,1)',fill:'both'}).finished.catch(()=>{}));
+  });
+  return Promise.all(animations);
+}
+function collapseWithOrigins(){
+  let origins=Array(N*N).fill(null);
+  for(let x=0;x<N;x++){
+    let col=[];
+    for(let y=N-1;y>=0;y--)if(cells[y*N+x]>=0)col.push({value:cells[y*N+x],from:y*N+x});
+    for(let y=N-1;y>=0;y--){let item=col[N-1-y];cells[y*N+x]=item?.value??Math.floor(Math.random()*COLORS);origins[y*N+x]=item?.from??null}
+  }
+  return origins;
+}
+
+function reset(){falling=false;finished=false;overlay.hidden=true;found=0;cells=Array.from({length:N*N},()=>Math.floor(Math.random()*4));render()}
 function group(i){let color=cells[i],seen=new Set([i]),q=[i];while(q.length){let v=q.pop(),x=v%N,y=Math.floor(v/N);for(let [dx,dy] of [[0,1],[0,-1],[1,0],[-1,0]]){let xx=x+dx,yy=y+dy,j=yy*N+xx;if(xx>=0&&xx<N&&yy>=0&&yy<N&&!seen.has(j)&&cells[j]===color){seen.add(j);q.push(j)}}}return [...seen]}
-function render(){board.style.gridTemplateColumns='repeat('+N+',1fr)';board.innerHTML='';cells.forEach((v,i)=>{let b=document.createElement('button');b.style.background=COL[v];b.innerHTML=v===0?'<span class="rock coal"></span>':'<span class="rock" style="--rock:'+COL[v]+'"></span>';b.setAttribute('aria-label','Gesteinsgruppe auswählen');b.onclick=()=>{if(finished)return;let g=group(i);if(g.length<3){msg.textContent='Mindestens drei zusammenhängende Steine nötig.';return}if(v===0)found+=g.length;g.forEach(j=>cells[j]=-1);for(let x=0;x<N;x++){let col=[];for(let y=N-1;y>=0;y--)if(cells[y*N+x]>=0)col.push(cells[y*N+x]);for(let y=N-1;y>=0;y--)cells[y*N+x]=col[N-1-y]??Math.floor(Math.random()*4)}msg.textContent='Kohle gesammelt: '+found+' / '+target;render();if(found>=target)win();else if(!cells.some((_,j)=>group(j).length>=3)){cells=Array.from({length:N*N},()=>Math.floor(Math.random()*4));render()}};board.appendChild(b)});document.querySelector('#goal').textContent='⚫ '+found+' / '+target}
+function render(){board.style.gridTemplateColumns='repeat('+N+',1fr)';board.innerHTML='';cells.forEach((v,i)=>{let b=document.createElement('button');b.style.background=COL[v];b.innerHTML=v===0?'<span class="rock coal"></span>':'<span class="rock" style="--rock:'+COL[v]+'"></span>';b.setAttribute('aria-label','Gesteinsgruppe auswählen');b.onclick=()=>{if(finished||falling)return;let g=group(i);if(g.length<3){msg.textContent='Mindestens drei zusammenhängende Steine nötig.';return}if(v===0)found+=g.length;g.forEach(j=>cells[j]=-1);falling=true;let origins=collapseWithOrigins();msg.textContent='Kohle gesammelt: '+found+' / '+target;animateGravity(origins).then(()=>{falling=false;if(found>=target)win();else if(!cells.some((_,j)=>group(j).length>=3)){cells=Array.from({length:N*N},()=>Math.floor(Math.random()*4));render()}})};board.appendChild(b)});document.querySelector('#goal').textContent='⚫ '+found+' / '+target}
 reset();</script></body></html>

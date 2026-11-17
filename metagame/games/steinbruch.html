@@ -5,7 +5,7 @@
 <div class="stats"><strong id="diamonds">Steinvorkommen: 0 / 3</strong><strong id="flags">Warnschilder: 0 / 10</strong><strong id="reward">Belohnung: 6 Stein</strong></div>
 <div class="mode" role="group" aria-label="Werkzeug auswählen"><button id="digMode" class="active" aria-pressed="true">⛏️ Abbauen</button><button id="flagMode" aria-pressed="false">⚠️ Warnschild</button></div>
 <div class="board" id="board" aria-label="Stollen-Spielfeld"></div><div id="status" role="status"></div><div class="actions"><button id="restart">↻ Gleichen Stollen neu starten</button><a class="btn" href="../index.html">✖ Abbrechen · zur Insel</a></div>
-<div class="success-overlay" id="successOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-dialog"><h2 id="successTitle">🎉 Erfolgreich!</h2><p id="successMessage"></p><a class="btn" id="successReturn" href="../index.html">🏝️ Zurück zur Insel</a></div></div>
+<div class="success-overlay" id="successOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-dialog"><h2 id="successTitle">🎉 Erfolgreich!</h2><p id="successMessage"></p><a class="btn" id="successReturn" href="../index.html">🏝️ Zurück zur Insel</a><button id="successAgain">🪨 Noch eine Runde</button></div></div>
 <script>
 (()=>{'use strict';
 const KEY='enchanted-islands-v01',SIZE=8,GEMS=3,START=3*SIZE+0,N=SIZE*SIZE;
@@ -41,7 +41,7 @@ return {mines:[...mines],gems,nums};
 return null;
 }
 function startGame(){let puzzle=generate();if(!puzzle){document.querySelector('#status').textContent='Ein logisch lösbarer Stollen konnte nicht erzeugt werden. Bitte Seite neu laden.';return}original=puzzle;reset()}
-function reset(){document.querySelector('#successOverlay').hidden=true;cells=Array.from({length:N},(_,i)=>({mine:original.mines.includes(i),gem:original.gems.includes(i),number:original.nums[i],open:false,flag:false}));finished=false;collapsed=false;mode='dig';setMode('dig');reveal(START);document.querySelector('#status').textContent='Die ersten Hinweise sind sichtbar. Wo ist der sichere Weg?';render()}
+document.querySelector('#successAgain').onclick=()=>location.reload();function reset(){document.querySelector('#successOverlay').hidden=true;cells=Array.from({length:N},(_,i)=>({mine:original.mines.includes(i),gem:original.gems.includes(i),number:original.nums[i],open:false,flag:false}));finished=false;collapsed=false;mode='dig';setMode('dig');reveal(START);document.querySelector('#status').textContent='Die ersten Hinweise sind sichtbar. Wo ist der sichere Weg?';render()}
 function setMode(m){mode=m;for(let [id,val] of [['digMode','dig'],['flagMode','flag']]){let b=document.getElementById(id);b.classList.toggle('active',m===val);b.setAttribute('aria-pressed',String(m===val))}}
 document.getElementById('digMode').onclick=()=>setMode('dig');document.getElementById('flagMode').onclick=()=>setMode('flag');
 function reveal(i){if(cells[i].open||cells[i].flag||cells[i].mine)return;let queue=[i];while(queue.length){let k=queue.pop(),c=cells[k];if(c.open||c.flag||c.mine)continue;c.open=true;if(c.number===0)for(let j of neighbors(k))if(!cells[j].open&&!cells[j].flag)queue.push(j)}}
