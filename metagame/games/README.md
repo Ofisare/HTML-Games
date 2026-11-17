@@ -71,3 +71,10 @@ Jahreszeiten-Ernte: Doppeltipp auf Getreidefeld startet das Bauernhofspiel. Geer
 - Pro abgebaute Reihe werden 5 Sekunden von `geology.active.endsAt` abgezogen und sofort im Spielstand gespeichert.
 - Falls keine Kombination möglich ist, verschiebt sich das Board um vier Spalten seitlich, ohne die Tiefe zu ändern.
 - Tiefenabhängige Materialien, Spezialsteine und Kettenreaktionen. Hilfe oben rechts, Abbrechen ohne Strafe, Erfolgspopup nach Expeditionsende.
+
+
+### Geologen-Expeditionen – Kohle und farbige Gesteine
+- Fundarten in Reihenfolge: Stein (grau, 5 Nahrung, 10 Minuten), Kohle (dunkel, 8 Nahrung, 20 Minuten), Erz (blau, 15 Nahrung, 40 Minuten), Gold (goldfarben, 25 Nahrung, 80 Minuten).
+- Alle Vorkommen verwenden dieselbe gezeichnete Gesteinsform, mit materialspezifischer Farbe. Funde werden im Bau-Tab als Kacheln platziert.
+- Kohle wird in `coalDeposits` und `geology.inventory.coal` gespeichert; ältere Spielstände werden automatisch ergänzt.
+- Das Geologen-Match-3 führt Kohle in mittleren Tiefen ein und verschiebt Erz/Gold in tiefere Schichten.
