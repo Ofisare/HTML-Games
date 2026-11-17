@@ -16,10 +16,10 @@ function weights(d){let w=d<5?{grass:28,sand:25,earth:30,rubble:17}:d<10?{grass:
 function material(d){let w=weights(d),total=Object.values(w).reduce((a,b)=>a+b,0),r=Math.random()*total;for(let [k,v] of Object.entries(w)){r-=v;if(r<0)return k}return Object.keys(w)[0]}
 function tile(d){return {kind:material(d),special:null,id:Math.random().toString(36).slice(2)}}
 function legalMaterial(c){return c&&weights(depth)[c.kind]>0}
-function matchable(c){return c&&c.kind&& !c.special}
+function matchable(c){return c&&c.kind}
 function neighbors(a,b){return Math.abs(a%N-b%N)+Math.abs(Math.floor(a/N)-Math.floor(b/N))===1}
 function matches(arr=field){let hit=new Set(),runs=[];for(let y=0;y<N;y++)for(let x=0;x<N;x++){let i=y*N+x,c=arr[i];if(!matchable(c))continue;if(x===0||arr[i-1]?.kind!==c.kind){let r=[];for(let xx=x;xx<N&&matchable(arr[y*N+xx])&&arr[y*N+xx].kind===c.kind;xx++)r.push(y*N+xx);if(r.length>=3){runs.push(r);r.forEach(n=>hit.add(n))}}if(y===0||arr[i-N]?.kind!==c.kind){let r=[];for(let yy=y;yy<N&&matchable(arr[yy*N+x])&&arr[yy*N+x].kind===c.kind;yy++)r.push(yy*N+x);if(r.length>=3){runs.push(r);r.forEach(n=>hit.add(n))}}}return {hit,runs}}
-function possible(){for(let i=0;i<64;i++){if(!field[i])continue;if(field[i].special)return true;for(let j of [i+1,i+8]){if(j>=64||!neighbors(i,j)||!field[j])continue;[field[i],field[j]]=[field[j],field[i]];let good=matches().hit.size>0;[field[i],field[j]]=[field[j],field[i]];if(good)return true}}return false}
+function possible(){for(let i=0;i<64;i++){if(!field[i])continue;if(field[i].special&&[i-1,i+1,i-N,i+N].some(j=>j>=0&&j<64&&neighbors(i,j)&&field[j]))return true;for(let j of [i+1,i+8]){if(j>=64||!neighbors(i,j)||!field[j])continue;[field[i],field[j]]=[field[j],field[i]];let good=matches().hit.size>0;[field[i],field[j]]=[field[j],field[i]];if(good)return true}}return false}
 function draw(){grid.replaceChildren();let frag=document.createDocumentFragment();field.forEach((c,i)=>{let el=document.createElement('div');el.className='cell '+(c?(c.special?'special ':'')+c.kind:'empty')+(selected===i?' selected':'');el.dataset.index=i;el.innerHTML=tileMarkup(c);frag.appendChild(el)});grid.appendChild(frag);document.querySelector('#depth').textContent='⛏️ Tiefe: '+depth;document.querySelector('#saved').textContent='⏩ Gespart: '+saved+' Sek.';let s=active();document.querySelector('#time').textContent=s?'⏳ '+Math.ceil((s.geology.active.endsAt-Date.now())/1000)+' Sek.':'✅ Expedition beendet'}
 function delay(ms){return new Promise(r=>setTimeout(r,ms))}
 async function fall(){
@@ -89,28 +89,29 @@ async function lateral(){
  // Repeat without recursion if the newly exposed columns are also blocked.
  for(let attempt=0;attempt<60&&!success;attempt++){
    let dir=shiftDir;shiftDir*=-1;
-   let next=[];
-   for(let y=0;y<N;y++){
-     let row=field.slice(y*N,y*N+N);
-     let incoming=Array.from({length:4},()=>tile(depth));
-     next.push(...(dir>0?row.slice(4).concat(incoming):incoming.concat(row.slice(0,4))));
-   }
+   // Keep only occupied old columns. Fill any gaps with fresh material,
+   // so a shift never leaves an empty edge or an isolated shaft behind.
+   let oldCols=dir>0?[4,5,6,7]:[0,1,2,3];
+   let occupied=oldCols.filter(x=>field.some((c,i)=>i%N===x&&c));
+   let kept=occupied.map(x=>Array.from({length:N},(_,y)=>field[y*N+x]));
+   let filler=Array.from({length:4-kept.length},()=>Array.from({length:N},()=>tile(depth)));
+   let retained=dir>0?kept.concat(filler):filler.concat(kept);
+   let fresh=Array.from({length:4},()=>Array.from({length:N},()=>tile(depth)));
+   let wideCols=dir>0?retained.concat(fresh):fresh.concat(retained);
+   let next=Array.from({length:64},(_,i)=>wideCols[i%N][Math.floor(i/N)]);
    // Render the two neighbouring shafts side by side. Move exactly four
    // cell widths, then swap the underlying data without a snap-back.
    const layer=document.createElement('div');
    layer.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden';
    const strip=document.createElement('div');
    strip.style.cssText='position:absolute;top:0;left:'+(dir>0?'0':'-50%')+';width:150%;height:100%;display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(8,1fr);';
-   for(let y=0;y<N;y++){
-     let old=field.slice(y*N,y*N+N);
-     let incoming=dir>0?next.slice(y*N+4,y*N+8):next.slice(y*N,y*N+4);
-     let wide=dir>0?old.concat(incoming):incoming.concat(old);
-     for(let c of wide){
-       let el=document.createElement('div');
-       el.className='cell '+(c?(c.special?'special ':'')+c.kind:'empty');
-       el.innerHTML=tileMarkup(c);
-       strip.appendChild(el);
-     }
+   // The 12-column strip must use the same retained columns as next.
+   let extraCols=dir>0?Array.from({length:4},(_,x)=>Array.from({length:N},(_,y)=>field[y*N+x])):Array.from({length:4},(_,x)=>Array.from({length:N},(_,y)=>field[y*N+(x+4)]));
+   let stripCols=dir>0?extraCols.concat(wideCols):wideCols.concat(extraCols);
+   for(let y=0;y<N;y++)for(let x=0;x<12;x++){
+     let c=stripCols[x][y],el=document.createElement('div');
+     el.className='cell '+(c?(c.special?'special ':'')+c.kind:'empty');
+     el.innerHTML=tileMarkup(c);strip.appendChild(el);
    }
    layer.appendChild(strip);board.appendChild(layer);grid.style.visibility='hidden';
    strip.getBoundingClientRect();
