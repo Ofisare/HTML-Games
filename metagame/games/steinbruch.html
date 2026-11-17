@@ -1,54 +1,42 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Steinbruch – Die Verzauberten Inseln</title><style>
 :root{font-family:system-ui,sans-serif;background:#182b32;color:#f5f5ed}*{box-sizing:border-box}body{margin:0 auto;max-width:650px;padding:14px}header{display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:1.35rem;margin:8px 0}button,a.btn{background:#386b61;border:1px solid #7ca99b;color:white;border-radius:10px;padding:10px 13px;font:inherit;cursor:pointer;text-decoration:none}button:disabled{opacity:.55}.help{background:#29494c;border-radius:12px;padding:10px 15px;line-height:1.5}.help[hidden]{display:none}.stats{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:15px 0}.board{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px;background:#132d33;padding:6px;border-radius:12px;touch-action:manipulation}.cell{aspect-ratio:1;padding:0;min-width:0;font-size:clamp(16px,5vw,27px);font-weight:800;background:#59665f;border:2px solid #344846;display:flex;align-items:center;justify-content:center;border-radius:5px}.cell.open{background:#e9f0e6;color:#233a3c;border-color:#c8d8cf}.cell.entrance{background:#f5e6b1}.cell.flag{background:#806b51}.cell.danger{background:#b45d55}.cell.gem{background:#e8dfcb}.cell.n1{color:#2458ae}.cell.n2{color:#19723c}.cell.n3{color:#b43b36}.cell.n4,.cell.n5,.cell.n6,.cell.n7,.cell.n8{color:#64317c}.mode{display:flex;gap:8px;margin:12px 0}.mode button{flex:1}.mode button.active{background:#e2c36f;color:#1b3030;border-color:#fff}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}#status{min-height:2em;color:#f5d783;margin-top:10px}small{color:#c4d6d1}.success-overlay[hidden]{display:none}.success-overlay{position:fixed;inset:0;z-index:30;background:rgba(5,20,24,.8);display:flex;align-items:center;justify-content:center;padding:20px}.success-dialog{width:min(100%,400px);background:#26474a;border:2px solid #a9cfa6;border-radius:18px;padding:26px;text-align:center;box-shadow:0 15px 60px #07191c}.success-dialog h2{margin:0 0 12px}.success-dialog p{line-height:1.5}.success-dialog a{display:inline-block;margin-top:12px;font-weight:700}</style><script>
-/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+/* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const isIsland = !location.pathname.includes('/games/');
-  const versionFile = isIsland ? 'version.json' : '../version.json';
-  let latest = new URLSearchParams(location.search).get('v') || '';
-  let checking = false;
-  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
-  function versionedUrl(input){
-    const u=new URL(input,location.href);
-    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
-    return u.href;
-  }
-  window.islandVersionedUrl=versionedUrl;
+  const FILE="games/steinbruch.html", BUILD_VERSION="1.0.1";
+  const IS_ISLAND=FILE==='index.html';
+  const MANIFEST=IS_ISLAND?'version.json':'../version.json';
+  const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
+  let checking=false;
+  // Kompatibilitaet mit bisherigen Links, aber keine globale Version mehr anhaengen.
+  window.islandVersionedUrl=input=>new URL(input,location.href).href;
   async function checkVersion(){
-    if(checking || document.visibilityState==='hidden')return;
+    if(checking||document.visibilityState==='hidden')return;
     checking=true;
     try{
-      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      const response=await fetch(MANIFEST+'?check='+Date.now(),{cache:'no-store'});
       if(!response.ok)return;
       const data=await response.json();
-      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
-      latest=data.version;
-      const loaded=new URLSearchParams(location.search).get('v');
-      if(loaded===latest)return;
-      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
-      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
-      if(isIsland){
-        const key='island-reload-attempt-'+latest;
-        const last=Number(sessionStorage.getItem(key)||0);
-        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
-        sessionStorage.setItem(key,String(Date.now()));
-        const url=new URL(location.href);url.searchParams.set('v',latest);
-        location.replace(url.href);
-      }
-    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+      const published=data?.files?.[FILE];
+      if(typeof published!=='string'||!VALID.test(published)||published===BUILD_VERSION)return;
+      // Ein verzoegerter GitHub-Pages-Deploy darf keine Reload-Schleife erzeugen.
+      const key='island-file-update:'+FILE+':'+published;
+      const last=Number(sessionStorage.getItem(key)||0);
+      if(Date.now()-last<30000)return;
+      sessionStorage.setItem(key,String(Date.now()));
+      const url=new URL(location.href);
+      url.searchParams.delete('v'); // alten globalen Parameter entfernen
+      url.searchParams.set('update',published);
+      location.replace(url.href);
+    }catch(e){/* Offline: aktuelle Seite weiternutzen. */}
     finally{checking=false;}
   }
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href]');
-    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
-    const dest=new URL(a.href,location.href);
-    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
-    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
-  },true);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
-  window.addEventListener('pageshow',()=>checkVersion());
-  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
-  setInterval(checkVersion,60000);
+  // Jedes Spiel prueft beim Start, nicht mitten in einer laufenden Runde.
   checkVersion();
+  if(IS_ISLAND){
+    window.addEventListener('pageshow',()=>checkVersion());
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion()});
+    setInterval(checkVersion,60000);
+  }
 })();
 </script>
 </head><body>

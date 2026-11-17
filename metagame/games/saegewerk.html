@@ -1,55 +1,43 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sägewerk – Bretter zuschneiden</title><style>
 :root{color-scheme:dark;font-family:system-ui,Arial,sans-serif}*{box-sizing:border-box}body{margin:0;background:#14241d;color:#f5f0df}main{max-width:640px;margin:auto;padding:14px}header{display:flex;align-items:center;justify-content:space-between;gap:8px}h1{font-size:1.4rem;margin:8px 0}button,a{font:inherit;touch-action:manipulation}button{background:#325d49;color:white;border:1px solid #739d82;border-radius:9px;padding:10px 13px;cursor:pointer}button:disabled{opacity:.45}button:focus-visible{outline:3px solid #f7d979}#help{background:#20392e;border-radius:10px;padding:12px;margin:8px 0}#help[hidden]{display:none}#helpButton{font-size:1.35rem;padding:6px 11px}#status{min-height:2.5em;margin:10px 0;color:#e5d7b4}#board{display:grid;grid-template-columns:repeat(var(--n),1fr);width:min(96vw,560px);margin:12px auto;touch-action:none;border:3px solid #80552d;background:#80552d;gap:2px;user-select:none} .cell{aspect-ratio:1;display:grid;place-items:center;font-size:clamp(14px,3.5vw,23px);font-weight:750;color:#422a17;background:#d6ac74;position:relative;min-width:0}.cell:nth-child(2n){background:#e1ba85}.cell.filled{background:var(--region,#b5d4b6)}.cell.preview{background:#f7e5a6}.cell.invalid{background:#df9692}.cell .number{pointer-events:none}.cell.edge-top{border-top:3px solid #664328}.cell.edge-left{border-left:3px solid #664328}.cell.edge-right{border-right:3px solid #664328}.cell.edge-bottom{border-bottom:3px solid #664328}.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}.actions button{flex:1;min-width:115px}.muted{color:#c7d2c5;font-size:.9rem}#overlay[hidden]{display:none}#overlay{position:fixed;inset:0;background:#000a;display:grid;place-items:center;padding:18px;z-index:10}#dialog{width:min(100%,390px);background:#233d30;border:2px solid #88b28b;border-radius:18px;padding:24px;text-align:center;box-shadow:0 12px 40px #0009}#dialog h2{margin-top:0}#returnSuccess{width:100%;background:#217e4b;font-weight:700}
 </style><script>
-/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+/* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const isIsland = !location.pathname.includes('/games/');
-  const versionFile = isIsland ? 'version.json' : '../version.json';
-  let latest = new URLSearchParams(location.search).get('v') || '';
-  let checking = false;
-  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
-  function versionedUrl(input){
-    const u=new URL(input,location.href);
-    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
-    return u.href;
-  }
-  window.islandVersionedUrl=versionedUrl;
+  const FILE="games/saegewerk.html", BUILD_VERSION="1.0.1";
+  const IS_ISLAND=FILE==='index.html';
+  const MANIFEST=IS_ISLAND?'version.json':'../version.json';
+  const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
+  let checking=false;
+  // Kompatibilitaet mit bisherigen Links, aber keine globale Version mehr anhaengen.
+  window.islandVersionedUrl=input=>new URL(input,location.href).href;
   async function checkVersion(){
-    if(checking || document.visibilityState==='hidden')return;
+    if(checking||document.visibilityState==='hidden')return;
     checking=true;
     try{
-      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      const response=await fetch(MANIFEST+'?check='+Date.now(),{cache:'no-store'});
       if(!response.ok)return;
       const data=await response.json();
-      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
-      latest=data.version;
-      const loaded=new URLSearchParams(location.search).get('v');
-      if(loaded===latest)return;
-      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
-      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
-      if(isIsland){
-        const key='island-reload-attempt-'+latest;
-        const last=Number(sessionStorage.getItem(key)||0);
-        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
-        sessionStorage.setItem(key,String(Date.now()));
-        const url=new URL(location.href);url.searchParams.set('v',latest);
-        location.replace(url.href);
-      }
-    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+      const published=data?.files?.[FILE];
+      if(typeof published!=='string'||!VALID.test(published)||published===BUILD_VERSION)return;
+      // Ein verzoegerter GitHub-Pages-Deploy darf keine Reload-Schleife erzeugen.
+      const key='island-file-update:'+FILE+':'+published;
+      const last=Number(sessionStorage.getItem(key)||0);
+      if(Date.now()-last<30000)return;
+      sessionStorage.setItem(key,String(Date.now()));
+      const url=new URL(location.href);
+      url.searchParams.delete('v'); // alten globalen Parameter entfernen
+      url.searchParams.set('update',published);
+      location.replace(url.href);
+    }catch(e){/* Offline: aktuelle Seite weiternutzen. */}
     finally{checking=false;}
   }
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href]');
-    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
-    const dest=new URL(a.href,location.href);
-    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
-    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
-  },true);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
-  window.addEventListener('pageshow',()=>checkVersion());
-  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
-  setInterval(checkVersion,60000);
+  // Jedes Spiel prueft beim Start, nicht mitten in einer laufenden Runde.
   checkVersion();
+  if(IS_ISLAND){
+    window.addEventListener('pageshow',()=>checkVersion());
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion()});
+    setInterval(checkVersion,60000);
+  }
 })();
 </script>
 </head><body><main><header><h1>🪚 Sägewerk</h1><button id="helpButton" aria-label="Hilfe ein- oder ausblenden" aria-expanded="true">❓</button></header><section id="help"><b>So schneidest du Bretter zu:</b><p>Ziehe vom ersten bis zum letzten Feld eines Rechtecks. Jedes Brett muss genau <b>eine Zahl</b> enthalten. Die Zahl gibt die Anzahl seiner Felder an. Alle Felder müssen am Ende zu Brettern gehören.</p><p>Falsch zugeschnitten? Tippe auf ein fertiges Brett, um es wieder zu entfernen. Die Rätsel haben eine eindeutige Lösung.</p></section><div id="status" role="status"></div><div id="board" aria-label="Shikaku Spielfeld"></div><div class="actions"><button id="undo">↶ Rückgängig</button><button id="reset">↻ Zurücksetzen</button><button id="cancel">🏝️ Abbrechen</button></div><p class="muted">Du erhältst Bretter für das Insellager. Nur abgeschlossene Aufträge erhöhen die Schwierigkeit.</p></main><div id="overlay" hidden><div id="dialog" role="dialog" aria-modal="true" aria-labelledby="successTitle"><h2 id="successTitle">🎉 Erfolgreich!</h2><p>Alle Bretter sind passend zugeschnitten.</p><p id="rewardText"></p><button id="returnSuccess">🏝️ Zurück zur Insel</button></div></div><script>

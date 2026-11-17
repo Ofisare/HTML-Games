@@ -1,55 +1,43 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>⛏️ Geologen-Expedition</title><style>
 *{box-sizing:border-box}body{background:#13272b;color:#f3f1e8;font:16px system-ui,sans-serif;margin:0 auto;padding:12px;max-width:650px}header,.stats,.actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}h1{font-size:1.4rem;margin:8px 0}button,a{border:1px solid #8da89d;border-radius:9px;padding:10px;background:#285b56;color:white;text-decoration:none;font:inherit;cursor:pointer}button:disabled{opacity:.5}#help{background:#25443f;border-radius:12px;padding:12px;margin:10px 0}#help[hidden],#shade[hidden]{display:none}.stats{justify-content:start;margin:12px 0}.stats span{background:#264a48;padding:7px;border-radius:7px;font-size:.9rem}#board{position:relative;width:min(95vw,560px);aspect-ratio:1;margin:auto;overflow:hidden;border:5px solid #826044;border-radius:12px;background:repeating-linear-gradient(#47362d 0 12.5%,#514034 12.5% 25%);touch-action:none;user-select:none}#grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}.cell{border:1px solid #ffffff16;display:grid;place-items:center;font-size:clamp(23px,6.5vw,43px);position:relative}.cell.stone{background:#6d665e}.cell.grass{background:#5c8a51}.cell.sand{background:#b9a36c}.cell.earth{background:#83614b}.cell.rubble{background:#817969}.cell.ore{background:#4a6275}.cell.coal{background:#393b40}.cell.gold{background:#a88c40}.cell.gold{background:#a88c40}.cell.crystal{background:#605477}.cell.empty{background:#30291f55}.cell.drag-source{outline:3px solid #ffe29a;outline-offset:-4px;z-index:2;opacity:.75}.cell.drag-target{outline:4px solid #75e5c1;outline-offset:-5px;z-index:2}.cell.selected{outline:4px solid #fff5b0;outline-offset:-5px;z-index:1}.cell.match{animation:vanish .22s ease-in forwards}.cell.falling{transition:transform .36s cubic-bezier(.22,.85,.25,1)}.cell.special:after{content:'✦';position:absolute;right:1px;top:0;font-size:12px;color:#fff}.cell.burst{animation:boom .25s ease-out forwards}#grid.slide-left{animation:slideLeft .48s ease-in-out}#grid.slide-right{animation:slideRight .48s ease-in-out}#grid.rise{animation:rise .45s ease-in-out}@keyframes vanish{to{transform:scale(.08);opacity:0}}@keyframes boom{to{transform:scale(1.4);opacity:0}}@keyframes slideLeft{0%{transform:translateX(0)}50%{transform:translateX(-50%)}100%{transform:translateX(0)}}@keyframes slideRight{0%{transform:translateX(0)}50%{transform:translateX(50%)}100%{transform:translateX(0)}}@keyframes rise{0%{transform:translateY(0)}50%{transform:translateY(-12.5%)}100%{transform:translateY(0)}}#notice{min-height:2.5em}#shade{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:10;padding:20px}#shade article{background:#22463d;border:2px solid #a7c6a2;border-radius:16px;padding:25px;text-align:center;max-width:380px}#shade a{display:block;background:#2a8050;margin-top:15px}small{color:#c5d3c9}
 </style><script>
-/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+/* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const isIsland = !location.pathname.includes('/games/');
-  const versionFile = isIsland ? 'version.json' : '../version.json';
-  let latest = new URLSearchParams(location.search).get('v') || '';
-  let checking = false;
-  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
-  function versionedUrl(input){
-    const u=new URL(input,location.href);
-    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
-    return u.href;
-  }
-  window.islandVersionedUrl=versionedUrl;
+  const FILE="games/geologe.html", BUILD_VERSION="1.0.1";
+  const IS_ISLAND=FILE==='index.html';
+  const MANIFEST=IS_ISLAND?'version.json':'../version.json';
+  const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
+  let checking=false;
+  // Kompatibilitaet mit bisherigen Links, aber keine globale Version mehr anhaengen.
+  window.islandVersionedUrl=input=>new URL(input,location.href).href;
   async function checkVersion(){
-    if(checking || document.visibilityState==='hidden')return;
+    if(checking||document.visibilityState==='hidden')return;
     checking=true;
     try{
-      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      const response=await fetch(MANIFEST+'?check='+Date.now(),{cache:'no-store'});
       if(!response.ok)return;
       const data=await response.json();
-      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
-      latest=data.version;
-      const loaded=new URLSearchParams(location.search).get('v');
-      if(loaded===latest)return;
-      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
-      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
-      if(isIsland){
-        const key='island-reload-attempt-'+latest;
-        const last=Number(sessionStorage.getItem(key)||0);
-        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
-        sessionStorage.setItem(key,String(Date.now()));
-        const url=new URL(location.href);url.searchParams.set('v',latest);
-        location.replace(url.href);
-      }
-    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+      const published=data?.files?.[FILE];
+      if(typeof published!=='string'||!VALID.test(published)||published===BUILD_VERSION)return;
+      // Ein verzoegerter GitHub-Pages-Deploy darf keine Reload-Schleife erzeugen.
+      const key='island-file-update:'+FILE+':'+published;
+      const last=Number(sessionStorage.getItem(key)||0);
+      if(Date.now()-last<30000)return;
+      sessionStorage.setItem(key,String(Date.now()));
+      const url=new URL(location.href);
+      url.searchParams.delete('v'); // alten globalen Parameter entfernen
+      url.searchParams.set('update',published);
+      location.replace(url.href);
+    }catch(e){/* Offline: aktuelle Seite weiternutzen. */}
     finally{checking=false;}
   }
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href]');
-    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
-    const dest=new URL(a.href,location.href);
-    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
-    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
-  },true);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
-  window.addEventListener('pageshow',()=>checkVersion());
-  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
-  setInterval(checkVersion,60000);
+  // Jedes Spiel prueft beim Start, nicht mitten in einer laufenden Runde.
   checkVersion();
+  if(IS_ISLAND){
+    window.addEventListener('pageshow',()=>checkVersion());
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion()});
+    setInterval(checkVersion,60000);
+  }
 })();
 </script>
 </head><body><header><h1>⛏️ Geologen-Expedition</h1><button id="helpButton">❓</button></header><section id="help">Tausche zwei benachbarte Materialien, um <b>mindestens drei gleiche</b> waagerecht oder senkrecht abzubauen. Alles darüber fällt animiert nach unten – <b>ohne Nachschub von oben</b>. Leere Reihen verschwinden und unten werden neue Erdschichten sichtbar. Jede vollständig abgetragene Reihe spart <b>5 Sekunden</b> Expeditionszeit. Sobald eine Spalte leer ist, rücken die übrigen Spalten <b>animiert zur Mitte</b>; neue Gesteinsspalten erscheinen von außen. Nur wenn keine Züge mehr möglich sind, wird zusätzlich seitlich weitergegraben. Extras: 🧨 Dynamit (4er), ⚙️ Bohrer (5er), 💥 Sprengladung (T/L). Extras lösen beim Verschwinden Kettenreaktionen aus. Keine Zugbegrenzung.</section><div class="stats"><span id="depth"></span><span id="time"></span><span id="saved"></span></div><div id="board"><div id="grid"></div></div><p id="notice" aria-live="polite"></p><div class="actions"><a href="../index.html">✖ Abbrechen – zur Insel</a><button id="shift" hidden>↔ Seitlich graben</button></div><div id="shade" hidden><article><h2>🎉 Expedition abgeschlossen!</h2><p id="result"></p><a href="../index.html">🏝️ Zurück zur Insel</a></article></div>

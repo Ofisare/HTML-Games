@@ -1,53 +1,41 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kohlemine · Flözsuche</title><style>*{box-sizing:border-box}body{margin:0;background:#112729;color:#eef4e8;font:16px system-ui,sans-serif;padding:18px;max-width:750px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:10px}h1{font-size:clamp(22px,5vw,31px)}button,a{font:inherit;touch-action:manipulation}button{background:#295d58;border:1px solid #80aaa0;color:white;border-radius:12px;padding:12px;cursor:pointer}button:disabled{opacity:.5}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.stats span{background:#234e4b;padding:9px;border-radius:9px}#board{display:grid;gap:5px;aspect-ratio:1;max-width:570px;margin:14px auto;touch-action:manipulation}#board button{min-width:0;min-height:0;padding:0;border:2px solid #536b67;border-radius:9px;font-size:clamp(19px,6vw,38px);display:grid;place-items:center;transition:transform .16s,background .16s}#board button.selected{outline:3px solid #fff3a0;transform:scale(.95)}#board button.open{background:#375d56}#board button.hidden{background:#374b49}#board button.matched{background:#9d8040}#board button:focus-visible{outline:3px solid white}#message{min-height:45px;line-height:1.5}#help{background:#1c3b3b;padding:14px;border-radius:12px;margin:12px 0}#help[hidden],#overlay[hidden]{display:none}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.actions a{display:inline-block;background:#295d58;border:1px solid #80aaa0;border-radius:12px;padding:12px;text-decoration:none;color:white}#overlay{position:fixed;inset:0;background:#061819d9;display:grid;place-items:center;padding:20px;z-index:9}#overlay article{background:#244e49;border:2px solid #8fb8a5;padding:28px;border-radius:18px;text-align:center;max-width:440px}#overlay a{display:inline-block;background:#34796a;padding:14px;border-radius:10px;text-decoration:none;color:white}.rock{display:inline-block;width:70%;aspect-ratio:1;clip-path:polygon(10% 65%,26% 24%,60% 8%,87% 28%,97% 70%,72% 94%,28% 90%);background:var(--rock);box-shadow:inset 8px 9px #ffffff44,inset -8px -9px #00000044;border:2px solid #28383a}.coal{--rock:#303a42}.ore{--rock:#438fc7}.gold{--rock:#e8b72c}</style><script>
-/* Versionspruefung fuer GitHub Pages: nur HTML neu laden, Spielstand unberuehrt. */
+/* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const isIsland = !location.pathname.includes('/games/');
-  const versionFile = isIsland ? 'version.json' : '../version.json';
-  let latest = new URLSearchParams(location.search).get('v') || '';
-  let checking = false;
-  const VERSION_PATTERN = /^[a-zA-Z0-9._-]{1,48}$/;
-  function versionedUrl(input){
-    const u=new URL(input,location.href);
-    if(u.origin===location.origin && /\.html$/i.test(u.pathname) && latest)u.searchParams.set('v',latest);
-    return u.href;
-  }
-  window.islandVersionedUrl=versionedUrl;
+  const FILE="games/coalmine.html", BUILD_VERSION="1.0.1";
+  const IS_ISLAND=FILE==='index.html';
+  const MANIFEST=IS_ISLAND?'version.json':'../version.json';
+  const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
+  let checking=false;
+  // Kompatibilitaet mit bisherigen Links, aber keine globale Version mehr anhaengen.
+  window.islandVersionedUrl=input=>new URL(input,location.href).href;
   async function checkVersion(){
-    if(checking || document.visibilityState==='hidden')return;
+    if(checking||document.visibilityState==='hidden')return;
     checking=true;
     try{
-      const response=await fetch(versionFile+'?check='+Date.now(),{cache:'no-store'});
+      const response=await fetch(MANIFEST+'?check='+Date.now(),{cache:'no-store'});
       if(!response.ok)return;
       const data=await response.json();
-      if(!data || typeof data.version!=='string' || !VERSION_PATTERN.test(data.version))return;
-      latest=data.version;
-      const loaded=new URLSearchParams(location.search).get('v');
-      if(loaded===latest)return;
-      // Nur auf der Insel automatisch aktualisieren, nie mitten in einem Minispiel.
-      // Auch beim ersten Start ohne v wird die URL versionsgebunden.
-      if(isIsland){
-        const key='island-reload-attempt-'+latest;
-        const last=Number(sessionStorage.getItem(key)||0);
-        if(Date.now()-last<12000)return; // Schutz vor Reload-Schleifen bei GitHub-Pages-Deploys.
-        sessionStorage.setItem(key,String(Date.now()));
-        const url=new URL(location.href);url.searchParams.set('v',latest);
-        location.replace(url.href);
-      }
-    }catch(e){/* Offline: gespeicherte Seite weiter nutzen. */}
+      const published=data?.files?.[FILE];
+      if(typeof published!=='string'||!VALID.test(published)||published===BUILD_VERSION)return;
+      // Ein verzoegerter GitHub-Pages-Deploy darf keine Reload-Schleife erzeugen.
+      const key='island-file-update:'+FILE+':'+published;
+      const last=Number(sessionStorage.getItem(key)||0);
+      if(Date.now()-last<30000)return;
+      sessionStorage.setItem(key,String(Date.now()));
+      const url=new URL(location.href);
+      url.searchParams.delete('v'); // alten globalen Parameter entfernen
+      url.searchParams.set('update',published);
+      location.replace(url.href);
+    }catch(e){/* Offline: aktuelle Seite weiternutzen. */}
     finally{checking=false;}
   }
-  document.addEventListener('click',e=>{
-    const a=e.target.closest('a[href]');
-    if(!a || e.defaultPrevented || e.button!==0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || a.hasAttribute('download') || a.target==='_blank')return;
-    const dest=new URL(a.href,location.href);
-    if(dest.origin!==location.origin || !/\.html$/i.test(dest.pathname))return;
-    if(latest && dest.searchParams.get('v')!==latest){e.preventDefault();location.assign(versionedUrl(dest.href));}
-  },true);
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion();});
-  window.addEventListener('pageshow',()=>checkVersion());
-  // Nicht nur bei Seitenwechseln: bei laenger geoeffneter Insel regelmaessig pruefen.
-  setInterval(checkVersion,60000);
+  // Jedes Spiel prueft beim Start, nicht mitten in einer laufenden Runde.
   checkVersion();
+  if(IS_ISLAND){
+    window.addEventListener('pageshow',()=>checkVersion());
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion()});
+    setInterval(checkVersion,60000);
+  }
 })();
 </script>
 </head><body><header><h1>Kohlemine · Flözsuche</h1><button id="helpBtn" aria-label="Spielhilfe ein- oder ausblenden" aria-expanded="false">❓</button></header><div class="stats"><span id="goal"></span><span id="level"></span><span id="reward"></span></div><div id="help" hidden>Tippe auf zusammenhängende Gruppen von mindestens drei gleichfarbigen Gesteinen. Räume genug Kohle frei. Neue Steine fallen von oben nach. Einzelne Steine kannst du nicht entfernen.</div><div id="board" aria-label="Spielfeld"></div><p id="message" aria-live="polite"></p><div class="actions"><button id="restart">🔄 Neues Rätsel</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div><div id="overlay" hidden role="dialog" aria-modal="true"><article><h2>🎉 Geschafft!</h2><p id="winText"></p><a href="../index.html">🏝️ Zurück zur Insel</a><p><button id="again">Noch eine Runde</button></p></article></div><script>const KEY='enchanted-islands-v01',KIND='coal',REWARD=5,NAME='Kohle';
