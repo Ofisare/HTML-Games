@@ -1,5 +1,5 @@
 {
-  "version": "1.0.16",
+  "version": "1.0.17",
   "files": {
     "games/bauernhof.html": "1.0.1",
     "games/bauhelfer.html": "1.0.1",
@@ -11,6 +11,6 @@
     "games/oremine.html": "1.0.1",
     "games/saegewerk.html": "1.0.1",
     "games/steinbruch.html": "1.0.1",
-    "index.html": "1.0.16"
+    "index.html": "1.0.17"
   }
 }
