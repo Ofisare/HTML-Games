@@ -1,10 +1,26 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Münzprägestätte · Goldwaage</title>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Münzprägestätte · Münzsortierung</title>
 <style>
-*{box-sizing:border-box}body{margin:0 auto;max-width:760px;padding:16px;background:#112729;color:#eef4e8;font:16px system-ui,sans-serif}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:clamp(22px,5vw,30px);margin:12px 0}button,a{font:inherit}button{background:#295d58;color:white;border:1px solid #8cb7aa;border-radius:11px;padding:10px 13px;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.45}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.stats span{background:#234e4b;border-radius:8px;padding:8px}#help{padding:14px;background:#1d3e3e;border-radius:12px;margin:12px 0}#help[hidden],#overlay[hidden]{display:none}.scale{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 10px}.pan{background:#244d48;border:2px solid #7eaca0;border-radius:14px;min-height:116px;padding:12px;text-align:center}.pan strong{display:block;margin-bottom:10px}.pan .items{min-height:50px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;align-items:center}.coin{background:linear-gradient(135deg,#ffe8a3,#bc8223);border:2px solid #fce4a0;color:#493109;border-radius:50%;width:47px;height:47px;padding:0;display:inline-grid;place-items:center;font-weight:800;box-shadow:inset 0 0 0 3px #a96e25}.coin.selected{outline:3px solid #f8f5e8;outline-offset:2px}.coin.used{opacity:.5}.coin:disabled{opacity:.45}.coins{display:flex;flex-wrap:wrap;gap:12px;padding:14px 4px;justify-content:center}.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;margin:10px 0}.result{font-size:20px;text-align:center;min-height:35px;font-weight:700}.hint{color:#b9d5cb;font-size:14px}#message{min-height:42px;text-align:center}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.actions a,#overlay a{display:inline-block;background:#295d58;color:white;border:1px solid #8cb7aa;border-radius:11px;padding:11px;text-decoration:none}#overlay{position:fixed;inset:0;background:#061819e8;display:grid;place-items:center;padding:20px;z-index:10}#overlay article{max-width:420px;text-align:center;background:#244e49;border:2px solid #8fb8a5;border-radius:18px;padding:26px}#overlay button{margin-top:10px}
+*{box-sizing:border-box}body{margin:0 auto;max-width:760px;padding:14px;background:#112729;color:#eef4e8;font:16px system-ui,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:clamp(21px,5vw,29px);margin:10px 0}
+button,a{font:inherit}button{background:#295d58;color:white;border:1px solid #8cb7aa;border-radius:10px;padding:9px 12px;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.45}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.stats span{background:#234e4b;border-radius:8px;padding:8px}
+#help{padding:13px;background:#1d3e3e;border-radius:12px;margin:12px 0}#help[hidden],#overlay[hidden]{display:none}
+.board-wrap{display:flex;justify-content:center;margin:15px 0}.board{display:grid;gap:4px;align-items:center;justify-items:center;user-select:none;touch-action:none}
+.cell{position:relative;width:var(--sz);height:var(--sz);border-radius:11px;border:2px solid #43635e;display:grid;place-items:center;background:#1b3839;overflow:hidden}
+.cell::before{content:'';position:absolute;inset:3px;border:2px dashed #7daca077;border-radius:9px}
+.coin{z-index:1;width:80%;height:80%;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:clamp(17px,4vw,28px);border:3px solid #ffe8a3;box-shadow:inset 0 0 0 3px #ad7c27,0 2px 6px #0008;color:#573710;background:linear-gradient(135deg,#ffe8a3,#d7a646 55%,#ad751c)}
+.coin[data-kind="1"]{background:linear-gradient(135deg,#e5e4ed,#a8b3c5);border-color:#f1f3f8;box-shadow:inset 0 0 0 3px #7e8899,0 2px 6px #0008;color:#243247}
+.coin[data-kind="2"]{background:linear-gradient(135deg,#eab998,#ac6545);border-color:#f6d5bd;box-shadow:inset 0 0 0 3px #9e5334,0 2px 6px #0008;color:#462615}
+.coin[data-kind="3"]{background:linear-gradient(135deg,#a8d4ba,#467c65);border-color:#b9e3ca;box-shadow:inset 0 0 0 3px #36624f,0 2px 6px #0008;color:#123d2a}
+.cell.ok{border-color:#6bbf82}.cell.bad{border-color:#b17c63}.cell .target{position:absolute;left:3px;top:1px;font-size:10px;color:#c5dcd4;z-index:2}
+.shift{min-width:34px;min-height:34px;padding:3px;display:grid;place-items:center;font-size:20px}
+.hint{text-align:center;color:#bad7cb;font-size:14px}#message{min-height:36px;text-align:center}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.actions a,#overlay a{display:inline-block;background:#295d58;color:white;border:1px solid #8cb7aa;border-radius:11px;padding:10px;text-decoration:none}
+#overlay{position:fixed;inset:0;background:#061819e8;display:grid;place-items:center;padding:20px;z-index:10}#overlay article{max-width:420px;text-align:center;background:#244e49;border:2px solid #8fb8a5;border-radius:18px;padding:24px}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="games/muenzpraegestaette.html", BUILD_VERSION="1.0.1";
+  const FILE="games/muenzpraegestaette.html", BUILD_VERSION="1.0.2";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -41,31 +57,112 @@
   }
 })();
 </script></head><body>
-<header><h1>🪙 Münzprägestätte · Goldwaage</h1><button id="helpBtn" aria-label="Hilfe ein- und ausklappen" aria-expanded="false">❓</button></header>
-<div class="stats"><span id="level"></span><span id="remaining"></span><span id="reward"></span></div>
-<div id="help" hidden><b>Finde die schwerere Falschmünze!</b><p>Alle Münzen sehen gleich aus, aber genau eine ist schwerer. Lege gleich viele Münzen auf die linke und rechte Waagschale. Drücke „Wiegen“ und beobachte, welche Seite schwerer ist. Münzen außerhalb der Waage werden nicht mitgewogen.</p><p>Du darfst jede Münze beliebig oft umlegen: Tippe sie unten an, um sie auf die linke Schale zu legen, tippe sie dort für die rechte Schale an und dort erneut, um sie zurückzunehmen. Am Ende tippe „Münze bestimmen“ und dann auf deine verdächtige Münze. Du kannst nur so oft wiegen, wie oben angezeigt. Kein Zeitlimit.</p></div>
-<div class="scale"><div class="pan"><strong>⚖️ Links</strong><div class="items" id="left"></div></div><div class="pan"><strong>⚖️ Rechts</strong><div class="items" id="right"></div></div></div>
-<div class="result" id="result" aria-live="polite">⚖️ Noch keine Wägung</div>
-<div class="controls"><button id="weigh">⚖️ Wiegen</button><button id="clear">↩️ Waage leeren</button><button id="guess">🔎 Münze bestimmen</button></div>
-<p class="hint" style="text-align:center">Münzen außerhalb der Waage</p><div class="coins" id="coins"></div><p id="message" aria-live="polite"></p>
+<header><h1>🪙 Münzprägestätte · Münzsortierung</h1><button id="helpBtn" aria-label="Hilfe ein- und ausklappen">❓</button></header>
+<div class="stats"><span id="level"></span><span id="moves"></span><span id="reward"></span></div>
+<div id="help" hidden><b>Sortiere die Münzprägungen!</b>
+<p>Jedes Feld zeigt oben links ein kleines Zielzeichen. Verschiebe ganze <b>Reihen nach links/rechts</b> oder <b>Spalten nach oben/unten</b>, bis jede Münze auf einem Feld mit dem passenden Zeichen liegt.</p>
+<p>Die Münzen wandern am Rand auf die gegenüberliegende Seite zurück. Benutze die Pfeile rund um das Spielfeld oder wische auf einer Reihe bzw. Spalte. Du kannst beliebig viele Züge machen – es gibt kein Zeitlimit und keine Fehlerstrafe.</p>
+<p>Jedes Rätsel entsteht durch Verschieben einer bereits sortierten Anordnung und ist deshalb lösbar. Die Rätsel werden mit der Zeit komplexer.</p></div>
+<p class="hint">Pfeile antippen oder auf dem Spielfeld wischen. Gleiche Symbole gehören zusammen.</p>
+<div class="board-wrap"><div id="board" class="board" aria-label="Münzsortierung"></div></div>
+<p id="message" aria-live="polite"></p>
 <div class="actions"><button id="restart">🔄 Neues Rätsel</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div>
-<div id="overlay" hidden role="dialog" aria-modal="true"><article><h2 id="winTitle">🎉 Geschafft!</h2><p id="winText"></p><a href="../index.html">🏝️ Zurück zur Insel</a><p><button id="again">🔄 Noch eine Runde</button></p></article></div>
+<div id="overlay" hidden role="dialog" aria-modal="true"><article><h2>🎉 Münzen sortiert!</h2><p id="winText"></p><a href="../index.html">🏝️ Zurück zur Insel</a><p><button id="again">🔄 Noch eine Runde</button></p></article></div>
 <script>
 'use strict';
-const KEY='enchanted-islands-v01',KIND='mint',REWARD=5;
-const $=id=>document.getElementById(id);
+const KEY='enchanted-islands-v01', KIND='mint', REWARD=5, $=id=>document.getElementById(id);
 let wins=0;try{wins=Number(JSON.parse(localStorage.getItem(KEY))?.mineGameWins?.[KIND]||0)}catch{}
-let level=Math.min(5,1+Math.floor(wins/3)),count=level<=1?6:level<=3?9:12,maxWeigh=count===6?2:count===9?2:3;
-// Bei sechs Münzen sind zwei Wägungen ausreichend (3 gegen 3, dann 1 gegen 1).
-let heavy=-1,positions=[],weighs=0,finished=false,guessing=false;
-let help=localStorage.getItem('mint-help')!=='false';function renderHelp(){$('help').hidden=!help;$('helpBtn').setAttribute('aria-expanded',String(help))}renderHelp();$('helpBtn').onclick=()=>{help=!help;localStorage.setItem('mint-help',String(help));renderHelp()};
-function reset(){heavy=Math.floor(Math.random()*count);positions=Array(count).fill(0);weighs=0;finished=false;guessing=false;$('overlay').hidden=true;$('result').textContent='⚖️ Noch keine Wägung';$('message').textContent='Lege gleich viele Münzen auf beide Schalen.';render()}
-function render(){let remaining=maxWeigh-weighs;$('level').textContent='Stufe '+level+' · '+count+' Münzen';$('remaining').textContent='⚖️ '+remaining+' Wägungen übrig';$('reward').textContent='🎁 '+REWARD+' Münzen';for(let [id,pos] of [['coins',0],['left',1],['right',2]]){$(id).innerHTML='';positions.forEach((p,i)=>{if(p!==pos)return;let b=document.createElement('button');b.className='coin';b.textContent=i+1;b.title='Münze '+(i+1);b.setAttribute('aria-label','Münze '+(i+1));b.onclick=()=>choose(i);$(id).appendChild(b)})}$('weigh').disabled=finished||guessing||remaining<=0;$('guess').textContent=guessing?'✖ Auswahl abbrechen':'🔎 Münze bestimmen';$('clear').disabled=finished||guessing}
-function choose(i){if(finished)return;if(guessing){if(i===heavy)win();else{$('message').textContent='❌ Das war nicht die schwerere Münze. Neues Rätsel versuchen!';$('result').textContent='Die schwerere Münze war Nr. '+(heavy+1);finished=true;showEnd(false)}return}positions[i]=(positions[i]+1)%3;render()}
-$('weigh').onclick=()=>{if(finished||guessing||weighs>=maxWeigh)return;let left=positions.filter(p=>p===1).length,right=positions.filter(p=>p===2).length;if(!left||left!==right){$('message').textContent='Auf beiden Schalen muss dieselbe Anzahl Münzen liegen (mindestens eine).';return}weighs++;let a=left+(positions[heavy]===1?1:0),b=right+(positions[heavy]===2?1:0);$('result').textContent=a===b?'⚖️ Beide Seiten gleich schwer':a>b?'⬅️ Die linke Schale ist schwerer':'➡️ Die rechte Schale ist schwerer';$('message').textContent=weighs===maxWeigh?'Keine Wägungen mehr – bestimme die Münze.':'Du kannst die Münzen neu verteilen und weiter wiegen.';render()};
-$('clear').onclick=()=>{positions.fill(0);render()};$('guess').onclick=()=>{if(finished)return;guessing=!guessing;$('message').textContent=guessing?'Tippe auf die Münze, die du für schwerer hältst.':'Du kannst wieder Münzen verteilen.';render()};
-function saveReward(){let actual=0;try{let s=JSON.parse(localStorage.getItem(KEY));if(s?.version===1&&s.res){let cap=100+(s.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((n,b)=>n+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);actual=Math.max(0,Math.min(REWARD,cap-(Number(s.res.coins)||0)));s.res.coins=(Number(s.res.coins)||0)+actual;s.mineGameWins=s.mineGameWins||{};s.mineGameWins[KIND]=(Number(s.mineGameWins[KIND])||0)+1;localStorage.setItem(KEY,JSON.stringify(s));return actual}}catch(e){$('message').textContent='Speichern fehlgeschlagen: '+e.message}return actual}
-function showEnd(success,got=0){$('winTitle').textContent=success?'🎉 Geschafft!':'🔎 Leider nicht richtig';$('winText').textContent=success?'+'+got+' Goldmünzen ins Insellager geliefert'+(got<REWARD?' (Lager voll)':'')+'.':'Keine Belohnung in dieser Runde. Du kannst sofort neu beginnen.';$('overlay').hidden=false;$('again').focus()}
-function win(){if(finished)return;finished=true;let got=saveReward();showEnd(true,got)}
-$('restart').onclick=reset;$('again').onclick=()=>location.reload();reset();
+let level=Math.min(8,1+Math.floor(wins/3)),n=level<3?3:level<6?4:5,board=[],target=[],moves=0,finished=false,round=0;
+const symbols=['☀','♜','✦','❀'], names=['Sonne','Turm','Stern','Blüte'];
+let help=localStorage.getItem('mint-help')!=='false';
+function renderHelp(){$('help').hidden=!help;$('helpBtn').setAttribute('aria-expanded',String(help))}
+renderHelp();$('helpBtn').onclick=()=>{help=!help;localStorage.setItem('mint-help',String(help));renderHelp()};
+function rotateRow(r,d){const row=board.slice(r*n,(r+1)*n);for(let c=0;c<n;c++)board[r*n+c]=row[(c-d+n)%n]}
+function rotateCol(c,d){const col=Array.from({length:n},(_,r)=>board[r*n+c]);for(let r=0;r<n;r++)board[r*n+c]=col[(r-d+n)%n]}
+function solved(){return board.every((v,i)=>v===target[i])}
+function init(){
+  n=level<3?3:level<6?4:5;
+  // Anordnung aus gruppierten Münzprägungen, damit das Ziel erkennbar bleibt.
+  target=Array.from({length:n*n},(_,i)=>Math.floor(i/n)%4);
+  if(n===3)target=Array.from({length:9},(_,i)=>Math.floor(i/3));
+  board=target.slice();moves=0;finished=false;round++;$('overlay').hidden=true;
+  const steps=4+level*2;
+  let last=null;
+  for(let i=0;i<steps;i++){
+    const options=[];
+    for(let k=0;k<n;k++)for(const d of [-1,1])for(const axis of ['r','c']){
+      if(last&&last.axis===axis&&last.k===k&&last.d===-d)continue;
+      options.push({axis,k,d});
+    }
+    const pick=options[Math.floor(Math.random()*options.length)];
+    if(pick.axis==='r')rotateRow(pick.k,pick.d);else rotateCol(pick.k,pick.d);
+    last=pick;
+  }
+  if(solved())rotateCol(0,1);
+  $('message').textContent='Bringe alle Münzen auf die passenden Zielfelder.';
+  render();
+}
+function move(axis,k,d){
+  if(finished)return;
+  if(axis==='r')rotateRow(k,d);else rotateCol(k,d);
+  moves++;render();
+  if(solved())win();
+}
+function render(){
+  $('level').textContent='Stufe '+level+' · '+n+'×'+n;
+  $('moves').textContent='↔ '+moves+' Züge';
+  $('reward').textContent='🎁 '+REWARD+' Münzen';
+  const size=Math.max(39,Math.min(64,Math.floor((Math.min(window.innerWidth-32,540)-n*4-80)/n)));
+  const grid=$('board');grid.style.setProperty('--sz',size+'px');grid.style.gridTemplateColumns=`36px repeat(${n},var(--sz)) 36px`;grid.innerHTML='';
+  const add=(el)=>grid.appendChild(el);
+  const blank=()=>{const e=document.createElement('span');add(e)};
+  const arrow=(label,axis,k,d)=>{const b=document.createElement('button');b.className='shift';b.textContent=label;b.setAttribute('aria-label',axis==='r'?`Reihe ${k+1} ${d<0?'links':'rechts'}`:`Spalte ${k+1} ${d<0?'hoch':'runter'}`);b.onclick=()=>move(axis,k,d);add(b)};
+  blank();for(let c=0;c<n;c++)arrow('↑','c',c,-1);blank();
+  for(let r=0;r<n;r++){
+    arrow('←','r',r,-1);
+    for(let c=0;c<n;c++){
+      const i=r*n+c,v=board[i],want=target[i],cell=document.createElement('div');
+      cell.className='cell '+(v===want?'ok':'bad');
+      const mark=document.createElement('span');mark.className='target';mark.textContent=symbols[want];cell.appendChild(mark);
+      const coin=document.createElement('span');coin.className='coin';coin.dataset.kind=v;coin.textContent=symbols[v];coin.setAttribute('aria-label',names[v]);cell.appendChild(coin);
+      cell.dataset.row=r;cell.dataset.col=c;add(cell);
+    }
+    arrow('→','r',r,1);
+  }
+  blank();for(let c=0;c<n;c++)arrow('↓','c',c,1);blank();
+}
+let start=null;
+$('board').addEventListener('pointerdown',e=>{const cell=e.target.closest('.cell');if(!cell||finished)return;start={x:e.clientX,y:e.clientY,r:+cell.dataset.row,c:+cell.dataset.col}});
+$('board').addEventListener('pointerup',e=>{
+  if(!start||finished)return;
+  const dx=e.clientX-start.x,dy=e.clientY-start.y,from=start;start=null;
+  if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;
+  if(Math.abs(dx)>Math.abs(dy))move('r',from.r,dx>0?1:-1);
+  else move('c',from.c,dy>0?1:-1);
+});
+$('board').addEventListener('pointercancel',()=>start=null);
+window.addEventListener('resize',render);
+function saveReward(){
+  let actual=0;
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY));
+    if(s?.version===1&&s.res){
+      const cap=100+(s.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((total,b)=>total+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);
+      actual=Math.max(0,Math.min(REWARD,cap-(Number(s.res.coins)||0)));
+      s.res.coins=(Number(s.res.coins)||0)+actual;
+      s.mineGameWins=s.mineGameWins||{};s.mineGameWins[KIND]=(Number(s.mineGameWins[KIND])||0)+1;
+      localStorage.setItem(KEY,JSON.stringify(s));
+    }
+  }catch(e){$('message').textContent='Speichern fehlgeschlagen: '+e.message}
+  return actual;
+}
+function win(){
+  if(finished)return;
+  finished=true;const got=saveReward();
+  $('winText').textContent=`In ${moves} Zügen gelöst! +${got} Goldmünzen ins Insellager geliefert${got<REWARD?' (Lager voll)':''}.`;
+  $('overlay').hidden=false;$('again').focus();
+}
+$('restart').onclick=init;
+$('again').onclick=()=>{wins++;level=Math.min(8,1+Math.floor(wins/3));init()};
+init();
 </script></body></html>
