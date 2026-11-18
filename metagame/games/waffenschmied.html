@@ -1,0 +1,94 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Waffenschmied · Klingen-Puzzle</title><style>
+*{box-sizing:border-box}body{margin:0 auto;max-width:760px;background:#12272a;color:#f2f3e7;font:16px system-ui,sans-serif;padding:14px}header{display:flex;justify-content:space-between;align-items:center;gap:10px}h1{font-size:clamp(23px,5vw,32px)}button,a{font:inherit}button{cursor:pointer;background:#2e625b;color:white;border:1px solid #81a99c;border-radius:11px;padding:10px}button:disabled{opacity:.4}a{color:#bce5d4}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.stats span{padding:8px;background:#244d49;border-radius:8px}#help{background:#20403e;padding:12px;border-radius:12px;margin:10px 0}#help[hidden],#overlay[hidden]{display:none}#forge{background:#233c3b;border-radius:16px;padding:12px;margin:12px 0;text-align:center}.layout{display:flex;gap:16px;align-items:flex-start;justify-content:center;flex-wrap:wrap}.board-wrap{min-width:0}.board{display:grid;grid-template-columns:repeat(7,var(--cell));grid-template-rows:repeat(11,var(--cell));gap:2px;touch-action:none;user-select:none;border-radius:12px;background:#152d2d;padding:6px;--cell:clamp(29px,8vw,43px)}.cell{background:#1c3332;border-radius:4px;display:grid;place-items:center}.cell.target{background:#65736d;box-shadow:inset 0 0 0 1px #a6b8a5}.cell.filled{border:1px solid #1a2928}.cell.preview{outline:3px solid #e5cb73;outline-offset:-2px}.cell.invalid{outline:3px solid #ee7d73;outline-offset:-2px}.tray{display:flex;flex-wrap:wrap;gap:8px;max-width:330px;justify-content:center}.piece{background:#214844;border:2px solid #557a72;border-radius:10px;padding:8px;touch-action:none;user-select:none;cursor:grab;min-width:85px;min-height:74px;display:grid;place-items:center}.piece.selected{border-color:#ffe19b;background:#346359}.piecegrid{display:grid;gap:2px;pointer-events:none}.tile{width:20px;height:20px;border-radius:3px;box-shadow:inset 0 1px 2px #ffffff60}.tile.blank{visibility:hidden}.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px 0}.actions{display:flex;gap:10px;flex-wrap:wrap}.actions a{display:inline-block;background:#295d58;border:1px solid #80aaa0;border-radius:12px;padding:12px;text-decoration:none;color:white}#status{min-height:40px}#overlay{position:fixed;inset:0;background:#071716df;display:grid;place-items:center;padding:18px;z-index:10}#overlay article{background:#24504b;border:2px solid #8fb8a5;padding:24px;border-radius:18px;text-align:center;max-width:440px}#overlay a{display:inline-block;padding:12px;background:#34796a;border-radius:9px;text-decoration:none}
+</style><script>
+/* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
+(()=>{'use strict';
+  const FILE="games/waffenschmied.html", BUILD_VERSION="1.0.2";
+  const IS_ISLAND=FILE==='index.html';
+  const MANIFEST=IS_ISLAND?'version.json':'../version.json';
+  const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
+  let checking=false;
+  // Kompatibilitaet mit bisherigen Links, aber keine globale Version mehr anhaengen.
+  window.islandVersionedUrl=input=>new URL(input,location.href).href;
+  async function checkVersion(){
+    if(checking||document.visibilityState==='hidden')return;
+    checking=true;
+    try{
+      const response=await fetch(MANIFEST+'?check='+Date.now(),{cache:'no-store'});
+      if(!response.ok)return;
+      const data=await response.json();
+      const published=data?.files?.[FILE];
+      if(typeof published!=='string'||!VALID.test(published)||published===BUILD_VERSION)return;
+      // Ein verzoegerter GitHub-Pages-Deploy darf keine Reload-Schleife erzeugen.
+      const key='island-file-update:'+FILE+':'+published;
+      const last=Number(sessionStorage.getItem(key)||0);
+      if(Date.now()-last<30000)return;
+      sessionStorage.setItem(key,String(Date.now()));
+      const url=new URL(location.href);
+      url.searchParams.delete('v'); // alten globalen Parameter entfernen
+      url.searchParams.set('update',published);
+      location.replace(url.href);
+    }catch(e){/* Offline: aktuelle Seite weiternutzen. */}
+    finally{checking=false;}
+  }
+  // Jedes Spiel prueft beim Start, nicht mitten in einer laufenden Runde.
+  checkVersion();
+  if(IS_ISLAND){
+    window.addEventListener('pageshow',()=>checkVersion());
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkVersion()});
+    setInterval(checkVersion,60000);
+  }
+})();
+</script></head><body><header><h1>⚔️ Waffenschmied</h1><button id="helpBtn" aria-label="Erklärung ein- oder ausklappen" aria-expanded="false">❓</button></header>
+<div class="stats"><span id="round"></span><span id="progress"></span><span id="reward"></span></div>
+<div id="help" hidden><b>⚔️ Klingen-Puzzle</b><p>Setze die Metallstücke lückenlos in die helle Waffen-Silhouette. <b>Tippe</b> ein Stück an und dann auf die gewünschte Position im Raster, oder <b>ziehe</b> es direkt dorthin. Mit ↻ kannst du das ausgewählte Stück drehen.</p><p>Ein bereits eingesetztes Stück kannst du antippen, um es zurückzunehmen. Es gibt <b>kein Zeitlimit</b> und keine Fehlerstrafe. Jedes Rätsel ist garantiert lösbar. Nach dem Erfolg erhältst du Waffen für dein Insellager, soweit Platz ist.</p></div>
+<section id="forge"><p id="status" aria-live="polite">Fülle die Waffenform mit allen Metallstücken.</p><div class="layout"><div class="board-wrap"><div id="board" class="board" aria-label="Waffen-Puzzle"></div></div><div><b>Metallstücke</b><div id="tray" class="tray"></div><div class="controls"><button id="rotate">↻ Drehen</button><button id="undo">↶ Zurücknehmen</button></div></div></div></section>
+<div class="actions"><button id="restart">🔄 Neues Rätsel</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div>
+<div id="overlay" hidden role="dialog" aria-modal="true"><article><h2>🎉 Klinge geschmiedet!</h2><p id="winText"></p><a href="../index.html">🏝️ Zurück zur Insel</a><p><button id="again">🔄 Noch eine Runde</button></p></article></div>
+<script>
+'use strict';
+const KEY='enchanted-islands-v01', WINKEY='smith';
+const $=s=>document.querySelector(s);
+let wins=0;try{wins=Number(JSON.parse(localStorage.getItem(KEY))?.mineGameWins?.[WINKEY]||0)}catch{}
+let level=1,reward=2,pieces=[],target=new Set(),placed=new Map(),selected=null,finished=false,drag=null,preview=[];
+const board=$('#board'),tray=$('#tray'),status=$('#status'),overlay=$('#overlay');
+const colors=['#f4c36b','#79c4cd','#d89aba','#a8cf86','#dca27b','#b1a6e4','#e2d579','#89b1e2'];
+let help=localStorage.getItem('smith-help')==='true';function renderHelp(){$('#help').hidden=!help;$('#helpBtn').setAttribute('aria-expanded',String(help))}renderHelp();$('#helpBtn').onclick=()=>{help=!help;localStorage.setItem('smith-help',String(help));renderHelp()};
+const key=(x,y)=>x+','+y,neighbors=([x,y])=>[[x+1,y],[x-1,y],[x,y+1],[x,y-1]];
+function shape(type){let cells=[];const add=(x,y)=>cells.push([x,y]);if(type===0){ // sword
+  add(3,0);for(let y=1;y<=7;y++)for(let x=2;x<=4;x++)add(x,y);
+  for(let x=1;x<=5;x++)add(x,8);add(3,9);add(3,10);
+}else if(type===1){ // axe
+  for(let y=1;y<=10;y++)add(4,y);
+  for(let y=1;y<=4;y++)for(let x=1;x<=3;x++)add(x,y);
+  add(2,0);add(3,0);
+}else{ // dagger
+  add(3,1);for(let y=2;y<=6;y++)for(let x=2;x<=4;x++)add(x,y);
+  for(let x=1;x<=5;x++)add(x,7);add(3,8);add(3,9);add(3,10);
+}return cells}
+function connected(cells){if(!cells.length)return false;let set=new Set(cells.map(c=>key(...c))),seen=new Set([key(...cells[0])]),todo=[cells[0]];while(todo.length){for(const n of neighbors(todo.pop())){const k=key(...n);if(set.has(k)&&!seen.has(k)){seen.add(k);todo.push(n)}}}return seen.size===cells.length}
+function split(cells){if(cells.length<7)return null;for(let trial=0;trial<250;trial++){const goal=Math.max(3,Math.min(cells.length-3,Math.floor(cells.length*(.35+Math.random()*.3))));const pool=new Set(cells.map(c=>key(...c)));let seed=cells[Math.floor(Math.random()*cells.length)],part=[seed],have=new Set([key(...seed)]);while(part.length<goal){const options=[];for(const c of part)for(const n of neighbors(c)){const k=key(...n);if(pool.has(k)&&!have.has(k))options.push(n)}if(!options.length)break;const n=options[Math.floor(Math.random()*options.length)];have.add(key(...n));part.push(n)}if(part.length!==goal)continue;const rest=cells.filter(c=>!have.has(key(...c)));if(connected(rest))return [part,rest]}return null}
+function partition(cells,count){for(let attempt=0;attempt<40;attempt++){let groups=[cells];while(groups.length<count){const choices=groups.map((g,i)=>({g,i})).filter(o=>o.g.length>=7).sort((a,b)=>b.g.length-a.g.length);let did=false;for(const {g,i} of choices){const result=split(g);if(result){groups.splice(i,1,...result);did=true;break}}if(!did)break}if(groups.length===count)return groups}return null}
+function normalize(cells){let minX=Math.min(...cells.map(c=>c[0])),minY=Math.min(...cells.map(c=>c[1]));return cells.map(([x,y])=>[x-minX,y-minY])}
+function rotated(cells){return normalize(cells.map(([x,y])=>[-y,x]))}
+function saveReward(){try{let s=JSON.parse(localStorage.getItem(KEY));if(!s||s.version!==1||!s.res)throw Error('Kein gültiger Inselspielstand');let cap=100+(s.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((n,b)=>n+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);const got=Math.max(0,Math.min(reward,cap-(Number(s.res.weapons)||0)));s.res.weapons=(Number(s.res.weapons)||0)+got;s.mineGameWins=s.mineGameWins||{};s.mineGameWins[WINKEY]=(Number(s.mineGameWins[WINKEY])||0)+1;localStorage.setItem(KEY,JSON.stringify(s));return got}catch(e){status.textContent='⚠️ Belohnung konnte nicht gespeichert werden: '+e.message;return null}}
+function makeGrid(cells,color){const normalized=normalize(cells),width=Math.max(...normalized.map(c=>c[0]))+1,height=Math.max(...normalized.map(c=>c[1]))+1,keys=new Set(normalized.map(c=>key(...c)));const el=document.createElement('div');el.className='piecegrid';el.style.gridTemplateColumns=`repeat(${width},20px)`;for(let y=0;y<height;y++)for(let x=0;x<width;x++){let tile=document.createElement('span');tile.className='tile'+(keys.has(key(x,y))?'':' blank');tile.style.background=color;el.appendChild(tile)}return el}
+function update(){const remaining=pieces.filter(p=>!placed.has(p.id)).length;$('#progress').textContent='Stücke übrig: '+remaining+'/'+pieces.length;$('#rotate').disabled=selected===null;$('#undo').disabled=placed.size===0}
+function draw(){board.innerHTML='';const occupancy=new Map();for(const [id,pos] of placed){const p=pieces[id];for(const [dx,dy] of p.cells)occupancy.set(key(pos.x+dx,pos.y+dy),id)}for(let y=0;y<11;y++)for(let x=0;x<7;x++){const cell=document.createElement('div'),k=key(x,y),id=occupancy.get(k);cell.className='cell'+(target.has(k)?' target':'')+(id!==undefined?' filled':'');if(id!==undefined)cell.style.background=colors[id%colors.length];cell.dataset.x=x;cell.dataset.y=y;board.appendChild(cell)}tray.innerHTML='';for(const p of pieces){if(placed.has(p.id))continue;const btn=document.createElement('div');btn.className='piece'+(selected===p.id?' selected':'');btn.setAttribute('role','button');btn.setAttribute('tabindex','0');btn.setAttribute('aria-label','Metallstück '+(p.id+1)+' auswählen');btn.dataset.id=p.id;btn.appendChild(makeGrid(p.cells,colors[p.id%colors.length]));btn.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(p.id)}});tray.appendChild(btn)}update()}
+function choose(id){if(finished)return;selected=id;draw();status.textContent='Stück gewählt: auf die Waffenform tippen oder mit ↻ drehen.'}
+function canPlace(id,x,y){const p=pieces[id];const occupied=new Set();for(const [other,pos] of placed)if(other!==id)for(const [dx,dy] of pieces[other].cells)occupied.add(key(pos.x+dx,pos.y+dy));return p.cells.every(([dx,dy])=>target.has(key(x+dx,y+dy))&&!occupied.has(key(x+dx,y+dy)))}
+function previewAt(id,x,y){clearPreview();if(id===null)return;const valid=canPlace(id,x,y);for(const [dx,dy] of pieces[id].cells){const cell=board.querySelector(`.cell[data-x="${x+dx}"][data-y="${y+dy}"]`);if(cell){cell.classList.add(valid?'preview':'invalid');preview.push(cell)}}}
+function clearPreview(){for(const el of preview)el.classList.remove('preview','invalid');preview=[]}
+function tryPlace(id,x,y){if(id===null)return;if(!canPlace(id,x,y)){status.textContent='Hier passt das Stück nicht. Du kannst es drehen oder anders platzieren.';clearPreview();return}placed.set(id,{x,y});selected=null;clearPreview();draw();if(placed.size===pieces.length){const got=saveReward();if(got!==null){finished=true;$('#winText').textContent='+'+got+' Waffen ins Insellager geliefert'+(got<reward?' (Lager voll)':'')+'.';overlay.hidden=false;$('#again').focus()}else{status.textContent='⚠️ Belohnung konnte nicht gespeichert werden. Bitte Spielstand prüfen.'}}else status.textContent='Gut! Setze die übrigen Metallstücke ein.'}
+function removeAt(x,y){for(const [id,pos] of placed){if(pieces[id].cells.some(([dx,dy])=>pos.x+dx===x&&pos.y+dy===y)){placed.delete(id);selected=id;draw();status.textContent='Stück zurückgenommen.';return true}}return false}
+function cellAt(clientX,clientY){const rect=board.getBoundingClientRect();if(clientX<rect.left||clientX>=rect.right||clientY<rect.top||clientY>=rect.bottom)return null;const cell=document.elementFromPoint(clientX,clientY)?.closest('.cell');if(!cell||!board.contains(cell))return null;return {x:Number(cell.dataset.x),y:Number(cell.dataset.y)}}
+tray.addEventListener('pointerdown',e=>{const btn=e.target.closest('.piece');if(!btn||finished)return;const id=Number(btn.dataset.id);choose(id);drag={id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};tray.setPointerCapture(e.pointerId)});
+tray.addEventListener('pointermove',e=>{if(!drag||drag.pointerId!==e.pointerId)return;if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>9)drag.moved=true;if(drag.moved){const cell=cellAt(e.clientX,e.clientY);if(cell)previewAt(drag.id,cell.x,cell.y);else clearPreview()}});
+tray.addEventListener('pointerup',e=>{if(!drag||drag.pointerId!==e.pointerId)return;const d=drag;drag=null;const cell=cellAt(e.clientX,e.clientY);if(d.moved&&cell)tryPlace(d.id,cell.x,cell.y);else clearPreview()});
+tray.addEventListener('pointercancel',()=>{drag=null;clearPreview()});
+board.addEventListener('click',e=>{if(finished)return;const cell=e.target.closest('.cell');if(!cell)return;const x=Number(cell.dataset.x),y=Number(cell.dataset.y);if(selected!==null)tryPlace(selected,x,y);else removeAt(x,y)});
+$('#rotate').onclick=()=>{if(selected===null||finished)return;pieces[selected].cells=rotated(pieces[selected].cells);draw()};
+$('#undo').onclick=()=>{if(finished||!placed.size)return;const id=[...placed.keys()].pop();placed.delete(id);selected=id;draw();status.textContent='Letztes Stück zurückgenommen.'};
+function reset(){level=Math.min(8,1+Math.floor(wins/3));reward=2+Math.floor(level/3);finished=false;overlay.hidden=true;selected=null;placed.clear();target=new Set(shape(Math.floor(Math.random()*3)).map(c=>key(...c)));const coords=[...target].map(k=>k.split(',').map(Number));let groups=partition(coords,Math.min(8,4+Math.floor(level/2)));if(!groups){groups=partition(coords,4)||[coords]}pieces=groups.map((g,id)=>({id,cells:normalize(g)}));for(const p of pieces){const turns=Math.floor(Math.random()*4);for(let j=0;j<turns;j++)p.cells=rotated(p.cells)}$('#round').textContent='Stufe '+level;$('#reward').textContent='🎁 '+reward+' Waffen';status.textContent='Setze alle Metallstücke ohne Lücken in die Waffenform.';draw()}
+$('#restart').onclick=reset;$('#again').onclick=()=>{wins++;reset()};reset();
+</script></body></html>
