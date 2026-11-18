@@ -3,7 +3,7 @@
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="games/geologe.html", BUILD_VERSION="1.0.1";
+  const FILE="games/geologe.html", BUILD_VERSION="1.0.3";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -48,10 +48,43 @@ const ROCKS={stone:'#92989c',coal:'#303a42',ore:'#438fc7',gold:'#e8b72c'};
 function rockSvg(type){let c=ROCKS[type];return `<svg aria-hidden="true" viewBox="0 0 64 64" width="80%" height="80%"><path d="M6 42 17 20 37 9 53 21 59 44 43 57 18 55Z" fill="${c}" stroke="#26313a" stroke-width="3" stroke-linejoin="round"/><path d="M17 20 30 29 37 9 53 21 44 34 59 44 43 57 30 42 18 55 6 42 30 29" fill="none" stroke="#25313a" stroke-opacity=".55" stroke-width="2"/><path d="M17 20 37 9 30 29 6 42Z" fill="#fff" opacity=".24"/><path d="M30 29 44 34 43 57 30 42 18 55 6 42Z" fill="#000" opacity=".16"/></svg>`}
 function tileMarkup(c){return !c?'':c.special?EM[c.special]:ROCKS[c.kind]?rockSvg(c.kind):EM[c.kind]}
 let field=[],depth=0,selected=-1,busy=false,saved=0,shiftDir=1,success=false;
+let expeditionSnapshot=null;
 let helpVisible=localStorage.getItem(HELP)!=='false';const help=document.querySelector('#help');function updateHelp(){help.hidden=!helpVisible}document.querySelector('#helpButton').onclick=()=>{helpVisible=!helpVisible;localStorage.setItem(HELP,String(helpVisible));updateHelp()};updateHelp();
 function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch{return null}}
 function active(){let s=load();return s?.version===1&&s.geology?.active&&s.geology.active.endsAt>Date.now()?s:null}
-function endIfDone(){if(success)return true;if(active())return false;success=true;busy=true;document.querySelector('#result').textContent='Du hast '+depth+' Schichten abgetragen und '+saved+' Sekunden Expeditionszeit eingespart.';document.querySelector('#shade').hidden=false;return true}
+function endIfDone(){
+ if(success)return true;
+ let state=load(),exp=state?.version===1?state.geology?.active:null;
+ // A different tab can save an older island state while this game is open.
+ // Recover the still-running expedition rather than displaying a false success.
+ if(!exp&&expeditionSnapshot&&expeditionSnapshot.endsAt>Date.now()&&state?.version===1){
+   state.geology=state.geology||{};
+   state.geology.active={...expeditionSnapshot};
+   localStorage.setItem(KEY,JSON.stringify(state));
+   exp=state.geology.active;
+   notice.textContent='⏳ Die laufende Expedition wurde wiederhergestellt.';
+ }
+ if(!exp){
+   success=true;busy=true;
+   document.querySelector('#shade h2').textContent='⚠️ Expedition nicht gefunden';
+   document.querySelector('#result').textContent='Der gespeicherte Expeditionsauftrag fehlt. Es wurde kein Erfolg und keine Belohnung gebucht. Bitte zur Insel zurückkehren.';
+   document.querySelector('#shade').hidden=false;
+   return true;
+ }
+ expeditionSnapshot={...exp};
+ if(exp.endsAt>Date.now())return false;
+ const type=exp.type,count=Number(exp.count)||0;
+ if(!state.geology.inventory)state.geology.inventory={stone:0,coal:0,ore:0,gold:0};
+ if(['stone','coal','ore','gold'].includes(type)&&count>0){
+   state.geology.inventory[type]=(Number(state.geology.inventory[type])||0)+count;
+ }
+ state.geology.active=null;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ success=true;busy=true;
+ document.querySelector('#shade h2').textContent='🎉 Expedition abgeschlossen!';
+ document.querySelector('#result').textContent='Du hast '+depth+' Schichten abgetragen und '+saved+' Sekunden Expeditionszeit eingespart. '+count+' '+({stone:'Stein',coal:'Kohle',ore:'Erz',gold:'Gold'}[type]||'')+'vorkommen liegen jetzt im Fundinventar der Insel.';
+ document.querySelector('#shade').hidden=false;return true;
+}
 function weights(d){let w=d<5?{grass:28,sand:25,earth:30,rubble:17}:d<10?{grass:9,sand:13,earth:23,rubble:25,stone:16,coal:14}:d<20?{earth:6,rubble:18,stone:26,coal:28,ore:22}:d<30?{rubble:8,stone:20,coal:19,ore:38,gold:12,crystal:3}:{stone:13,coal:10,ore:40,gold:30,crystal:7};return w}
 function material(d){let w=weights(d),total=Object.values(w).reduce((a,b)=>a+b,0),r=Math.random()*total;for(let [k,v] of Object.entries(w)){r-=v;if(r<0)return k}return Object.keys(w)[0]}
 function tile(d){return {kind:material(d),special:null,id:Math.random().toString(36).slice(2)}}
@@ -246,7 +279,7 @@ grid.addEventListener('pointerup',e=>{
 });
 grid.addEventListener('pointercancel',()=>{pointerStart=-1;pointerId=null;dragTarget=-1;dragMoved=false;clearDragPreview()});
 document.querySelector('#shift').onclick=lateral;
-function init(){field=Array.from({length:64},()=>tile(0));let guard=0;while(matches().hit.size&&guard++<100){for(let i of matches().hit)field[i]=tile(0)}draw();if(!possible())lateral();else endIfDone()}
+function init(){expeditionSnapshot=load()?.geology?.active?{...load().geology.active}:null;field=Array.from({length:64},()=>tile(0));let guard=0;while(matches().hit.size&&guard++<100){for(let i of matches().hit)field[i]=tile(0)}draw();if(!possible())lateral();else endIfDone()}
 init();setInterval(()=>{if(!success&&!busy){draw();endIfDone()}},1000);
 })();
 </script></body></html>
