@@ -43,10 +43,20 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 .extra-stats{font-size:1rem;gap:8px}
 @media(max-width:800px){.resources{justify-content:flex-start;gap:8px}.resources .stats{gap:8px;font-size:1rem}}
 @media(max-width:390px){.resources,.resources .stats{gap:5px}.resources .stats{font-size:.91rem}.resource-toggle{flex-basis:36px;width:36px;min-width:36px;height:36px;min-height:36px}.home-link{width:36px;height:36px;min-width:36px;min-height:36px}}
+
+/* Feste Ressourcen und Pfeil bilden eine einzige, niemals umbrechende Zeile. */
+.resources{display:grid!important;grid-template-columns:minmax(0,1fr) 40px;column-gap:6px!important;row-gap:8px;align-items:center;flex-wrap:nowrap!important}
+.resources .stats{display:flex!important;min-width:0;width:100%;flex-wrap:nowrap!important;justify-content:space-between!important;gap:3px!important;font-size:var(--resource-font-size,16px)!important;white-space:nowrap}
+.resources .stats span{white-space:nowrap;flex:0 0 auto}
+.resources .stats svg{width:1em;height:1em;vertical-align:-.15em}
+.resource-toggle{grid-column:2;grid-row:1;width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;margin:0!important;justify-self:end}
+.extra-stats{grid-column:1/-1;grid-row:2;width:100%;font-size:var(--resource-font-size,16px)!important;gap:8px}
+.extra-stats[hidden]{display:none!important}
+@media(max-width:390px){.resources{grid-template-columns:minmax(0,1fr) 36px;column-gap:5px!important}.resource-toggle{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important}}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.20";
+  const FILE="index.html", BUILD_VERSION="1.0.21";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -227,4 +237,28 @@ document.querySelector('#cancelBuild').onclick=e=>{e.stopPropagation();cancelBui
 
 
 const resourceToggle=document.querySelector('#toggleResources'),extraStats=document.querySelector('#extraStats');resourceToggle.onclick=()=>{const expanded=extraStats.hidden;extraStats.hidden=!expanded;resourceToggle.setAttribute('aria-expanded',String(expanded));resourceToggle.textContent=expanded?'▴':'▾';resourceToggle.title=expanded?'Weitere Rohstoffe ausblenden':'Weitere Rohstoffe anzeigen'};document.querySelector('#rotateBuild').onclick=e=>{e.stopPropagation();if(mode&&!demolition&&defs[mode]&&defs[mode].w!==defs[mode].h){rotation=(rotation+1)%2;draw()}};document.querySelector('#reset').onclick=()=>{if(!confirm('Gesamten Insel-Spielstand löschen?'))return;s=start();s.coalDeposits=[];s.oreDeposits=[];s.goldDeposits=[];s.geology={active:null,inventory:{stone:0,coal:0,ore:0,gold:0}};initRocks();save();selected=null;mode=null;edit=null;demolition=false;demolitionDraft=[];renderTools();renderDetails();renderStats();draw()};document.querySelector('#export').onclick=()=>{tick();let a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(s,null,2)],{type:'application/json'}));a.href=url;a.download='verzauberte-inseln-spielstand.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};document.querySelector('#import').onclick=()=>document.querySelector('#file').click();document.querySelector('#file').onchange=async e=>{try{let data=JSON.parse(await e.target.files[0].text());if(data.version!==1||!data.res||!Array.isArray(data.buildings)||!Array.isArray(data.roads))throw Error();s=data;if(!Array.isArray(s.trees))s.trees=[];if(!Array.isArray(s.fields))s.fields=[];initRocks();if(!Array.isArray(s.oreDeposits))s.oreDeposits=[];if(!Array.isArray(s.goldDeposits))s.goldDeposits=[];if(!Array.isArray(s.coalDeposits))s.coalDeposits=[];if(!s.geology)s.geology={active:null,inventory:{stone:0,coal:0,ore:0,gold:0}};if(!s.geology.inventory)s.geology.inventory={stone:0,coal:0,ore:0,gold:0};if(s.geology.inventory.coal==null)s.geology.inventory.coal=0;depositMode=null;for(let k of ['coal','ore','gold'])if(s.res[k]==null)s.res[k]=0;if(s.res.crystals==null)s.res.crystals=0;if(s.res.water==null)s.res.water=12;demolition=false;demolitionDraft=[];save();selected=null;renderTools();renderStats();renderDetails();draw();notify('Spielstand importiert.')}catch{notify('Ungültige Spielstanddatei.')}};window.addEventListener('resize',()=>{center();draw()});initRocks();save();renderTools();renderStats();requestAnimationFrame(()=>{center();tick()});setInterval(tick,1000);
-})();</script></body></html>
+})();</script><script>
+/* Passe beide Ressourcenzeilen an dieselbe Schriftgroesse an. Der Pfeil bleibt in Zeile 1. */
+(()=>{
+  const stats=document.getElementById('stats');
+  const resources=document.querySelector('.resources');
+  if(!stats||!resources)return;
+  let scheduled=false;
+  function fit(){
+    scheduled=false;
+    const spans=Array.from(stats.children);
+    if(!spans.length)return;
+    const available=stats.clientWidth;
+    if(!available)return;
+    for(let size=16;size>=10;size-=0.25){
+      resources.style.setProperty('--resource-font-size',size+'px');
+      const required=spans.reduce((sum,el)=>sum+el.getBoundingClientRect().width,0)+Math.max(0,spans.length-1)*3;
+      if(required<=available-1)break;
+    }
+  }
+  function schedule(){if(scheduled)return;scheduled=true;requestAnimationFrame(fit)}
+  new MutationObserver(schedule).observe(stats,{childList:true,subtree:true,characterData:true});
+  window.addEventListener('resize',schedule);
+  schedule();
+})();
+</script></body></html>
