@@ -30,10 +30,23 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 .resource-toggle{flex:0 0 auto;margin-left:2px;min-width:32px;min-height:31px;padding:4px 7px}
 .extra-stats{flex:0 0 100%;justify-content:flex-start}
 @media(max-width:800px){.resources{flex-basis:auto;justify-content:space-between}.resources .stats{gap:3px}}
+
+/* Einheitliche Schrift und gleichmaessige Abstaende in der Kopfzeile. */
+.home-link,.resource-toggle{width:40px;height:40px;min-width:40px;min-height:40px;box-sizing:border-box;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:9px}
+.home-link{font-size:1.8rem}
+.resource-toggle{font-size:1.1rem;line-height:1;margin:0;flex:0 0 40px}
+.resources,.resources .stats{justify-content:flex-start;gap:8px}
+.resources{flex-wrap:wrap;align-items:center}
+.resources .stats{flex:0 1 auto;min-width:0;flex-wrap:nowrap;font-size:1rem}
+.resources .stats span{white-space:nowrap}
+.resources .stats svg{width:1.12em;height:1.12em;vertical-align:-.2em}
+.extra-stats{font-size:1rem;gap:8px}
+@media(max-width:800px){.resources{justify-content:flex-start;gap:8px}.resources .stats{gap:8px;font-size:1rem}}
+@media(max-width:390px){.resources,.resources .stats{gap:5px}.resources .stats{font-size:.91rem}.resource-toggle{flex-basis:36px;width:36px;min-width:36px;height:36px;min-height:36px}.home-link{width:36px;height:36px;min-width:36px;min-height:36px}}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.19";
+  const FILE="index.html", BUILD_VERSION="1.0.20";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
