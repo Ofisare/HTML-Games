@@ -56,7 +56,7 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 .ship-icon{display:inline-block;width:1.55em;height:1.55em;vertical-align:-.4em;object-fit:contain} .stats .ship-icon{width:1.4em;height:1.4em;vertical-align:-.35em}.mining-combo{position:relative;display:inline-block;width:40px;height:40px;vertical-align:middle;flex:none}.mining-rock{position:absolute;left:0;top:0;width:27px;height:27px}.mining-rock svg{width:27px;height:27px}.mining-pick{position:absolute;left:7px;top:5px;font-size:29px;line-height:34px;white-space:nowrap}</style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.35";
+  const FILE="index.html", BUILD_VERSION="1.0.36";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -229,7 +229,7 @@ if(selectedTile){const {x,y,kind}=selectedTile;
 const exists=(kind==='rock'?s.rocks:kind==='ore'?s.oreDeposits:kind==='coal'?s.coalDeposits:kind==='gold'?s.goldDeposits:s.roads).some(p=>p.x===x&&p.y===y);
 if(!exists){selectedTile=null}else{
 document.querySelector('#forestGame').hidden=true;
-if(kind==='ore'||kind==='gold'||kind==='coal'){let name=GEO[kind].name+'vorkommen';el.innerHTML=tileInfo(rockSvg(kind),name,'Vom Geologen entdeckt. Ermöglicht eine passende Mine im Umkreis von 2 Feldern.','Expedition','games/'+kind+'mine.html','🎮 '+GEO[kind].name+'minen-Puzzle spielen')+'<p>Das Vorkommen bleibt erhalten.</p>';}
+if(kind==='ore'||kind==='gold'||kind==='coal'){let name=GEO[kind].name+'vorkommen';el.innerHTML=tileInfo(rockSvg(kind),name,'Vom Geologen entdeckt. Ermöglicht eine passende Mine im Umkreis von 2 Feldern.','Expedition','games/'+kind+'mine.html','🎮 '+GEO[kind].name+'minen-Puzzle spielen')+'<div class="actions"><button id="removeDeposit" class="danger">🗑 Vorkommen entfernen</button></div>';document.querySelector('#removeDeposit').onclick=()=>{if(!confirm(name+' dauerhaft entfernen?'))return;const list=kind==='ore'?'oreDeposits':kind==='coal'?'coalDeposits':'goldDeposits';s[list]=s[list].filter(p=>p.x!==x||p.y!==y);selectedTile=null;save();renderStats();renderDetails();draw();notify(name+' entfernt.');};}
 else if(kind==='rock'){
 el.innerHTML=tileInfo('🪨','Felsvorkommen','Natürliche Rohstoffquelle für Steinbrüche im Umkreis von 2 Feldern.','Natürlich entstanden','games/steinbruch.html','⛏️ Steinbruch-Puzzle spielen')+'<div class="actions"><button id="removeRock" class="danger">🗑 Entfernen</button></div>';
 document.querySelector('#removeRock').onclick=()=>{if(!confirm('Felsen dauerhaft entfernen? Er kann nicht neu platziert werden.'))return;s.rocks=s.rocks.filter(p=>p.x!==x||p.y!==y);selectedTile=null;save();renderDetails();draw();notify('Felsen entfernt.')};
