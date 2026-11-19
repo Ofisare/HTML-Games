@@ -1,10 +1,10 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Erzmine · Erzsortierung</title><style>*{box-sizing:border-box}body{margin:0;background:#112729;color:#eef4e8;font:16px system-ui,sans-serif;padding:18px;max-width:750px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:10px}h1{font-size:clamp(22px,5vw,31px)}button,a{font:inherit;touch-action:manipulation}button{background:#295d58;border:1px solid #80aaa0;color:white;border-radius:12px;padding:12px;cursor:pointer}button:disabled{opacity:.5}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.stats span{background:#234e4b;padding:9px;border-radius:9px}#board{display:grid;gap:5px;aspect-ratio:1;max-width:570px;margin:14px auto;touch-action:none;user-select:none;-webkit-user-select:none}#board button{min-width:0;min-height:0;padding:0;border:2px solid #536b67;border-radius:9px;font-size:clamp(19px,6vw,38px);display:grid;place-items:center;transition:transform .16s,background .16s;touch-action:none;user-select:none;-webkit-user-select:none}#board button.selected{outline:3px solid #fff3a0;transform:scale(.95)}#board button.open{background:#375d56}#board button.hidden{background:#374b49}#board button.matched{background:#9d8040}#board button:focus-visible{outline:3px solid white}#message{min-height:45px;line-height:1.5}#help{background:#1c3b3b;padding:14px;border-radius:12px;margin:12px 0}#help[hidden],#overlay[hidden]{display:none}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.actions a{display:inline-block;background:#295d58;border:1px solid #80aaa0;border-radius:12px;padding:12px;text-decoration:none;color:white}#overlay{position:fixed;inset:0;background:#061819d9;display:grid;place-items:center;padding:20px;z-index:9}#overlay article{background:#244e49;border:2px solid #8fb8a5;padding:28px;border-radius:18px;text-align:center;max-width:440px}#overlay a{display:inline-block;background:#34796a;padding:14px;border-radius:10px;text-decoration:none;color:white}.rock{display:inline-block;width:70%;aspect-ratio:1;clip-path:polygon(10% 65%,26% 24%,60% 8%,87% 28%,97% 70%,72% 94%,28% 90%);background:var(--rock);box-shadow:inset 8px 9px #ffffff44,inset -8px -9px #00000044;border:2px solid #28383a}.coal{--rock:#303a42}.ore{--rock:#438fc7}.gold{--rock:#e8b72c}
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Erzmine · Erzsortierung</title><style>*{box-sizing:border-box}body{margin:0;background:#112729;color:#eef4e8;font:16px system-ui,sans-serif;padding:18px;max-width:750px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:10px}h1{font-size:clamp(22px,5vw,31px)}button,a{font:inherit;touch-action:manipulation}button{background:#295d58;border:1px solid #80aaa0;color:white;border-radius:12px;padding:12px;cursor:pointer}button:disabled{opacity:.5}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.stats span{background:#234e4b;padding:9px;border-radius:9px}#board{display:grid;gap:5px;aspect-ratio:1;max-width:570px;margin:14px auto;touch-action:none;user-select:none;-webkit-user-select:none}#board button{min-width:0;min-height:0;padding:0;border:2px solid #536b67;border-radius:9px;font-size:clamp(19px,6vw,38px);display:grid;place-items:center;transition:transform .16s,background .16s;touch-action:none;user-select:none;-webkit-user-select:none}#board button.selected{outline:3px solid #fff3a0;transform:scale(.95)}#board button.open{background:#375d56}#board button.hidden{background:#374b49}#board button.matched{background:#9d8040}#board button:focus-visible{outline:3px solid white}#message{min-height:45px;line-height:1.5}#help{background:#1c3b3b;padding:14px;border-radius:12px;margin:12px 0}#help[hidden],#overlay[hidden]{display:none}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.actions a{display:inline-block;background:#295d58;border:1px solid #80aaa0;border-radius:12px;padding:12px;text-decoration:none;color:white}#overlay{position:fixed;inset:0;background:#061819d9;display:grid;place-items:center;padding:20px;z-index:9}#overlay article{background:#244e49;border:2px solid #8fb8a5;padding:28px;border-radius:18px;text-align:center;max-width:440px}#overlay a{display:inline-block;background:#34796a;padding:14px;border-radius:10px;text-decoration:none;color:white}.rock{display:inline-block;width:70%;aspect-ratio:1;clip-path:polygon(10% 65%,26% 24%,60% 8%,87% 28%,97% 70%,72% 94%,28% 90%);background:var(--rock);box-shadow:inset 8px 9px #ffffff44,inset -8px -9px #00000044;border:2px solid #28383a}.ore-legend{display:inline-flex;width:25px;height:25px;vertical-align:middle;align-items:center;justify-content:center}.ore-legend svg{width:100%;height:100%}.coal{--rock:#303a42}.ore{--rock:#438fc7}.gold{--rock:#e8b72c}
 /* Einheitliche kompakte Kopfzeile */
 header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}header h1{flex:1;min-width:0;font-size:clamp(18px,4.6vw,25px);line-height:1.2;margin:8px 0}.header-actions{display:flex;align-items:center;gap:7px;flex-shrink:0}.header-actions button,.header-actions .island-btn{box-sizing:border-box;display:grid;place-items:center;width:46px;height:46px;min-width:46px;min-height:46px;padding:0;margin:0;background:#32665f;color:white;border:1px solid #82a99d;border-radius:12px;text-decoration:none;font-size:24px;line-height:1;cursor:pointer}.header-actions .island-btn:focus-visible{outline:3px solid #fff}.actions:empty{display:none}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="games/oremine.html", BUILD_VERSION="1.0.2";
+  const FILE="games/oremine.html", BUILD_VERSION="1.0.3";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -48,7 +48,7 @@ let level=Math.min(5,1+Math.floor(wins/3)),reward=REWARD+Math.floor(level/2),fin
 let help=localStorage.getItem('mine-help-'+KIND)!=='false';function renderHelp(){document.querySelector('#help').hidden=!help;document.querySelector('#helpBtn').setAttribute('aria-expanded',String(help))}renderHelp();document.querySelector('#helpBtn').onclick=()=>{help=!help;localStorage.setItem('mine-help-'+KIND,String(help));renderHelp()};
 function saveReward(){let actual=0;try{let s=JSON.parse(localStorage.getItem(KEY));if(s?.version===1&&s.res){let cap=100+(s.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((n,b)=>n+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);actual=Math.max(0,Math.min(reward,cap-(Number(s.res[KIND])||0)));s.res[KIND]=(Number(s.res[KIND])||0)+actual;s.mineGameWins=s.mineGameWins||{};s.mineGameWins[KIND]=(Number(s.mineGameWins[KIND])||0)+1;localStorage.setItem(KEY,JSON.stringify(s))}}catch(e){msg.textContent='Speichern fehlgeschlagen: '+e.message}return actual}
 function win(){if(finished)return;finished=true;let got=saveReward();document.querySelector('#winText').textContent='+'+got+' '+NAME+' ins Insellager geliefert'+(got<reward?' (Lager voll)':'')+'.';overlay.hidden=false;document.querySelector('#again').focus()}
-document.querySelector('#again').onclick=()=>{location.reload()};document.querySelector('#reward').textContent='🎁 '+reward+' '+NAME;document.querySelector('#level').textContent='Stufe '+level;
+document.querySelector('#again').onclick=()=>{location.reload()};document.querySelector('#reward').innerHTML='<span class="ore-legend">'+oreSvg()+'</span> '+reward+' '+NAME;document.querySelector('#level').textContent='Stufe '+level;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const N=7,EM=['🪨','🔷','⚫','🟡','💎'];
 // Identische Gesteinsform wie rockSvg('ore') auf der Insel.
@@ -68,6 +68,18 @@ function animateGravity(origins,oldCells){
   });
   return Promise.all(animations);
 }
+// Animate the two actual stones before applying the swap to the game state.
+async function animateSwap(i,j){
+  const a=board.children[i],b=board.children[j];
+  if(!a||!b)return;
+  const ar=a.getBoundingClientRect(),br=b.getBoundingClientRect();
+  const dx=br.left-ar.left,dy=br.top-ar.top;
+  const opts={duration:230,easing:'ease-in-out',fill:'both'};
+  await Promise.all([
+    a.animate([{transform:'translate(0,0)'},{transform:`translate(${dx}px,${dy}px)`}],opts).finished.catch(()=>{}),
+    b.animate([{transform:'translate(0,0)'},{transform:`translate(${-dx}px,${-dy}px)`}],opts).finished.catch(()=>{})
+  ]);
+}
 function collapseWithOrigins(){
   let origins=Array(N*N).fill(null);
   for(let x=0;x<N;x++){
@@ -83,7 +95,33 @@ function hasMove(){for(let i=0;i<N*N;i++)for(let j of [i+1,i+N]){if(j>=N*N||(j==
 function fresh(){let a;do{a=Array.from({length:N*N},()=>Math.floor(Math.random()*5))}while(matches(a).size||!(()=>{cells=a;return hasMove()})());return a}
 function reset(){falling=false;finished=false;overlay.hidden=true;selected=-1;found=0;cells=fresh();render()}
 function render(){board.style.gridTemplateColumns='repeat('+N+',1fr)';board.innerHTML='';cells.forEach((v,i)=>{let b=document.createElement('button');if(v===1)b.innerHTML=oreSvg();else b.textContent=EM[v];b.dataset.index=i;b.classList.toggle('selected',selected===i);board.appendChild(b)});document.querySelector('#goal').textContent='Erz '+found+' / '+target}
-async function tap(i){if(finished||falling)return;if(selected<0){selected=i;render();return}let j=selected;selected=-1;if(i===j){render();return}if(Math.abs(i-j)!==N&&!(Math.abs(i-j)===1&&Math.floor(i/N)===Math.floor(j/N))){selected=i;render();return}[cells[i],cells[j]]=[cells[j],cells[i]];if(!matches(cells).size){[cells[i],cells[j]]=[cells[j],cells[i]];msg.textContent='Dieser Tausch ergibt keine Kombination.';render();return}falling=true;let chain=0;while(matches(cells).size&&chain++<30){let hit=matches(cells);for(let k of hit){if(cells[k]===1)found++;cells[k]=-1}let origins=collapseWithOrigins();await animateGravity(origins)}falling=false;msg.textContent='Erz gesammelt: '+found+' / '+target;if(found>=target){render();win();return}if(!hasMove())cells=fresh();render()}
+async function tap(i){
+ if(finished||falling)return;
+ if(selected<0){selected=i;render();return}
+ let j=selected;selected=-1;
+ if(i===j){render();return}
+ if(Math.abs(i-j)!==N&&!(Math.abs(i-j)===1&&Math.floor(i/N)===Math.floor(j/N))){selected=i;render();return}
+ falling=true;
+ // The stones move first, then the board is redrawn. Invalid swaps also visibly return.
+ await animateSwap(i,j);
+ [cells[i],cells[j]]=[cells[j],cells[i]];
+ if(!matches(cells).size){
+   render();await animateSwap(i,j);
+   [cells[i],cells[j]]=[cells[j],cells[i]];
+   msg.textContent='Dieser Tausch ergibt keine Kombination.';
+   falling=false;render();return;
+ }
+ render();
+ let chain=0;
+ while(matches(cells).size&&chain++<30){
+   let hit=matches(cells);
+   for(let k of hit){if(cells[k]===1)found++;cells[k]=-1}
+   let origins=collapseWithOrigins();await animateGravity(origins);
+ }
+ falling=false;msg.textContent='Erz gesammelt: '+found+' / '+target;
+ if(found>=target){render();win();return}
+ if(!hasMove())cells=fresh();render();
+}
 let pointerStart=null;
 board.addEventListener('pointerdown',e=>{
  const el=e.target.closest('button[data-index]');if(!el||finished||falling)return;
