@@ -65,7 +65,7 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.37";
+  const FILE="index.html", BUILD_VERSION="1.0.38";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -220,7 +220,7 @@ function renderSea(){let el=document.querySelector('#seaContent');if(!el)return;
  }
  el.dataset.seaView='active:'+a.phase;
  let phase={out:'⛵ Hinreise',explore:'🗺️ Erkundung',back:'⛵ Rückreise'}[a.phase];let dur=a.phase==='explore'?SEA_EXPLORE:SEA_TRAVEL;let remaining=Math.max(0,a.endsAt-now);
- el.innerHTML='<p><b>'+phase+'</b> · 👥 '+a.crew+' · 🍎 '+a.food+' · 💧 '+a.water+' · ⚔️ '+a.weapons+'</p><p>Restzeit: <b>'+seaTime(remaining)+'</b> '+(a.playing?'(Erkundung pausiert)':'')+'</p><progress max="'+dur+'" value="'+Math.min(dur,Math.max(0,dur-remaining))+'" style="width:100%"></progress><p>💎 Garantiert: 2 · Bonus: '+(a.bonus||0)+'</p><div class="actions"><button id="seaPlay">'+(a.phase==='explore'?'🗺️ Insel erkunden':'⛵ Kurs halten!')+'</button></div><p class="hint">Du musst nichts spielen: Die Expedition läuft automatisch weiter. Die Erkundungsuhr pausiert nur während des aktiven Abenteuers.</p>';
+ el.innerHTML='<p><b>'+phase+'</b> · 👥 '+a.crew+' · 🍎 '+a.food+' · 💧 '+a.water+' · ⚔️ '+a.weapons+'</p><p>Restzeit: <b id="seaRemaining">'+seaTime(remaining)+'</b> '+(a.playing?'(Erkundung pausiert)':'')+'</p><progress id="seaProgress" max="'+dur+'" value="'+Math.min(dur,Math.max(0,dur-remaining))+'" style="width:100%"></progress><p>💎 Garantiert: 2 · Bonus: <span id="seaBonus">'+(a.bonus||0)+'</span></p><div class="actions"><button id="seaPlay">'+(a.phase==='explore'?'🗺️ Insel erkunden':'⛵ Kurs halten!')+'</button></div><p class="hint">Du musst nichts spielen: Die Expedition läuft automatisch weiter. Die Erkundungsuhr pausiert nur während des aktiven Abenteuers.</p>';
  el.querySelector('#seaPlay').onclick=()=>seaPlay(a.phase==='explore'?'explore':'sail');
 }
 
