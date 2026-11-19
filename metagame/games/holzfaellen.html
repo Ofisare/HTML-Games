@@ -1,9 +1,10 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Waldarbeiter – Die Verzauberten Inseln</title><style>
 :root{font-family:system-ui,sans-serif;color:#f2f5ed;background:#122e32}*{box-sizing:border-box}body{margin:0;padding:12px;max-width:650px;margin-inline:auto}h1{font-size:1.45rem;margin:8px 0}.heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.help-toggle{padding:5px 12px;font-size:1.35rem;font-weight:bold;min-width:43px;background:#345b62}.help-toggle[aria-expanded="true"]{background:#247f68}.muted{color:#bfd2c9}#board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;background:#30594c;padding:6px;border-radius:14px;touch-action:manipulation;user-select:none} .tile{aspect-ratio:1;min-width:0;border:0;border-radius:7px;background:#80aa6c;display:grid;place-items:center;font-size:clamp(20px,7vw,39px);position:relative;padding:0;box-shadow:inset 0 -3px #0002}.tile:nth-child(odd){background:#8bb774}.tile.sel{outline:3px solid #ffe174;z-index:1}.tile.possible{box-shadow:inset 0 0 0 3px #e8ef7d}.tile:disabled{opacity:1;color:inherit}.tile .small{position:absolute;right:3px;bottom:1px;font-size:10px;color:#14372c}button{font:inherit;color:white;background:#36776a;border:1px solid #6ba995;border-radius:10px;padding:12px;cursor:pointer}button:disabled{opacity:.35}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}.row button{flex:1}.panel{background:#23484b;padding:12px;border-radius:12px;margin:10px 0}#status{min-height:2.5em;color:#ffe49c}#result[hidden]{display:none}#result{position:fixed;inset:0;z-index:40;background:rgba(5,20,24,.82);display:flex;align-items:center;justify-content:center;padding:18px;margin:0;border:0;border-radius:0}#result .success-dialog{width:min(100%,410px);background:#23484b;border:2px solid #d9b96c;border-radius:18px;padding:24px;text-align:center;box-shadow:0 15px 55px #0009}#result h2{margin-top:0}#result button{width:100%;font-weight:700}.pill{background:#3b6b5a;border-radius:20px;padding:5px 10px}a{color:#ffdc8c} .secondary{background:#4b6067} .primary{background:#278c50} .tile:focus-visible{outline:3px solid white}.fall-arrow{position:absolute;inset:2px;display:grid;place-items:center;padding:0;border:2px solid #fff3a2;border-radius:8px;background:#165b4de8;color:#fff8bc;font-size:clamp(19px,6vw,34px);font-weight:900;z-index:3;box-shadow:0 2px 7px #0008}.tile.fall-target{box-shadow:inset 0 0 0 3px #fff3a2}#help[hidden]{display:none}
+ .heading h1{flex:1;min-width:0}.heading{margin-bottom:12px}.top-action{font-size:1.45rem;min-width:48px;min-height:48px;display:grid;place-items:center;padding:8px;background:#345b62}.top-action:focus-visible{outline:3px solid #fff}.heading{align-items:center}.heading h1{font-size:clamp(1.1rem,5vw,1.45rem)}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="games/holzfaellen.html", BUILD_VERSION="1.0.1";
+  const FILE="games/holzfaellen.html", BUILD_VERSION="1.0.3";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -40,7 +41,7 @@
   }
 })();
 </script>
-</head><body><a href="../index.html">← Zurück zur Insel</a><div class="heading"><h1>🪓 Waldarbeiter-Puzzle</h1><button id="helpToggle" class="help-toggle" type="button" aria-label="Spielerklärung ein- oder ausblenden" aria-controls="help" aria-expanded="true">?</button></div><div id="help" class="panel muted"><p>Fälle alle Bäume, sammle die liegenden Stämme ein und erreiche danach die Hütte. Felsen und andere Bäume blockieren die Fallrichtung.</p><p>Tippe auf einen benachbarten Baum. Die Pfeile direkt auf dem Spielfeld zeigen mögliche Fallrichtungen. Ein Stamm braucht zwei freie Felder. Tippe auf einen Pfeil, um den Baum zu fällen. Beim Weiterlaufen verschwindet die Auswahl. Tippe auf benachbarte Stammstücke, um sie einzusammeln.</p></div><div class="row"><span class="pill" id="count"></span><span class="pill" id="steps"></span></div><div id="board" aria-label="Spielfeld"></div><div class="panel"><div id="status" role="status">Tippe auf ein benachbartes Feld, um dich zu bewegen.</div></div><div id="result" hidden role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-dialog"><h2 id="successTitle">🎉 Erfolgreich!</h2><p id="reward"></p><button class="primary" id="claimAgain">🪓 Holz einsammeln &amp; noch eine Runde</button><button class="primary" id="claim">🏝️ Holz einsammeln und zurück zur Insel</button></div></div><div class="row"><button id="restart" class="secondary">↻ Neu starten</button><button id="abort" class="secondary">Abbrechen – zurück zur Insel</button></div>
+</head><body><div class="heading"><h1>🪓 Waldarbeiter-Puzzle</h1><button id="helpToggle" class="top-action" type="button" aria-label="Hilfe anzeigen" aria-controls="help" aria-expanded="false">❓</button><a class="top-action" href="../index.html" aria-label="Zur Insel" title="Zur Insel" style="text-decoration:none">🏝️</a></div><div id="help" class="panel muted"><p>Fälle alle Bäume, sammle die liegenden Stämme ein und erreiche danach die Hütte. Felsen und andere Bäume blockieren die Fallrichtung. Falls du dich festspielst, kannst du mit ↶ den letzten Zug zurücknehmen.</p><p>Tippe auf einen benachbarten Baum. Die Pfeile direkt auf dem Spielfeld zeigen mögliche Fallrichtungen. Ein Stamm braucht zwei freie Felder. Tippe auf einen Pfeil, um den Baum zu fällen. Beim Weiterlaufen verschwindet die Auswahl. Tippe auf benachbarte Stammstücke, um sie einzusammeln.</p></div><div class="row"><span class="pill" id="count"></span><span class="pill" id="steps"></span></div><div id="board" aria-label="Spielfeld"></div><div class="panel"><div id="status" role="status">Tippe auf ein benachbartes Feld, um dich zu bewegen.</div></div><div id="result" hidden role="dialog" aria-modal="true" aria-labelledby="successTitle"><div class="success-dialog"><h2 id="successTitle">🎉 Erfolgreich!</h2><p id="reward"></p><button class="primary" id="claimAgain">🪓 Holz einsammeln &amp; noch eine Runde</button><button class="primary" id="claim">🏝️ Holz einsammeln und zurück zur Insel</button></div></div>
 <script>
 (()=>{'use strict';const KEY='enchanted-islands-v01', HELP_KEY='enchanted-islands-forest-help-visible', SIZE=7;
 // Random forests are validated by a complete puzzle solver before play.
@@ -82,12 +83,23 @@ function generate(){
  for(let i=0;i<level;i++){let c=cells.pop();rows[Math.floor(c/SIZE)][c%SIZE]='T'}
  if(solve(rows,start%SIZE,Math.floor(start/SIZE),hutCell%SIZE,Math.floor(hutCell/SIZE)))return {rows,px:start%SIZE,py:Math.floor(start/SIZE),hx:hutCell%SIZE,hy:Math.floor(hutCell/SIZE)};
  }
- // Safe fallback: a randomized, obstacle-free forest with ample fall space.
+ // Guaranteed, solver-verified fallback. Never hand out an untested layout.
+ const candidates=[
+  [[1,1],[5,1],[1,5],[5,5]],
+  [[2,1],[4,1],[2,5],[4,5]],
+  [[1,2],[5,2],[1,4],[5,4]]
+ ];
+ for(const trees of candidates){
+  const rows=Array.from({length:SIZE},()=>Array(SIZE).fill('.'));
+  for(const [x,y] of trees)rows[y][x]='T';
+  if(solve(rows,3,3,3,6,250000)){target=4;return {rows,px:3,py:3,hx:3,hy:6}}
+ }
+ // Trivial safe fallback, always solvable: tree to right, open fall space, hut nearby.
  const rows=Array.from({length:SIZE},()=>Array(SIZE).fill('.'));
- for(let [x,y] of [[1,1],[5,1],[1,5],[5,5]])rows[y][x]='T';
- target=4;return {rows,px:3,py:3,hx:3,hy:5};
+ rows[3][4]='T';target=1;
+ return {rows,px:3,py:3,hx:3,hy:4};
 }
-let helpVisible=true;try{helpVisible=localStorage.getItem(HELP_KEY)!=='false'}catch(e){}
+let helpVisible=false;try{helpVisible=localStorage.getItem(HELP_KEY)==='true'}catch(e){}
 function renderHelp(){el('help').hidden=!helpVisible;el('helpToggle').setAttribute('aria-expanded',String(helpVisible));el('helpToggle').title=helpVisible?'Erklärung ausblenden':'Erklärung einblenden'}
 let board=[],player={x:3,y:3},hut={x:4,y:5},selected=null,logs=[],harvested=0,moves=0,stage=0,finished=false,claimed=false;
 const el=id=>document.getElementById(id), inBounds=(x,y)=>x>=0&&x<SIZE&&y>=0&&y<SIZE, dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y), get=(x,y)=>board[y]?.[x], logAt=(x,y)=>logs.find(l=>l.cells.some(c=>c.x===x&&c.y===y));
@@ -124,6 +136,6 @@ function render(){
 }
 function finish(){finished=true;let wood=Math.max(2,Math.min(8,target+3-Math.floor(moves/12)));el('reward').textContent=`Du hast alle ${target} Bäume gefällt und die Hütte erreicht. Belohnung: ${wood} Holz.`;el('result').hidden=false;el('claim').focus();el('claim').dataset.wood=wood;message('Auftrag geschafft! Holz jetzt ins Lager übertragen.');render()}
 function claim(again=false){if(!finished||claimed)return;claimed=true;const reward=Number(el('claim').dataset.wood);try{let state=JSON.parse(localStorage.getItem(KEY));if(!state||state.version!==1||!state.res)throw Error('Kein gültiger Inselspielstand');const oldWood=Number(state.res.wood)||0;const cap=100+(state.buildings||[]).filter(b=>b.type==='warehouse'&&!b.buildEndsAt).reduce((sum,b)=>sum+[0,50,100,200][Math.max(1,Math.min(3,b.level||1))],0);const gained=Math.min(reward,Math.max(0,cap-oldWood));state.res.wood=oldWood+gained;state.forestCompleted=Math.max(0,Number(state.forestCompleted)||0)+1;localStorage.setItem(KEY,JSON.stringify(state));if(again){load(false)}else location.href=window.islandVersionedUrl('../index.html?woodReward='+gained)}catch(e){claimed=false;message('Speichern fehlgeschlagen: '+e.message+'. Öffne zuerst das Metagame und versuche es erneut.')}}
-el('helpToggle').onclick=()=>{helpVisible=!helpVisible;try{localStorage.setItem(HELP_KEY,String(helpVisible))}catch(e){}renderHelp()};renderHelp();el('restart').onclick=()=>load(true);el('abort').onclick=()=>{location.href=window.islandVersionedUrl('../index.html')};el('claim').onclick=()=>claim(false);el('claimAgain').onclick=()=>claim(true);load(false);
+el('helpToggle').onclick=()=>{helpVisible=!helpVisible;try{localStorage.setItem(HELP_KEY,String(helpVisible))}catch(e){}renderHelp()};renderHelp();el('claim').onclick=()=>claim(false);el('claimAgain').onclick=()=>claim(true);load(false);
 })();
 </script></body></html>
