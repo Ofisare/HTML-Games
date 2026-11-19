@@ -17,10 +17,13 @@ button:disabled{opacity:.45}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wra
 .hint{text-align:center;color:#bad7cb;font-size:14px}#message{min-height:36px;text-align:center}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.actions a,#overlay a{display:inline-block;background:#295d58;color:white;border:1px solid #8cb7aa;border-radius:11px;padding:10px;text-decoration:none}
 #overlay{position:fixed;inset:0;background:#061819e8;display:grid;place-items:center;padding:20px;z-index:10}#overlay article{max-width:420px;text-align:center;background:#244e49;border:2px solid #8fb8a5;border-radius:18px;padding:24px}
+
+/* Einheitliche kompakte Kopfzeile */
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}header h1{flex:1;min-width:0;font-size:clamp(18px,4.6vw,25px);line-height:1.2;margin:8px 0}.header-actions{display:flex;align-items:center;gap:7px;flex-shrink:0}.header-actions button,.header-actions .island-btn{box-sizing:border-box;display:grid;place-items:center;width:46px;height:46px;min-width:46px;min-height:46px;padding:0;margin:0;background:#32665f;color:white;border:1px solid #82a99d;border-radius:12px;text-decoration:none;font-size:24px;line-height:1;cursor:pointer}.header-actions .island-btn:focus-visible{outline:3px solid #fff}.actions:empty{display:none}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="games/muenzpraegestaette.html", BUILD_VERSION="1.0.2";
+  const FILE="games/muenzpraegestaette.html", BUILD_VERSION="1.0.3";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -57,7 +60,7 @@ button:disabled{opacity:.45}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wra
   }
 })();
 </script></head><body>
-<header><h1>🪙 Münzprägestätte · Münzsortierung</h1><button id="helpBtn" aria-label="Hilfe ein- und ausklappen">❓</button></header>
+<header><h1>🪙 Münzprägestätte · Münzsortierung</h1><div class="header-actions"><button id="helpBtn" aria-label="Hilfe ein- und ausklappen">❓</button><a class="island-btn" href="../index.html" aria-label="Zur Insel" title="Zur Insel">🏝️</a></div></header>
 <div class="stats"><span id="level"></span><span id="moves"></span><span id="reward"></span></div>
 <div id="help" hidden><b>Sortiere die Münzprägungen!</b>
 <p>Jedes Feld zeigt oben links ein kleines Zielzeichen. Verschiebe ganze <b>Reihen nach links/rechts</b> oder <b>Spalten nach oben/unten</b>, bis jede Münze auf einem Feld mit dem passenden Zeichen liegt.</p>
@@ -66,7 +69,7 @@ button:disabled{opacity:.45}a{color:#b9e8cb}.stats{display:flex;gap:8px;flex-wra
 <p class="hint">Pfeile antippen oder auf dem Spielfeld wischen. Gleiche Symbole gehören zusammen.</p>
 <div class="board-wrap"><div id="board" class="board" aria-label="Münzsortierung"></div></div>
 <p id="message" aria-live="polite"></p>
-<div class="actions"><button id="restart">🔄 Neues Rätsel</button><a href="../index.html">✖ Abbrechen – zur Insel</a></div>
+<div class="actions"></div>
 <div id="overlay" hidden role="dialog" aria-modal="true"><article><h2>🎉 Münzen sortiert!</h2><p id="winText"></p><a href="../index.html">🏝️ Zurück zur Insel</a><p><button id="again">🔄 Noch eine Runde</button></p></article></div>
 <script>
 'use strict';
@@ -162,7 +165,7 @@ function win(){
   $('winText').textContent=`In ${moves} Zügen gelöst! +${got} Goldmünzen ins Insellager geliefert${got<REWARD?' (Lager voll)':''}.`;
   $('overlay').hidden=false;$('again').focus();
 }
-$('restart').onclick=init;
+
 $('again').onclick=()=>{wins++;level=Math.min(8,1+Math.floor(wins/3));init()};
 init();
 </script></body></html>
