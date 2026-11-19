@@ -65,7 +65,7 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.40";
+  const FILE="index.html", BUILD_VERSION="1.0.41";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -335,7 +335,13 @@ for(let i=1;i<b.w;i++){ctx.beginPath();ctx.moveTo(x+i*tileW,y+3);ctx.lineTo(x+i*
 for(let i=1;i<b.h;i++){ctx.beginPath();ctx.moveTo(x+3,y+i*tileH);ctx.lineTo(x+w-3,y+i*tileH);ctx.stroke()}
 let c=coords(b.x+b.w/2,b.y+b.h/2);
 ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${Math.max(28,Math.min(60,b.w*22))}px serif`;
-if(b.type==='shipyard'&&!b.buildEndsAt&&shipImage.complete&&shipImage.naturalWidth){ctx.drawImage(shipImage,c.x-32,c.y-41,64,64)}else if(!b.buildEndsAt&&miningRockType(b.type))paintMiningIcon(c.x,c.y-7,b.type,46);else ctx.fillText(b.buildEndsAt?'🚧':b.type==='house'&&houseLevel(b)>=3?'🏰':b.type==='house'&&houseLevel(b)===2?'🏘️':b.type==='center'?'🏛️':defs[b.type].emoji,c.x,c.y-7);
+if(b.type==='shipyard'&&!b.buildEndsAt&&shipImage.complete&&shipImage.naturalWidth){ctx.drawImage(shipImage,c.x-32,c.y-41,64,64)}else if(!b.buildEndsAt&&miningRockType(b.type))paintMiningIcon(c.x,c.y-7,b.type,46);else if(b.type==='house'&&!b.buildEndsAt&&houseLevel(b)>1){
+  // Ausbaustufen als zwei bzw. drei kleine Wohnhäuser statt Schloss darstellen.
+  const count=houseLevel(b),gap=count===3?23:27;
+  ctx.save();ctx.font=`${count===3?27:33}px serif`;
+  for(let i=0;i<count;i++)ctx.fillText('🏠',c.x+(i-(count-1)/2)*gap,c.y-7);
+  ctx.restore();
+}else ctx.fillText(b.buildEndsAt?'🚧':b.type==='center'?'🏛️':defs[b.type].emoji,c.x,c.y-7);
 ctx.font='bold 11px system-ui,sans-serif';ctx.lineWidth=3;ctx.strokeStyle='#4a3929';ctx.fillStyle='#fff8dc';
 let name=b.type==='center'?'Dorfzentrum':defs[b.type].name;
 ctx.strokeText(name,c.x,c.y+h*.28);ctx.fillText(name,c.x,c.y+h*.28);
