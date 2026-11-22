@@ -65,7 +65,7 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.46";
+  const FILE="index.html", BUILD_VERSION="1.0.47";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -183,7 +183,7 @@ async function startSea(){
   if(crew>populationMax()-population())return notify('Für dieses Deck fehlen '+(crew-(populationMax()-population()))+' freie Einwohner.');
   const payment={...cost};delete payment.population;payment.food=(payment.food||0)+food;payment.water=(payment.water||0)+water;
   if(!enough(payment))return notify('Deck nicht bezahlbar: '+costLabel(payment)+'. Prüfe den Deckbuilder.');
-  consume(payment);s.sea={phase:'out',crew,food,water,weapons,deck:[...list],endsAt:Date.now()+SEA_TRAVEL,loot:0,bonus:0,explored:false,runId:Date.now()};
+  consume(payment);const region=document.querySelector('#seaRegionSelect')?.value||'forest';s.sea={phase:'out',region,crew,food,water,weapons,deck:[...list],endsAt:Date.now()+SEA_TRAVEL,loot:0,bonus:0,explored:false,runId:Date.now()};
   save();renderStats();renderSea();notify('⛵ Expedition mit deinem Deck gestartet! Waffen und Materialien sind verbraucht.');
  }catch(e){notify('Kartenkatalog konnte nicht geladen werden: '+e.message)}finally{if(btn&&btn.isConnected)btn.disabled=false}
 }
@@ -221,10 +221,10 @@ function renderSea(){let el=document.querySelector('#seaContent');if(!el)return;
  }
  el.dataset.seaView=viewKey;
  el.innerHTML=(a&&a.phase==='done'?'<p>🎉 Letzte Expedition: 💎 '+a.reward+' Diamanten mitgebracht.</p>':'<p>Eine Crew kann automatisch Diamanten finden. Navigieren und Erkunden sind freiwillig.</p>')+
- '<p><label for="seaDeckSelect">🃏 Expeditionsdeck:</label> <select id="seaDeckSelect" aria-label="Expeditionsdeck auswählen"><option value="current">Mein gespeichertes Deck</option><option value="starter">Einfaches Startdeck</option><option value="legacy">Klassisches Deck</option></select></p><p id="seaDeckPreview" class="hint">Deck wird geladen …</p><p><a class="btn" href="games/deckbuilder.html">🃏 Karten einzeln zusammenstellen</a></p><p id="seaAvailability">⛵ Freie Schiffe: '+freeSeaShips()+' · 👥 Freie Einwohner: '+free+'</p><div class="actions"><span>🍎 6 Nahrung · 💧 6 Wasser + Deckkosten</span><button id="seaStart">⛵ Expedition starten</button></div><p id="expeditionMessage" role="status" style="color:#f2d48b;min-height:1em"></p><p class="hint">Dauer: 10 Min. Hinreise + 15 Min. Erkundung + 10 Min. Rückreise. Garantiert 2 💎, mit aktiver Erkundung mehr. Deckkosten einschließlich Waffen werden beim Start verbraucht. Einwohner sind während der Expedition reserviert.</p>';
+ '<p><label for="seaRegionSelect">🗺️ Expeditionsgebiet:</label> <select id="seaRegionSelect"><option value="forest">🌲 Verwunschener Wald · leicht</option><option value="swamp">🌫️ Nebelsümpfe · mittel</option><option value="highlands">⛰️ Wilde Hochlande · schwer</option><option value="ruins">🏚️ Verfluchte Ruinen · schwer</option></select></p><p id="seaRegionInfo" class="hint">Mögliche Gegner: Goblins, Spinnen und Bestien</p><p><label for="seaDeckSelect">🃏 Expeditionsdeck:</label> <select id="seaDeckSelect" aria-label="Expeditionsdeck auswählen"><option value="current">Mein gespeichertes Deck</option><option value="starter">Einfaches Startdeck</option><option value="legacy">Klassisches Deck</option></select></p><p id="seaDeckPreview" class="hint">Deck wird geladen …</p><p><a class="btn" href="games/deckbuilder.html">🃏 Karten einzeln zusammenstellen</a></p><p id="seaAvailability">⛵ Freie Schiffe: '+freeSeaShips()+' · 👥 Freie Einwohner: '+free+'</p><div class="actions"><span>🍎 6 Nahrung · 💧 6 Wasser + Deckkosten</span><button id="seaStart">⛵ Expedition starten</button></div><p id="expeditionMessage" role="status" style="color:#f2d48b;min-height:1em"></p><p class="hint">Dauer: 10 Min. Hinreise + 15 Min. Erkundung + 10 Min. Rückreise. Garantiert 2 💎, mit aktiver Erkundung mehr. Deckkosten einschließlich Waffen werden beim Start verbraucht. Einwohner sind während der Expedition reserviert.</p>';
  el.querySelector('#seaStart').onclick=startSea;
  // Auswahl nur beim Aufbau des See-Tabs initialisieren, nicht in jedem Sekundentakt.
- const deckSelect=el.querySelector('#seaDeckSelect'),preview=el.querySelector('#seaDeckPreview');
+ const regionSelect=el.querySelector('#seaRegionSelect'),regionInfo=el.querySelector('#seaRegionInfo');const regionHints={forest:'Goblins 50 %, Spinnen 30 %, Bestien 20 %',swamp:'Spinnen 50 %, Untote 35 %, Goblins 15 %',highlands:'Bestien 55 %, Goblins 25 %, Untote 20 %',ruins:'Untote 60 %, Spinnen 25 %, Bestien 15 %'};regionSelect.onchange=()=>{regionInfo.textContent='Mögliche Gegner: '+regionHints[regionSelect.value]};const deckSelect=el.querySelector('#seaDeckSelect'),preview=el.querySelector('#seaDeckPreview');
  const savedDeck=s.selectedDeck?.deck?[...s.selectedDeck.deck]:null;
  IslandCards.load('').then(catalog=>{
    if(!deckSelect.isConnected)return;
