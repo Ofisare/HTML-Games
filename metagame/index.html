@@ -65,7 +65,7 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.45";
+  const FILE="index.html", BUILD_VERSION="1.0.46";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -221,8 +221,33 @@ function renderSea(){let el=document.querySelector('#seaContent');if(!el)return;
  }
  el.dataset.seaView=viewKey;
  el.innerHTML=(a&&a.phase==='done'?'<p>🎉 Letzte Expedition: 💎 '+a.reward+' Diamanten mitgebracht.</p>':'<p>Eine Crew kann automatisch Diamanten finden. Navigieren und Erkunden sind freiwillig.</p>')+
- '<p><a class="btn" href="games/deckbuilder.html">🃏 Deckbuilder öffnen</a></p><p id="seaAvailability">⛵ Freie Schiffe: '+freeSeaShips()+' · 👥 Freie Einwohner: '+free+'</p><div class="actions"><span>🍎 6 Nahrung · 💧 6 Wasser + Deckkosten</span><button id="seaStart">⛵ Expedition starten</button></div><p id="expeditionMessage" role="status" style="color:#f2d48b;min-height:1em"></p><p class="hint">Dauer: 10 Min. Hinreise + 15 Min. Erkundung + 10 Min. Rückreise. Garantiert 2 💎, mit aktiver Erkundung mehr. Deckkosten einschließlich Waffen werden beim Start verbraucht. Einwohner sind während der Expedition reserviert.</p>';
- el.querySelector('#seaStart').onclick=startSea;return;
+ '<p><label for="seaDeckSelect">🃏 Expeditionsdeck:</label> <select id="seaDeckSelect" aria-label="Expeditionsdeck auswählen"><option value="current">Mein gespeichertes Deck</option><option value="starter">Einfaches Startdeck</option><option value="legacy">Klassisches Deck</option></select></p><p id="seaDeckPreview" class="hint">Deck wird geladen …</p><p><a class="btn" href="games/deckbuilder.html">🃏 Karten einzeln zusammenstellen</a></p><p id="seaAvailability">⛵ Freie Schiffe: '+freeSeaShips()+' · 👥 Freie Einwohner: '+free+'</p><div class="actions"><span>🍎 6 Nahrung · 💧 6 Wasser + Deckkosten</span><button id="seaStart">⛵ Expedition starten</button></div><p id="expeditionMessage" role="status" style="color:#f2d48b;min-height:1em"></p><p class="hint">Dauer: 10 Min. Hinreise + 15 Min. Erkundung + 10 Min. Rückreise. Garantiert 2 💎, mit aktiver Erkundung mehr. Deckkosten einschließlich Waffen werden beim Start verbraucht. Einwohner sind während der Expedition reserviert.</p>';
+ el.querySelector('#seaStart').onclick=startSea;
+ // Auswahl nur beim Aufbau des See-Tabs initialisieren, nicht in jedem Sekundentakt.
+ const deckSelect=el.querySelector('#seaDeckSelect'),preview=el.querySelector('#seaDeckPreview');
+ const savedDeck=s.selectedDeck?.deck?[...s.selectedDeck.deck]:null;
+ IslandCards.load('').then(catalog=>{
+   if(!deckSelect.isConnected)return;
+   const showDeck=()=>{
+     const deck=IslandCards.deck(catalog,s.selectedDeck),counts={};
+     for(const id of deck)counts[id]=(counts[id]||0)+1;
+     const cards=Object.entries(counts).map(([id,n])=>n+'× '+(catalog.cards[id]?.name||id)).join(', ');
+     const costs=IslandCards.costs(catalog,deck),payment={...costs};
+     delete payment.population;payment.food=(payment.food||0)+6;payment.water=(payment.water||0)+6;
+     const missing=Object.entries(payment).filter(([k,v])=>(s.res[k]||0)<v).map(([k])=>resIcons[k]||k);
+     const crew=costs.population||0,free=Math.max(0,populationMax()-population());
+     if(crew>free)missing.push('👥');
+     preview.textContent='15 Karten: '+cards+' | Vorbereitung: '+costLabel(payment)+' · 👥 '+crew+' reserviert'+(missing.length?' · ⚠️ Fehlt: '+missing.join(', '):' · ✓ Bereit');
+   };
+   deckSelect.onchange=()=>{
+     const kind=deckSelect.value;
+     const deck=kind==='starter'?[...catalog.starterDeck]:kind==='legacy'?[...catalog.legacyDeck]:savedDeck;
+     s.selectedDeck=deck?{deck:[...deck],catalogVersion:catalog.schemaVersion}:null;
+     save();showDeck();
+   };
+   showDeck();
+ }).catch(e=>{if(preview.isConnected)preview.textContent='⚠️ Deck nicht verfügbar: '+e.message});
+ return;
  }
  if(el.dataset.seaView==='active:'+a.phase){
   let remaining=Math.max(0,a.endsAt-now),dur=a.phase==='explore'?SEA_EXPLORE:SEA_TRAVEL;
