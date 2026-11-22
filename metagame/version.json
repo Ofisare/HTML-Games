@@ -11,14 +11,18 @@
     "games/oremine.html": "1.0.5",
     "games/saegewerk.html": "1.0.2",
     "games/steinbruch.html": "1.0.2",
-    "index.html": "1.0.49",
+    "index.html": "1.0.50",
     "games/waffenschmied.html": "1.0.5",
     "games/muenzpraegestaette.html": "1.0.3",
     "games/segeln.html": "1.0.7",
-    "games/inselabenteuer.html": "1.0.14",
+    "games/inselabenteuer.html": "1.0.15",
     "games/fischer.html": "1.0.1",
     "games/deckbuilder.html": "1.0.2",
-    "data/cards.json": "1.0.1",
-    "data/cards.js": "1.0.0"
+    "data/cards.json": "1.0.2",
+    "data/cards.js": "1.0.0",
+    "images/decks/goblins.svg": "1.0.0",
+    "images/decks/spiders.svg": "1.0.0",
+    "images/decks/beasts.svg": "1.0.0",
+    "images/decks/undead.svg": "1.0.0"
   }
 }
