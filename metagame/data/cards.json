@@ -13,7 +13,8 @@
       },
       "faction": "player",
       "atk": 3,
-      "hp": 2
+      "hp": 2,
+      "image": null
     },
     "shield": {
       "name": "🛡️ Schildträger",
@@ -26,7 +27,8 @@
       "faction": "player",
       "atk": 2,
       "hp": 5,
-      "guard": true
+      "guard": true,
+      "image": null
     },
     "scout": {
       "name": "🏹 Kundschafterin",
@@ -37,7 +39,8 @@
       },
       "faction": "player",
       "atk": 1,
-      "hp": 2
+      "hp": 2,
+      "image": null
     },
     "knight": {
       "name": "🗡️ Ritter",
@@ -49,7 +52,8 @@
       },
       "faction": "player",
       "atk": 4,
-      "hp": 4
+      "hp": 4,
+      "image": null
     },
     "fire": {
       "name": "🔥 Feuerball",
@@ -59,7 +63,8 @@
         "crystals": 1
       },
       "faction": "player",
-      "desc": "4 Schaden am Gegner"
+      "desc": "4 Schaden am Gegner",
+      "image": null
     },
     "heal": {
       "name": "💚 Heilung",
@@ -69,7 +74,8 @@
         "crystals": 1
       },
       "faction": "player",
-      "desc": "4 Leben für Crew oder Einheit"
+      "desc": "4 Leben für Crew oder Einheit",
+      "image": null
     },
     "boost": {
       "name": "✨ Stärkung",
@@ -79,7 +85,8 @@
         "crystals": 1
       },
       "faction": "player",
-      "desc": "+2 Angriff für eine Einheit"
+      "desc": "+2 Angriff für eine Einheit",
+      "image": null
     },
     "arrow": {
       "name": "🏹 Pfeilangriff",
@@ -89,7 +96,8 @@
         "weapons": 1
       },
       "faction": "player",
-      "desc": "1 Schaden an Ziel"
+      "desc": "1 Schaden an Ziel",
+      "image": null
     },
     "bandage": {
       "name": "🌿 Kräuterverband",
@@ -99,7 +107,8 @@
         "food": 1
       },
       "faction": "player",
-      "desc": "2 Leben für Crew oder Einheit"
+      "desc": "2 Leben für Crew oder Einheit",
+      "image": null
     },
     "skeleton": {
       "name": "💀 Skelett",
@@ -108,7 +117,8 @@
       "resources": {},
       "faction": "enemy",
       "atk": 1,
-      "hp": 2
+      "hp": 2,
+      "image": null
     },
     "spider": {
       "name": "🕷️ Riesenspinne",
@@ -117,7 +127,8 @@
       "resources": {},
       "faction": "enemy",
       "atk": 2,
-      "hp": 2
+      "hp": 2,
+      "image": null
     },
     "goblin": {
       "name": "👺 Goblin",
@@ -126,7 +137,8 @@
       "resources": {},
       "faction": "enemy",
       "atk": 3,
-      "hp": 2
+      "hp": 2,
+      "image": null
     },
     "orc": {
       "name": "👹 Ork",
@@ -135,7 +147,8 @@
       "resources": {},
       "faction": "enemy",
       "atk": 4,
-      "hp": 4
+      "hp": 4,
+      "image": null
     },
     "wolf": {
       "name": "🐺 Waldwolf",
@@ -147,18 +160,8 @@
       "faction": "player",
       "atk": 3,
       "hp": 2,
-      "unlocked": false
-    },
-    "guard": {
-      "name": "🛡️ Schildwache",
-      "cost": 3,
-      "kind": "unit",
-      "resources": {},
-      "faction": "player",
-      "atk": 2,
-      "hp": 5,
-      "guard": true,
-      "unlocked": false
+      "unlocked": false,
+      "image": null
     },
     "sprite": {
       "name": "🧚 Waldgeist",
@@ -168,7 +171,8 @@
       "faction": "player",
       "atk": 1,
       "hp": 2,
-      "unlocked": false
+      "unlocked": false,
+      "image": null
     },
     "bear": {
       "name": "🐻 Bär",
@@ -178,6 +182,110 @@
       "faction": "player",
       "atk": 4,
       "hp": 4,
+      "unlocked": false,
+      "image": null
+    },
+    "goblin_runner": {
+      "name": "⚡ Goblin-Stürmer",
+      "image": null,
+      "cost": 1,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 1,
+      "hp": 1,
+      "haste": true
+    },
+    "goblin_raider": {
+      "name": "⚡ Goblin-Plünderer",
+      "image": null,
+      "cost": 2,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 2,
+      "hp": 1,
+      "haste": true
+    },
+    "venom_spider": {
+      "name": "☠️ Giftspinne",
+      "image": null,
+      "cost": 2,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 1,
+      "hp": 2,
+      "poison": true
+    },
+    "brood_spider": {
+      "name": "🕷️ Brutspinne",
+      "image": null,
+      "cost": 1,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 1,
+      "hp": 1,
+      "poison": true
+    },
+    "wild_boar": {
+      "name": "🐗 Wilder Eber",
+      "image": null,
+      "cost": 4,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 4,
+      "hp": 3,
+      "trample": true
+    },
+    "mountain_bear": {
+      "name": "🐻 Bergbär",
+      "image": null,
+      "cost": 5,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 5,
+      "hp": 5,
+      "trample": true
+    },
+    "bone_guard": {
+      "name": "🛡️ Knochenwache",
+      "image": null,
+      "cost": 3,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 2,
+      "hp": 4,
+      "guard": true
+    },
+    "skeleton_runner": {
+      "name": "⚡ Knochenläufer",
+      "image": null,
+      "cost": 1,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 1,
+      "hp": 2,
+      "haste": true
+    },
+    "guard": {
+      "name": "🛡️ Schildwache (Legacy)",
+      "cost": 3,
+      "kind": "unit",
+      "resources": {
+        "population": 1,
+        "weapons": 1
+      },
+      "faction": "player",
+      "atk": 2,
+      "hp": 5,
+      "guard": true,
+      "image": null,
       "unlocked": false
     }
   },
@@ -223,5 +331,119 @@
     "goblin",
     "goblin",
     "orc"
-  ]
+  ],
+  "enemyDecks": {
+    "goblins": {
+      "name": "Goblin-Plünderer",
+      "image": null,
+      "heroHp": 11,
+      "startingUnits": [
+        "goblin_runner"
+      ],
+      "cards": [
+        "goblin_runner",
+        "goblin_runner",
+        "goblin_runner",
+        "goblin_raider",
+        "goblin_raider",
+        "goblin",
+        "goblin"
+      ],
+      "summonEvery": 1
+    },
+    "spiders": {
+      "name": "Spinnenbrut",
+      "image": null,
+      "heroHp": 12,
+      "startingUnits": [
+        "brood_spider"
+      ],
+      "cards": [
+        "brood_spider",
+        "brood_spider",
+        "venom_spider",
+        "venom_spider",
+        "spider"
+      ],
+      "summonEvery": 2
+    },
+    "beasts": {
+      "name": "Wilde Bestien",
+      "image": null,
+      "heroHp": 15,
+      "startingUnits": [
+        "wolf"
+      ],
+      "cards": [
+        "wolf",
+        "wolf",
+        "wild_boar",
+        "wild_boar",
+        "mountain_bear"
+      ],
+      "summonEvery": 2
+    },
+    "undead": {
+      "name": "Nekromanten",
+      "image": null,
+      "heroHp": 14,
+      "startingUnits": [
+        "skeleton"
+      ],
+      "cards": [
+        "skeleton",
+        "skeleton",
+        "skeleton_runner",
+        "bone_guard",
+        "bone_guard"
+      ],
+      "summonEvery": 2
+    }
+  },
+  "regions": {
+    "forest": {
+      "name": "🌲 Verwunschener Wald",
+      "description": "Goblins, Spinnen und wilde Tiere",
+      "difficulty": 1,
+      "image": null,
+      "encounters": {
+        "goblins": 50,
+        "spiders": 30,
+        "beasts": 20
+      }
+    },
+    "swamp": {
+      "name": "🌫️ Nebelsümpfe",
+      "description": "Giftspinnen und Untote",
+      "difficulty": 2,
+      "image": null,
+      "encounters": {
+        "spiders": 50,
+        "undead": 35,
+        "goblins": 15
+      }
+    },
+    "highlands": {
+      "name": "⛰️ Wilde Hochlande",
+      "description": "Starke Bestien und Plünderer",
+      "difficulty": 3,
+      "image": null,
+      "encounters": {
+        "beasts": 55,
+        "goblins": 25,
+        "undead": 20
+      }
+    },
+    "ruins": {
+      "name": "🏚️ Verfluchte Ruinen",
+      "description": "Untote und Giftwesen",
+      "difficulty": 3,
+      "image": null,
+      "encounters": {
+        "undead": 60,
+        "spiders": 25,
+        "beasts": 15
+      }
+    }
+  }
 }
