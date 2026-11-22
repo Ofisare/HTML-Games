@@ -335,7 +335,7 @@
   "enemyDecks": {
     "goblins": {
       "name": "Goblin-Plünderer",
-      "image": null,
+      "image": "images/decks/goblins.svg",
       "heroHp": 11,
       "startingUnits": [
         "goblin_runner"
@@ -353,7 +353,7 @@
     },
     "spiders": {
       "name": "Spinnenbrut",
-      "image": null,
+      "image": "images/decks/spiders.svg",
       "heroHp": 12,
       "startingUnits": [
         "brood_spider"
@@ -369,7 +369,7 @@
     },
     "beasts": {
       "name": "Wilde Bestien",
-      "image": null,
+      "image": "images/decks/beasts.svg",
       "heroHp": 15,
       "startingUnits": [
         "wolf"
@@ -385,7 +385,7 @@
     },
     "undead": {
       "name": "Nekromanten",
-      "image": null,
+      "image": "images/decks/undead.svg",
       "heroHp": 14,
       "startingUnits": [
         "skeleton"
@@ -410,6 +410,13 @@
         "goblins": 50,
         "spiders": 30,
         "beasts": 20
+      },
+      "terrain": {
+        "ground": "#5b9555",
+        "wall": "#1e5939",
+        "water": "#216c86",
+        "obstacle": "🌴",
+        "detail": "🌿"
       }
     },
     "swamp": {
@@ -421,6 +428,13 @@
         "spiders": 50,
         "undead": 35,
         "goblins": 15
+      },
+      "terrain": {
+        "ground": "#4c7156",
+        "wall": "#344c40",
+        "water": "#365d61",
+        "obstacle": "🌾",
+        "detail": "🍄"
       }
     },
     "highlands": {
@@ -432,6 +446,13 @@
         "beasts": 55,
         "goblins": 25,
         "undead": 20
+      },
+      "terrain": {
+        "ground": "#9b8d68",
+        "wall": "#615b55",
+        "water": "#3b7892",
+        "obstacle": "🪨",
+        "detail": "⛰️"
       }
     },
     "ruins": {
@@ -443,6 +464,13 @@
         "undead": 60,
         "spiders": 25,
         "beasts": 15
+      },
+      "terrain": {
+        "ground": "#70697d",
+        "wall": "#403e52",
+        "water": "#34516e",
+        "obstacle": "🏛️",
+        "detail": "🪦"
       }
     }
   }
