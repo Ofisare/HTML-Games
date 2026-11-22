@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "deckSize": 15,
+  "maxCopies": 5,
+  "cards": {
+    "fighter": {
+      "name": "⚔️ Schwertkämpfer",
+      "cost": 2,
+      "kind": "unit",
+      "resources": {
+        "population": 1,
+        "weapons": 1
+      },
+      "faction": "player",
+      "atk": 3,
+      "hp": 2
+    },
+    "shield": {
+      "name": "🛡️ Schildträger",
+      "cost": 3,
+      "kind": "unit",
+      "resources": {
+        "population": 1,
+        "weapons": 1
+      },
+      "faction": "player",
+      "atk": 2,
+      "hp": 5,
+      "guard": true
+    },
+    "scout": {
+      "name": "🏹 Kundschafterin",
+      "cost": 1,
+      "kind": "unit",
+      "resources": {
+        "population": 1
+      },
+      "faction": "player",
+      "atk": 1,
+      "hp": 2
+    },
+    "knight": {
+      "name": "🗡️ Ritter",
+      "cost": 4,
+      "kind": "unit",
+      "resources": {
+        "population": 1,
+        "weapons": 3
+      },
+      "faction": "player",
+      "atk": 4,
+      "hp": 4
+    },
+    "fire": {
+      "name": "🔥 Feuerball",
+      "cost": 3,
+      "kind": "spell",
+      "resources": {
+        "crystals": 1
+      },
+      "faction": "player",
+      "desc": "4 Schaden am Gegner"
+    },
+    "heal": {
+      "name": "💚 Heilung",
+      "cost": 2,
+      "kind": "spell",
+      "resources": {
+        "crystals": 1
+      },
+      "faction": "player",
+      "desc": "4 Leben für Crew oder Einheit"
+    },
+    "boost": {
+      "name": "✨ Stärkung",
+      "cost": 2,
+      "kind": "spell",
+      "resources": {
+        "crystals": 1
+      },
+      "faction": "player",
+      "desc": "+2 Angriff für eine Einheit"
+    },
+    "arrow": {
+      "name": "🏹 Pfeilangriff",
+      "cost": 1,
+      "kind": "spell",
+      "resources": {
+        "weapons": 1
+      },
+      "faction": "player",
+      "desc": "1 Schaden an Ziel"
+    },
+    "bandage": {
+      "name": "🌿 Kräuterverband",
+      "cost": 1,
+      "kind": "spell",
+      "resources": {
+        "food": 1
+      },
+      "faction": "player",
+      "desc": "2 Leben für Crew oder Einheit"
+    },
+    "skeleton": {
+      "name": "💀 Skelett",
+      "cost": 1,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 1,
+      "hp": 2
+    },
+    "spider": {
+      "name": "🕷️ Riesenspinne",
+      "cost": 2,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 2,
+      "hp": 2
+    },
+    "goblin": {
+      "name": "👺 Goblin",
+      "cost": 2,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 3,
+      "hp": 2
+    },
+    "orc": {
+      "name": "👹 Ork",
+      "cost": 4,
+      "kind": "unit",
+      "resources": {},
+      "faction": "enemy",
+      "atk": 4,
+      "hp": 4
+    },
+    "wolf": {
+      "name": "🐺 Waldwolf",
+      "cost": 2,
+      "kind": "unit",
+      "resources": {
+        "population": 1
+      },
+      "faction": "player",
+      "atk": 3,
+      "hp": 2,
+      "unlocked": false
+    },
+    "guard": {
+      "name": "🛡️ Schildwache",
+      "cost": 3,
+      "kind": "unit",
+      "resources": {},
+      "faction": "player",
+      "atk": 2,
+      "hp": 5,
+      "guard": true,
+      "unlocked": false
+    },
+    "sprite": {
+      "name": "🧚 Waldgeist",
+      "cost": 1,
+      "kind": "unit",
+      "resources": {},
+      "faction": "player",
+      "atk": 1,
+      "hp": 2,
+      "unlocked": false
+    },
+    "bear": {
+      "name": "🐻 Bär",
+      "cost": 4,
+      "kind": "unit",
+      "resources": {},
+      "faction": "player",
+      "atk": 4,
+      "hp": 4,
+      "unlocked": false
+    }
+  },
+  "starterDeck": [
+    "scout",
+    "scout",
+    "scout",
+    "scout",
+    "scout",
+    "fighter",
+    "fighter",
+    "shield",
+    "arrow",
+    "arrow",
+    "arrow",
+    "arrow",
+    "bandage",
+    "bandage",
+    "bandage"
+  ],
+  "legacyDeck": [
+    "fighter",
+    "fighter",
+    "fighter",
+    "shield",
+    "shield",
+    "scout",
+    "scout",
+    "knight",
+    "knight",
+    "fire",
+    "fire",
+    "heal",
+    "heal",
+    "boost",
+    "boost"
+  ],
+  "monsterDeck": [
+    "skeleton",
+    "skeleton",
+    "spider",
+    "spider",
+    "goblin",
+    "goblin",
+    "orc"
+  ]
+}
