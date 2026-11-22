@@ -272,6 +272,21 @@
       "atk": 1,
       "hp": 2,
       "haste": true
+    },
+    "guard": {
+      "name": "🛡️ Schildwache (Legacy)",
+      "cost": 3,
+      "kind": "unit",
+      "resources": {
+        "population": 1,
+        "weapons": 1
+      },
+      "faction": "player",
+      "atk": 2,
+      "hp": 5,
+      "guard": true,
+      "image": null,
+      "unlocked": false
     }
   },
   "starterDeck": [
