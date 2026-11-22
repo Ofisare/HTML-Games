@@ -65,7 +65,7 @@ header{display:flex;flex-direction:column;align-items:stretch;gap:9px}
 </style><script>
 /* Jede HTML-Datei prueft unabhaengig ihre Version; Spielstaende bleiben unberuehrt. */
 (()=>{'use strict';
-  const FILE="index.html", BUILD_VERSION="1.0.47";
+  const FILE="index.html", BUILD_VERSION="1.0.48";
   const IS_ISLAND=FILE==='index.html';
   const MANIFEST=IS_ISLAND?'version.json':'../version.json';
   const VALID=/^[a-zA-Z0-9._-]{1,48}$/;
@@ -225,7 +225,7 @@ function renderSea(){let el=document.querySelector('#seaContent');if(!el)return;
  el.querySelector('#seaStart').onclick=startSea;
  // Auswahl nur beim Aufbau des See-Tabs initialisieren, nicht in jedem Sekundentakt.
  const regionSelect=el.querySelector('#seaRegionSelect'),regionInfo=el.querySelector('#seaRegionInfo');const regionHints={forest:'Goblins 50 %, Spinnen 30 %, Bestien 20 %',swamp:'Spinnen 50 %, Untote 35 %, Goblins 15 %',highlands:'Bestien 55 %, Goblins 25 %, Untote 20 %',ruins:'Untote 60 %, Spinnen 25 %, Bestien 15 %'};regionSelect.onchange=()=>{regionInfo.textContent='Mögliche Gegner: '+regionHints[regionSelect.value]};const deckSelect=el.querySelector('#seaDeckSelect'),preview=el.querySelector('#seaDeckPreview');
- const savedDeck=s.selectedDeck?.deck?[...s.selectedDeck.deck]:null;
+ const savedDeck=s.selectedDeck?.deck?[...s.selectedDeck.deck]:null;const customDecks=Array.isArray(s.customDecks)?s.customDecks:[];customDecks.forEach((item,i)=>{if(item?.deck?.length===15){const opt=document.createElement('option');opt.value='custom:'+i;opt.textContent='💾 '+(item.name||'Deck '+(i+1));deckSelect.append(opt)}});
  IslandCards.load('').then(catalog=>{
    if(!deckSelect.isConnected)return;
    const showDeck=()=>{
@@ -241,7 +241,7 @@ function renderSea(){let el=document.querySelector('#seaContent');if(!el)return;
    };
    deckSelect.onchange=()=>{
      const kind=deckSelect.value;
-     const deck=kind==='starter'?[...catalog.starterDeck]:kind==='legacy'?[...catalog.legacyDeck]:savedDeck;
+     const deck=kind==='starter'?[...catalog.starterDeck]:kind==='legacy'?[...catalog.legacyDeck]:kind.startsWith('custom:')?[...(customDecks[Number(kind.split(':')[1])]?.deck||catalog.starterDeck)]:savedDeck;
      s.selectedDeck=deck?{deck:[...deck],catalogVersion:catalog.schemaVersion}:null;
      save();showDeck();
    };
