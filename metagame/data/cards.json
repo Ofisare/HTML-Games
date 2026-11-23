@@ -72,7 +72,7 @@
       },
       "faction": "player",
       "desc": "4 Schaden am Gegner",
-      "image": "images/cards/fire.svg",
+      "image": "images/cards/fire.jpg",
       "icon": "🔥",
       "label": "Feuerball"
     },
@@ -85,7 +85,7 @@
       },
       "faction": "player",
       "desc": "4 Leben für Crew oder Einheit",
-      "image": "images/cards/heal.svg",
+      "image": "images/cards/heal.jpg",
       "icon": "💚",
       "label": "Heilung"
     },
@@ -98,7 +98,7 @@
       },
       "faction": "player",
       "desc": "+2 Angriff für eine Einheit",
-      "image": "images/cards/boost.svg",
+      "image": "images/cards/boost.jpg",
       "icon": "✨",
       "label": "Stärkung"
     },
@@ -136,7 +136,7 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 2,
-      "image": "images/cards/skeleton.svg",
+      "image": "images/cards/skeleton.jpg",
       "icon": "💀",
       "label": "Skelett"
     },
@@ -148,7 +148,7 @@
       "faction": "enemy",
       "atk": 2,
       "hp": 2,
-      "image": "images/cards/spider.svg",
+      "image": "images/cards/spider.jpg",
       "icon": "🕷️",
       "label": "Riesenspinne"
     },
@@ -160,7 +160,7 @@
       "faction": "enemy",
       "atk": 3,
       "hp": 2,
-      "image": "images/cards/goblin.svg",
+      "image": "images/cards/goblin.jpg",
       "icon": "👺",
       "label": "Goblin"
     },
@@ -172,7 +172,7 @@
       "faction": "enemy",
       "atk": 4,
       "hp": 4,
-      "image": "images/cards/orc.svg",
+      "image": "images/cards/orc.jpg",
       "icon": "👹",
       "label": "Ork"
     },
@@ -200,7 +200,7 @@
       "atk": 1,
       "hp": 2,
       "unlocked": false,
-      "image": "images/cards/sprite.svg",
+      "image": "images/cards/sprite.jpg",
       "icon": "🧚",
       "label": "Waldgeist"
     },
@@ -213,7 +213,7 @@
       "atk": 4,
       "hp": 4,
       "unlocked": false,
-      "image": "images/cards/bear.svg",
+      "image": "images/cards/bear.jpg",
       "icon": "🐻",
       "label": "Bär"
     },
