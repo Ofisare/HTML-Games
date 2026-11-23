@@ -14,7 +14,7 @@
       "faction": "player",
       "atk": 3,
       "hp": 2,
-      "image": "images/cards/fighter.svg",
+      "image": "images/cards/fighter.jpg",
       "icon": "⚔️",
       "label": "Schwertkämpfer"
     },
@@ -30,7 +30,7 @@
       "atk": 2,
       "hp": 5,
       "guard": true,
-      "image": "images/cards/shield.svg",
+      "image": "images/cards/shield.jpg",
       "icon": "🛡️",
       "label": "Schildträger"
     },
@@ -44,7 +44,7 @@
       "faction": "player",
       "atk": 1,
       "hp": 2,
-      "image": "images/cards/scout.svg",
+      "image": "images/cards/scout.jpg",
       "icon": "🏹",
       "label": "Kundschafterin"
     },
@@ -59,7 +59,7 @@
       "faction": "player",
       "atk": 4,
       "hp": 4,
-      "image": "images/cards/knight.svg",
+      "image": "images/cards/knight.jpg",
       "icon": "🗡️",
       "label": "Ritter"
     },
@@ -111,7 +111,7 @@
       },
       "faction": "player",
       "desc": "1 Schaden an Ziel",
-      "image": "images/cards/arrow.svg",
+      "image": "images/cards/arrow.jpg",
       "icon": "🏹",
       "label": "Pfeilangriff"
     },
@@ -124,7 +124,7 @@
       },
       "faction": "player",
       "desc": "2 Leben für Crew oder Einheit",
-      "image": "images/cards/bandage.svg",
+      "image": "images/cards/bandage.jpg",
       "icon": "🌿",
       "label": "Kräuterverband"
     },
@@ -187,7 +187,7 @@
       "atk": 3,
       "hp": 2,
       "unlocked": false,
-      "image": "images/cards/wolf.svg",
+      "image": "images/cards/wolf.jpg",
       "icon": "🐺",
       "label": "Waldwolf"
     },
@@ -219,7 +219,7 @@
     },
     "goblin_runner": {
       "name": "⚡ Goblin-Stürmer",
-      "image": "images/cards/goblin_runner.svg",
+      "image": "images/cards/goblin_runner.jpg",
       "cost": 1,
       "kind": "unit",
       "resources": {},
@@ -232,7 +232,7 @@
     },
     "goblin_raider": {
       "name": "⚡ Goblin-Plünderer",
-      "image": "images/cards/goblin_raider.svg",
+      "image": "images/cards/goblin_raider.jpg",
       "cost": 2,
       "kind": "unit",
       "resources": {},
@@ -245,7 +245,7 @@
     },
     "venom_spider": {
       "name": "☠️ Giftspinne",
-      "image": "images/cards/venom_spider.svg",
+      "image": "images/cards/venom_spider.jpg",
       "cost": 2,
       "kind": "unit",
       "resources": {},
@@ -258,7 +258,7 @@
     },
     "brood_spider": {
       "name": "🕷️ Brutspinne",
-      "image": "images/cards/brood_spider.svg",
+      "image": "images/cards/brood_spider.jpg",
       "cost": 1,
       "kind": "unit",
       "resources": {},
