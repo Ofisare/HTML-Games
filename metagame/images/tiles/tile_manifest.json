@@ -1,0 +1,150 @@
+{
+  "size": 256,
+  "format": "PNG RGBA",
+  "tiles": [
+    {
+      "file": "kueste_maske_00.png",
+      "corners": {
+        "NW": 0,
+        "NE": 0,
+        "SE": 0,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_01.png",
+      "corners": {
+        "NW": 1,
+        "NE": 0,
+        "SE": 0,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_02.png",
+      "corners": {
+        "NW": 0,
+        "NE": 1,
+        "SE": 0,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_03.png",
+      "corners": {
+        "NW": 1,
+        "NE": 1,
+        "SE": 0,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_04.png",
+      "corners": {
+        "NW": 0,
+        "NE": 0,
+        "SE": 1,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_05.png",
+      "corners": {
+        "NW": 1,
+        "NE": 0,
+        "SE": 1,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_06.png",
+      "corners": {
+        "NW": 0,
+        "NE": 1,
+        "SE": 1,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_07.png",
+      "corners": {
+        "NW": 1,
+        "NE": 1,
+        "SE": 1,
+        "SW": 0
+      }
+    },
+    {
+      "file": "kueste_maske_08.png",
+      "corners": {
+        "NW": 0,
+        "NE": 0,
+        "SE": 0,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_09.png",
+      "corners": {
+        "NW": 1,
+        "NE": 0,
+        "SE": 0,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_10.png",
+      "corners": {
+        "NW": 0,
+        "NE": 1,
+        "SE": 0,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_11.png",
+      "corners": {
+        "NW": 1,
+        "NE": 1,
+        "SE": 0,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_12.png",
+      "corners": {
+        "NW": 0,
+        "NE": 0,
+        "SE": 1,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_13.png",
+      "corners": {
+        "NW": 1,
+        "NE": 0,
+        "SE": 1,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_14.png",
+      "corners": {
+        "NW": 0,
+        "NE": 1,
+        "SE": 1,
+        "SW": 1
+      }
+    },
+    {
+      "file": "kueste_maske_15.png",
+      "corners": {
+        "NW": 1,
+        "NE": 1,
+        "SE": 1,
+        "SW": 1
+      }
+    }
+  ]
+}
