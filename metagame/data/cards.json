@@ -349,7 +349,9 @@
         "goblin",
         "goblin"
       ],
-      "summonEvery": 1
+      "summonEvery": 1,
+      "symbol": "👺",
+      "shortName": "Goblins"
     },
     "spiders": {
       "name": "Spinnenbrut",
@@ -365,7 +367,9 @@
         "venom_spider",
         "spider"
       ],
-      "summonEvery": 2
+      "summonEvery": 2,
+      "symbol": "🕷️",
+      "shortName": "Spinnen"
     },
     "beasts": {
       "name": "Wilde Bestien",
@@ -381,7 +385,9 @@
         "wild_boar",
         "mountain_bear"
       ],
-      "summonEvery": 2
+      "summonEvery": 2,
+      "symbol": "🐗",
+      "shortName": "Bestien"
     },
     "undead": {
       "name": "Nekromanten",
@@ -397,7 +403,9 @@
         "bone_guard",
         "bone_guard"
       ],
-      "summonEvery": 2
+      "summonEvery": 2,
+      "symbol": "💀",
+      "shortName": "Untote"
     }
   },
   "regions": {
@@ -417,7 +425,8 @@
         "water": "#216c86",
         "obstacle": "🌴",
         "detail": "🌿"
-      }
+      },
+      "label": "🌲 Verwunschener Wald · leicht"
     },
     "swamp": {
       "name": "🌫️ Nebelsümpfe",
@@ -435,7 +444,8 @@
         "water": "#365d61",
         "obstacle": "🌾",
         "detail": "🍄"
-      }
+      },
+      "label": "🌫️ Nebelsümpfe · mittel"
     },
     "highlands": {
       "name": "⛰️ Wilde Hochlande",
@@ -453,7 +463,8 @@
         "water": "#3b7892",
         "obstacle": "🪨",
         "detail": "⛰️"
-      }
+      },
+      "label": "⛰️ Wilde Hochlande · schwer"
     },
     "ruins": {
       "name": "🏚️ Verfluchte Ruinen",
@@ -471,7 +482,13 @@
         "water": "#34516e",
         "obstacle": "🏛️",
         "detail": "🪦"
-      }
+      },
+      "label": "🏚️ Verfluchte Ruinen · schwer"
     }
+  },
+  "deckLabels": {
+    "current": "Mein gespeichertes Deck",
+    "starter": "Einfaches Startdeck",
+    "legacy": "Klassisches Deck"
   }
 }
