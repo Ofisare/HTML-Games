@@ -15,7 +15,7 @@
     "games/waffenschmied.html": "1.0.5",
     "games/muenzpraegestaette.html": "1.0.3",
     "games/segeln.html": "1.0.7",
-    "games/inselabenteuer.html": "1.0.27",
+    "games/inselabenteuer.html": "1.0.28",
     "games/fischer.html": "1.0.1",
     "games/deckbuilder.html": "1.0.2",
     "data/cards.json": "1.0.5",
@@ -52,6 +52,7 @@
     "images/cards/mountain_bear.svg": "1.0.0",
     "images/cards/bone_guard.svg": "1.0.0",
     "images/cards/skeleton_runner.svg": "1.0.0",
-    "images/cards/guard.svg": "1.0.0"
+    "images/cards/guard.svg": "1.0.0",
+    "images/crew-portrait.svg": "1.0.0"
   }
 }
