@@ -173,7 +173,35 @@ const SEA_TRAVEL=600000,SEA_EXPLORE=900000;
 function seaTime(ms){let n=Math.max(0,Math.ceil(ms/1000));return Math.floor(n/60)+'m '+String(n%60).padStart(2,'0')+'s'}
 function seaState(){return s.sea&&s.sea.phase!=='done'?s.sea:null}
 function freeSeaShips(){return Math.max(0,shipMax()-(seaState()?1:0))}
-async function startSea(){
+async // Gemeinsame Darstellung für Seeexpedition und Tavernen-Abenteuer.
+function expeditionOptions(select,catalog,kind,customDecks){
+ const entries=kind==='region'?Object.entries(catalog.regions||{}).map(([id,r])=>[id,r.label||r.name]):Object.entries(catalog.deckLabels||{}).map(([id,label])=>[id,label]);
+ select.replaceChildren();
+ for(const [id,label] of entries){const option=document.createElement('option');option.value=id;option.textContent=label;select.append(option)}
+ if(kind==='deck')for(let i=0;i<(customDecks||[]).length;i++){const d=customDecks[i];if(!d?.deck?.length)continue;const option=document.createElement('option');option.value='custom:'+i;option.textContent='💾 '+(d.name||'Deck '+(i+1));select.append(option)}
+}
+function expeditionEnemies(gallery,catalog,regionId){
+ if(!gallery)return;
+ gallery.replaceChildren();
+ const encounters=catalog.regions?.[regionId]?.encounters||{};
+ for(const [id,weight] of Object.entries(encounters)){
+  const enemy=catalog.enemyDecks?.[id]||{};
+  const item=document.createElement('div');item.style.cssText='min-width:75px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px';
+  const icon=document.createElement('span');icon.textContent=enemy.symbol||'⚔️';icon.setAttribute('role','img');icon.setAttribute('aria-label',enemy.shortName||enemy.name||id);icon.style.cssText='width:74px;height:74px;display:flex;align-items:center;justify-content:center;font-size:43px;background:#214545;border:1px solid #8ab8a3;border-radius:10px';
+  const chance=document.createElement('span');chance.textContent=weight+' %';chance.style.cssText='font-size:13px';
+  item.title=(enemy.shortName||enemy.name||id)+' · '+weight+' %';item.append(icon,chance);gallery.append(item);
+ }
+}
+function expeditionDeckList(node,catalog,deck){
+ if(!node)return;
+ const counts={};for(const id of deck)counts[id]=(counts[id]||0)+1;
+ node.textContent=deck.length+' Karten: '+Object.entries(counts).map(([id,n])=>n+'× '+(catalog.cards[id]?.name||id)).join(', ');
+}
+function expeditionSelectedDeck(catalog,kind,customDecks,savedDeck){
+ const deck=kind==='starter'?catalog.starterDeck:kind==='legacy'?catalog.legacyDeck:kind.startsWith('custom:')?customDecks?.[Number(kind.split(':')[1])]?.deck:savedDeck;
+ return IslandCards.deck(catalog,deck?{deck}:null);
+}
+function startSea(){
  if(seaState())return notify('Bereits eine Seeexpedition unterwegs.');
  if(freeSeaShips()<1)return notify('Du benötigst einen freien Schiffsplatz.');
  const btn=document.querySelector('#seaStart');if(btn)btn.disabled=true;
@@ -221,32 +249,27 @@ function renderSea(){let el=document.querySelector('#seaContent');if(!el)return;
  }
  el.dataset.seaView=viewKey;
  el.innerHTML=(a&&a.phase==='done'?'<p>🎉 Letzte Expedition: 💎 '+a.reward+' Diamanten mitgebracht.</p>':'<p>Eine Crew kann automatisch Diamanten finden. Navigieren und Erkunden sind freiwillig.</p>')+
- '<p><label for="seaRegionSelect">🗺️ Expeditionsgebiet:</label> <select id="seaRegionSelect"><option value="forest">🌲 Verwunschener Wald · leicht</option><option value="swamp">🌫️ Nebelsümpfe · mittel</option><option value="highlands">⛰️ Wilde Hochlande · schwer</option><option value="ruins">🏚️ Verfluchte Ruinen · schwer</option></select></p><p id="seaRegionInfo" class="hint">Mögliche Gegner: Goblins, Spinnen und Bestien</p><div id="seaEnemyGallery" style="display:flex;gap:8px;overflow-x:auto;margin:8px 0"></div><p><label for="seaDeckSelect">🃏 Expeditionsdeck:</label> <select id="seaDeckSelect" aria-label="Expeditionsdeck auswählen"><option value="current">Mein gespeichertes Deck</option><option value="starter">Einfaches Startdeck</option><option value="legacy">Klassisches Deck</option></select></p><p id="seaDeckPreview" class="hint">Deck wird geladen …</p><p><a class="btn" href="games/deckbuilder.html">🃏 Karten einzeln zusammenstellen</a></p><p id="seaAvailability">⛵ Freie Schiffe: '+freeSeaShips()+' · 👥 Freie Einwohner: '+free+'</p><div class="actions"><span>🍎 6 Nahrung · 💧 6 Wasser + Deckkosten</span><button id="seaStart">⛵ Expedition starten</button></div><p id="expeditionMessage" role="status" style="color:#f2d48b;min-height:1em"></p><p class="hint">Dauer: 10 Min. Hinreise + 15 Min. Erkundung + 10 Min. Rückreise. Garantiert 2 💎, mit aktiver Erkundung mehr. Deckkosten einschließlich Waffen werden beim Start verbraucht. Einwohner sind während der Expedition reserviert.</p>';
+ '<p><label for="seaRegionSelect">🗺️ Gebiet:</label> <select id="seaRegionSelect" aria-label="Gebiet auswählen"></select></p><div id="seaEnemyGallery" style="display:flex;gap:8px;overflow-x:auto;margin:8px 0"></div><p><label for="seaDeckSelect">🃏 Deck:</label> <select id="seaDeckSelect" aria-label="Deck auswählen"></select></p><p id="seaDeckCards" class="hint">Karten werden geladen …</p><p id="seaDeckPreview" class="hint"></p><p><a class="btn" href="games/deckbuilder.html">🃏 Karten einzeln zusammenstellen</a></p><p id="seaAvailability">⛵ Freie Schiffe: '+freeSeaShips()+' · 👥 Freie Einwohner: '+free+'</p><div class="actions"><span>🍎 6 Nahrung · 💧 6 Wasser + Deckkosten</span><button id="seaStart">⛵ Expedition starten</button></div><p id="expeditionMessage" role="status" style="color:#f2d48b;min-height:1em"></p><p class="hint">Dauer: 10 Min. Hinreise + 15 Min. Erkundung + 10 Min. Rückreise. Garantiert 2 💎, mit aktiver Erkundung mehr. Deckkosten einschließlich Waffen werden beim Start verbraucht. Einwohner sind während der Expedition reserviert.</p>';
  el.querySelector('#seaStart').onclick=startSea;
  // Auswahl nur beim Aufbau des See-Tabs initialisieren, nicht in jedem Sekundentakt.
- const regionSelect=el.querySelector('#seaRegionSelect'),regionInfo=el.querySelector('#seaRegionInfo');const regionHints={forest:'Goblins 50 %, Spinnen 30 %, Bestien 20 %',swamp:'Spinnen 50 %, Untote 35 %, Goblins 15 %',highlands:'Bestien 55 %, Goblins 25 %, Untote 20 %',ruins:'Untote 60 %, Spinnen 25 %, Bestien 15 %'};const enemyWeights={forest:{goblins:50,spiders:30,beasts:20},swamp:{spiders:50,undead:35,goblins:15},highlands:{beasts:55,goblins:25,undead:20},ruins:{undead:60,spiders:25,beasts:15}};const enemyNames={goblins:'Goblins',spiders:'Spinnen',beasts:'Bestien',undead:'Untote'};const enemySymbols={goblins:'👺',spiders:'🕷️',beasts:'🐗',undead:'💀'};const updateRegion=()=>{regionInfo.textContent='Mögliche Gegner: '+regionHints[regionSelect.value];const gallery=el.querySelector('#seaEnemyGallery');gallery.replaceChildren();for(const [id,chance] of Object.entries(enemyWeights[regionSelect.value])){const item=document.createElement('div');item.style.cssText='min-width:85px;text-align:center;font-size:12px';const art=document.createElement('span');art.textContent=enemySymbols[id];art.setAttribute('role','img');art.setAttribute('aria-label',enemyNames[id]);art.style.cssText='display:flex;align-items:center;justify-content:center;width:82px;height:82px;font-size:48px;border-radius:12px;background:#214545;border:1px solid #8ab8a3';const label=document.createElement('div');label.textContent=enemyNames[id]+' · '+chance+' %';item.append(art,label);gallery.append(item)}};regionSelect.onchange=updateRegion;updateRegion();const deckSelect=el.querySelector('#seaDeckSelect'),preview=el.querySelector('#seaDeckPreview');
- const savedDeck=s.selectedDeck?.deck?[...s.selectedDeck.deck]:null;const customDecks=Array.isArray(s.customDecks)?s.customDecks:[];customDecks.forEach((item,i)=>{if(item?.deck?.length===15){const opt=document.createElement('option');opt.value='custom:'+i;opt.textContent='💾 '+(item.name||'Deck '+(i+1));deckSelect.append(opt)}});
+ const regionSelect=el.querySelector('#seaRegionSelect'),gallery=el.querySelector('#seaEnemyGallery'),deckSelect=el.querySelector('#seaDeckSelect'),preview=el.querySelector('#seaDeckPreview'),deckCards=el.querySelector('#seaDeckCards');
+ const savedDeck=s.selectedDeck?.deck?[...s.selectedDeck.deck]:null,customDecks=Array.isArray(s.customDecks)?s.customDecks:[];
  IslandCards.load('').then(catalog=>{
-   if(!deckSelect.isConnected)return;
-   const showDeck=()=>{
-     const deck=IslandCards.deck(catalog,s.selectedDeck),counts={};
-     for(const id of deck)counts[id]=(counts[id]||0)+1;
-     const cards=Object.entries(counts).map(([id,n])=>n+'× '+(catalog.cards[id]?.name||id)).join(', ');
-     const costs=IslandCards.costs(catalog,deck),payment={...costs};
-     delete payment.population;payment.food=(payment.food||0)+6;payment.water=(payment.water||0)+6;
-     const missing=Object.entries(payment).filter(([k,v])=>(s.res[k]||0)<v).map(([k])=>resIcons[k]||k);
-     const crew=costs.population||0,free=Math.max(0,populationMax()-population());
-     if(crew>free)missing.push('👥');
-     preview.textContent='15 Karten: '+cards+' | Vorbereitung: '+costLabel(payment)+' · 👥 '+crew+' reserviert'+(missing.length?' · ⚠️ Fehlt: '+missing.join(', '):' · ✓ Bereit');
-   };
-   deckSelect.onchange=()=>{
-     const kind=deckSelect.value;
-     const deck=kind==='starter'?[...catalog.starterDeck]:kind==='legacy'?[...catalog.legacyDeck]:kind.startsWith('custom:')?[...(customDecks[Number(kind.split(':')[1])]?.deck||catalog.starterDeck)]:savedDeck;
-     s.selectedDeck=deck?{deck:[...deck],catalogVersion:catalog.schemaVersion}:null;
-     save();showDeck();
-   };
-   showDeck();
- }).catch(e=>{if(preview.isConnected)preview.textContent='⚠️ Deck nicht verfügbar: '+e.message});
+  if(!deckSelect.isConnected)return;
+  expeditionOptions(regionSelect,catalog,'region');expeditionOptions(deckSelect,catalog,'deck',customDecks);
+  regionSelect.value='forest';regionSelect.onchange=()=>expeditionEnemies(gallery,catalog,regionSelect.value);regionSelect.onchange();
+  const showDeck=()=>{
+   const deck=IslandCards.deck(catalog,s.selectedDeck),costs=IslandCards.costs(catalog,deck),payment={...costs};
+   expeditionDeckList(deckCards,catalog,deck);
+   delete payment.population;payment.food=(payment.food||0)+6;payment.water=(payment.water||0)+6;
+   const missing=Object.entries(payment).filter(([k,v])=>(s.res[k]||0)<v).map(([k])=>resIcons[k]||k);
+   const crew=costs.population||0,free=Math.max(0,populationMax()-population());
+   if(crew>free)missing.push('👥');
+   preview.textContent='Vorbereitung: '+costLabel(payment)+' · 👥 '+crew+' reserviert'+(missing.length?' · ⚠️ Fehlt: '+missing.join(', '):' · ✓ Bereit');
+  };
+  deckSelect.onchange=()=>{const deck=expeditionSelectedDeck(catalog,deckSelect.value,customDecks,savedDeck);s.selectedDeck={deck,catalogVersion:catalog.schemaVersion};save();showDeck()};
+  showDeck();
+ }).catch(e=>{if(preview.isConnected)preview.textContent='⚠️ Katalog nicht verfügbar: '+e.message});
  return;
  }
  if(el.dataset.seaView==='active:'+a.phase){
