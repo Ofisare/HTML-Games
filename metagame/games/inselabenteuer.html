@@ -217,6 +217,7 @@
 #battleOverlay .unit.fx-strike{animation:unitStrike .35s ease-out}
 #battleOverlay .unit.fx-hit,#battleOverlay .battleHero.fx-hit{animation:unitHit .35s ease-out}
 /* Zauberpartikel liegen über der Karte, ohne Eingaben zu blockieren. */
+#battleOverlay .battleHero{position:relative;isolation:isolate}
 #battleOverlay .spellBurst{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:8;border-radius:inherit}
 #battleOverlay .spellParticle{position:absolute;left:50%;top:50%;font-size:clamp(16px,3dvh,27px);line-height:1;transform:translate(-50%,-50%);text-shadow:0 0 8px currentColor;animation:spellParticleFly .7s ease-out forwards}
 #battleOverlay .spellBurst.fire{background:radial-gradient(circle,#ffbc5277,transparent 68%)}
