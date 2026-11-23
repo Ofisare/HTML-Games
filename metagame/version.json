@@ -18,7 +18,7 @@
     "games/inselabenteuer.html": "1.0.28",
     "games/fischer.html": "1.0.1",
     "games/deckbuilder.html": "1.0.2",
-    "data/cards.json": "1.0.5",
+    "data/cards.json": "1.0.6",
     "data/cards.js": "1.0.0",
     "images/decks/goblins.svg": "1.0.0",
     "images/decks/spiders.svg": "1.0.0",
@@ -53,6 +53,17 @@
     "images/cards/bone_guard.svg": "1.0.0",
     "images/cards/skeleton_runner.svg": "1.0.0",
     "images/cards/guard.svg": "1.0.0",
-    "images/crew-portrait.svg": "1.0.0"
+    "images/crew-portrait.svg": "1.0.0",
+    "images/cards/scout.jpg": "1.0.0",
+    "images/cards/fighter.jpg": "1.0.0",
+    "images/cards/shield.jpg": "1.0.0",
+    "images/cards/knight.jpg": "1.0.0",
+    "images/cards/arrow.jpg": "1.0.0",
+    "images/cards/bandage.jpg": "1.0.0",
+    "images/cards/goblin_runner.jpg": "1.0.0",
+    "images/cards/goblin_raider.jpg": "1.0.0",
+    "images/cards/brood_spider.jpg": "1.0.0",
+    "images/cards/venom_spider.jpg": "1.0.0",
+    "images/cards/wolf.jpg": "1.0.0"
   }
 }
