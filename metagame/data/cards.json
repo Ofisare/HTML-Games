@@ -14,7 +14,9 @@
       "faction": "player",
       "atk": 3,
       "hp": 2,
-      "image": null
+      "image": null,
+      "icon": "⚔️",
+      "label": "Schwertkämpfer"
     },
     "shield": {
       "name": "🛡️ Schildträger",
@@ -28,7 +30,9 @@
       "atk": 2,
       "hp": 5,
       "guard": true,
-      "image": null
+      "image": null,
+      "icon": "🛡️",
+      "label": "Schildträger"
     },
     "scout": {
       "name": "🏹 Kundschafterin",
@@ -40,7 +44,9 @@
       "faction": "player",
       "atk": 1,
       "hp": 2,
-      "image": null
+      "image": null,
+      "icon": "🏹",
+      "label": "Kundschafterin"
     },
     "knight": {
       "name": "🗡️ Ritter",
@@ -53,7 +59,9 @@
       "faction": "player",
       "atk": 4,
       "hp": 4,
-      "image": null
+      "image": null,
+      "icon": "🗡️",
+      "label": "Ritter"
     },
     "fire": {
       "name": "🔥 Feuerball",
@@ -64,7 +72,9 @@
       },
       "faction": "player",
       "desc": "4 Schaden am Gegner",
-      "image": null
+      "image": null,
+      "icon": "🔥",
+      "label": "Feuerball"
     },
     "heal": {
       "name": "💚 Heilung",
@@ -75,7 +85,9 @@
       },
       "faction": "player",
       "desc": "4 Leben für Crew oder Einheit",
-      "image": null
+      "image": null,
+      "icon": "💚",
+      "label": "Heilung"
     },
     "boost": {
       "name": "✨ Stärkung",
@@ -86,7 +98,9 @@
       },
       "faction": "player",
       "desc": "+2 Angriff für eine Einheit",
-      "image": null
+      "image": null,
+      "icon": "✨",
+      "label": "Stärkung"
     },
     "arrow": {
       "name": "🏹 Pfeilangriff",
@@ -97,7 +111,9 @@
       },
       "faction": "player",
       "desc": "1 Schaden an Ziel",
-      "image": null
+      "image": null,
+      "icon": "🏹",
+      "label": "Pfeilangriff"
     },
     "bandage": {
       "name": "🌿 Kräuterverband",
@@ -108,7 +124,9 @@
       },
       "faction": "player",
       "desc": "2 Leben für Crew oder Einheit",
-      "image": null
+      "image": null,
+      "icon": "🌿",
+      "label": "Kräuterverband"
     },
     "skeleton": {
       "name": "💀 Skelett",
@@ -118,7 +136,9 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 2,
-      "image": null
+      "image": null,
+      "icon": "💀",
+      "label": "Skelett"
     },
     "spider": {
       "name": "🕷️ Riesenspinne",
@@ -128,7 +148,9 @@
       "faction": "enemy",
       "atk": 2,
       "hp": 2,
-      "image": null
+      "image": null,
+      "icon": "🕷️",
+      "label": "Riesenspinne"
     },
     "goblin": {
       "name": "👺 Goblin",
@@ -138,7 +160,9 @@
       "faction": "enemy",
       "atk": 3,
       "hp": 2,
-      "image": null
+      "image": null,
+      "icon": "👺",
+      "label": "Goblin"
     },
     "orc": {
       "name": "👹 Ork",
@@ -148,7 +172,9 @@
       "faction": "enemy",
       "atk": 4,
       "hp": 4,
-      "image": null
+      "image": null,
+      "icon": "👹",
+      "label": "Ork"
     },
     "wolf": {
       "name": "🐺 Waldwolf",
@@ -161,7 +187,9 @@
       "atk": 3,
       "hp": 2,
       "unlocked": false,
-      "image": null
+      "image": null,
+      "icon": "🐺",
+      "label": "Waldwolf"
     },
     "sprite": {
       "name": "🧚 Waldgeist",
@@ -172,7 +200,9 @@
       "atk": 1,
       "hp": 2,
       "unlocked": false,
-      "image": null
+      "image": null,
+      "icon": "🧚",
+      "label": "Waldgeist"
     },
     "bear": {
       "name": "🐻 Bär",
@@ -183,7 +213,9 @@
       "atk": 4,
       "hp": 4,
       "unlocked": false,
-      "image": null
+      "image": null,
+      "icon": "🐻",
+      "label": "Bär"
     },
     "goblin_runner": {
       "name": "⚡ Goblin-Stürmer",
@@ -194,7 +226,9 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 1,
-      "haste": true
+      "haste": true,
+      "icon": "⚡",
+      "label": "Goblin-Stürmer"
     },
     "goblin_raider": {
       "name": "⚡ Goblin-Plünderer",
@@ -205,7 +239,9 @@
       "faction": "enemy",
       "atk": 2,
       "hp": 1,
-      "haste": true
+      "haste": true,
+      "icon": "⚡",
+      "label": "Goblin-Plünderer"
     },
     "venom_spider": {
       "name": "☠️ Giftspinne",
@@ -216,7 +252,9 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 2,
-      "poison": true
+      "poison": true,
+      "icon": "☠️",
+      "label": "Giftspinne"
     },
     "brood_spider": {
       "name": "🕷️ Brutspinne",
@@ -227,7 +265,9 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 1,
-      "poison": true
+      "poison": true,
+      "icon": "🕷️",
+      "label": "Brutspinne"
     },
     "wild_boar": {
       "name": "🐗 Wilder Eber",
@@ -238,7 +278,9 @@
       "faction": "enemy",
       "atk": 4,
       "hp": 3,
-      "trample": true
+      "trample": true,
+      "icon": "🐗",
+      "label": "Wilder Eber"
     },
     "mountain_bear": {
       "name": "🐻 Bergbär",
@@ -249,7 +291,9 @@
       "faction": "enemy",
       "atk": 5,
       "hp": 5,
-      "trample": true
+      "trample": true,
+      "icon": "🐻",
+      "label": "Bergbär"
     },
     "bone_guard": {
       "name": "🛡️ Knochenwache",
@@ -260,7 +304,9 @@
       "faction": "enemy",
       "atk": 2,
       "hp": 4,
-      "guard": true
+      "guard": true,
+      "icon": "🛡️",
+      "label": "Knochenwache"
     },
     "skeleton_runner": {
       "name": "⚡ Knochenläufer",
@@ -271,7 +317,9 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 2,
-      "haste": true
+      "haste": true,
+      "icon": "⚡",
+      "label": "Knochenläufer"
     },
     "guard": {
       "name": "🛡️ Schildwache (Legacy)",
@@ -286,7 +334,9 @@
       "hp": 5,
       "guard": true,
       "image": null,
-      "unlocked": false
+      "unlocked": false,
+      "icon": "🛡️",
+      "label": "Schildwache (Legacy)"
     }
   },
   "starterDeck": [
