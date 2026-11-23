@@ -14,7 +14,7 @@
       "faction": "player",
       "atk": 3,
       "hp": 2,
-      "image": null,
+      "image": "images/cards/fighter.svg",
       "icon": "⚔️",
       "label": "Schwertkämpfer"
     },
@@ -30,7 +30,7 @@
       "atk": 2,
       "hp": 5,
       "guard": true,
-      "image": null,
+      "image": "images/cards/shield.svg",
       "icon": "🛡️",
       "label": "Schildträger"
     },
@@ -44,7 +44,7 @@
       "faction": "player",
       "atk": 1,
       "hp": 2,
-      "image": null,
+      "image": "images/cards/scout.svg",
       "icon": "🏹",
       "label": "Kundschafterin"
     },
@@ -59,7 +59,7 @@
       "faction": "player",
       "atk": 4,
       "hp": 4,
-      "image": null,
+      "image": "images/cards/knight.svg",
       "icon": "🗡️",
       "label": "Ritter"
     },
@@ -72,7 +72,7 @@
       },
       "faction": "player",
       "desc": "4 Schaden am Gegner",
-      "image": null,
+      "image": "images/cards/fire.svg",
       "icon": "🔥",
       "label": "Feuerball"
     },
@@ -85,7 +85,7 @@
       },
       "faction": "player",
       "desc": "4 Leben für Crew oder Einheit",
-      "image": null,
+      "image": "images/cards/heal.svg",
       "icon": "💚",
       "label": "Heilung"
     },
@@ -98,7 +98,7 @@
       },
       "faction": "player",
       "desc": "+2 Angriff für eine Einheit",
-      "image": null,
+      "image": "images/cards/boost.svg",
       "icon": "✨",
       "label": "Stärkung"
     },
@@ -111,7 +111,7 @@
       },
       "faction": "player",
       "desc": "1 Schaden an Ziel",
-      "image": null,
+      "image": "images/cards/arrow.svg",
       "icon": "🏹",
       "label": "Pfeilangriff"
     },
@@ -124,7 +124,7 @@
       },
       "faction": "player",
       "desc": "2 Leben für Crew oder Einheit",
-      "image": null,
+      "image": "images/cards/bandage.svg",
       "icon": "🌿",
       "label": "Kräuterverband"
     },
@@ -136,7 +136,7 @@
       "faction": "enemy",
       "atk": 1,
       "hp": 2,
-      "image": null,
+      "image": "images/cards/skeleton.svg",
       "icon": "💀",
       "label": "Skelett"
     },
@@ -148,7 +148,7 @@
       "faction": "enemy",
       "atk": 2,
       "hp": 2,
-      "image": null,
+      "image": "images/cards/spider.svg",
       "icon": "🕷️",
       "label": "Riesenspinne"
     },
@@ -160,7 +160,7 @@
       "faction": "enemy",
       "atk": 3,
       "hp": 2,
-      "image": null,
+      "image": "images/cards/goblin.svg",
       "icon": "👺",
       "label": "Goblin"
     },
@@ -172,7 +172,7 @@
       "faction": "enemy",
       "atk": 4,
       "hp": 4,
-      "image": null,
+      "image": "images/cards/orc.svg",
       "icon": "👹",
       "label": "Ork"
     },
@@ -187,7 +187,7 @@
       "atk": 3,
       "hp": 2,
       "unlocked": false,
-      "image": null,
+      "image": "images/cards/wolf.svg",
       "icon": "🐺",
       "label": "Waldwolf"
     },
@@ -200,7 +200,7 @@
       "atk": 1,
       "hp": 2,
       "unlocked": false,
-      "image": null,
+      "image": "images/cards/sprite.svg",
       "icon": "🧚",
       "label": "Waldgeist"
     },
@@ -213,13 +213,13 @@
       "atk": 4,
       "hp": 4,
       "unlocked": false,
-      "image": null,
+      "image": "images/cards/bear.svg",
       "icon": "🐻",
       "label": "Bär"
     },
     "goblin_runner": {
       "name": "⚡ Goblin-Stürmer",
-      "image": null,
+      "image": "images/cards/goblin_runner.svg",
       "cost": 1,
       "kind": "unit",
       "resources": {},
@@ -232,7 +232,7 @@
     },
     "goblin_raider": {
       "name": "⚡ Goblin-Plünderer",
-      "image": null,
+      "image": "images/cards/goblin_raider.svg",
       "cost": 2,
       "kind": "unit",
       "resources": {},
@@ -245,7 +245,7 @@
     },
     "venom_spider": {
       "name": "☠️ Giftspinne",
-      "image": null,
+      "image": "images/cards/venom_spider.svg",
       "cost": 2,
       "kind": "unit",
       "resources": {},
@@ -258,7 +258,7 @@
     },
     "brood_spider": {
       "name": "🕷️ Brutspinne",
-      "image": null,
+      "image": "images/cards/brood_spider.svg",
       "cost": 1,
       "kind": "unit",
       "resources": {},
@@ -271,7 +271,7 @@
     },
     "wild_boar": {
       "name": "🐗 Wilder Eber",
-      "image": null,
+      "image": "images/cards/wild_boar.svg",
       "cost": 4,
       "kind": "unit",
       "resources": {},
@@ -284,7 +284,7 @@
     },
     "mountain_bear": {
       "name": "🐻 Bergbär",
-      "image": null,
+      "image": "images/cards/mountain_bear.svg",
       "cost": 5,
       "kind": "unit",
       "resources": {},
@@ -297,7 +297,7 @@
     },
     "bone_guard": {
       "name": "🛡️ Knochenwache",
-      "image": null,
+      "image": "images/cards/bone_guard.svg",
       "cost": 3,
       "kind": "unit",
       "resources": {},
@@ -310,7 +310,7 @@
     },
     "skeleton_runner": {
       "name": "⚡ Knochenläufer",
-      "image": null,
+      "image": "images/cards/skeleton_runner.svg",
       "cost": 1,
       "kind": "unit",
       "resources": {},
@@ -333,7 +333,7 @@
       "atk": 2,
       "hp": 5,
       "guard": true,
-      "image": null,
+      "image": "images/cards/guard.svg",
       "unlocked": false,
       "icon": "🛡️",
       "label": "Schildwache (Legacy)"
