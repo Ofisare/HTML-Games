@@ -271,7 +271,7 @@
     },
     "wild_boar": {
       "name": "🐗 Wilder Eber",
-      "image": "images/cards/wild_boar.svg",
+      "image": "images/cards/wild_boar.jpg",
       "cost": 4,
       "kind": "unit",
       "resources": {},
@@ -284,7 +284,7 @@
     },
     "mountain_bear": {
       "name": "🐻 Bergbär",
-      "image": "images/cards/mountain_bear.svg",
+      "image": "images/cards/mountain_bear.jpg",
       "cost": 5,
       "kind": "unit",
       "resources": {},
@@ -297,7 +297,7 @@
     },
     "bone_guard": {
       "name": "🛡️ Knochenwache",
-      "image": "images/cards/bone_guard.svg",
+      "image": "images/cards/bone_guard.jpg",
       "cost": 3,
       "kind": "unit",
       "resources": {},
@@ -310,7 +310,7 @@
     },
     "skeleton_runner": {
       "name": "⚡ Knochenläufer",
-      "image": "images/cards/skeleton_runner.svg",
+      "image": "images/cards/skeleton_runner.jpg",
       "cost": 1,
       "kind": "unit",
       "resources": {},
@@ -333,7 +333,7 @@
       "atk": 2,
       "hp": 5,
       "guard": true,
-      "image": "images/cards/guard.svg",
+      "image": "images/cards/guard.jpg",
       "unlocked": false,
       "icon": "🛡️",
       "label": "Schildwache (Legacy)"
