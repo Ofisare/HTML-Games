@@ -173,7 +173,7 @@ const SEA_TRAVEL=600000,SEA_EXPLORE=900000;
 function seaTime(ms){let n=Math.max(0,Math.ceil(ms/1000));return Math.floor(n/60)+'m '+String(n%60).padStart(2,'0')+'s'}
 function seaState(){return s.sea&&s.sea.phase!=='done'?s.sea:null}
 function freeSeaShips(){return Math.max(0,shipMax()-(seaState()?1:0))}
-async // Gemeinsame Darstellung für Seeexpedition und Tavernen-Abenteuer.
+// Gemeinsame Darstellung für Seeexpedition und Tavernen-Abenteuer.
 function expeditionOptions(select,catalog,kind,customDecks){
  const entries=kind==='region'?Object.entries(catalog.regions||{}).map(([id,r])=>[id,r.label||r.name]):Object.entries(catalog.deckLabels||{}).map(([id,label])=>[id,label]);
  select.replaceChildren();
@@ -201,7 +201,7 @@ function expeditionSelectedDeck(catalog,kind,customDecks,savedDeck){
  const deck=kind==='starter'?catalog.starterDeck:kind==='legacy'?catalog.legacyDeck:kind.startsWith('custom:')?customDecks?.[Number(kind.split(':')[1])]?.deck:savedDeck;
  return IslandCards.deck(catalog,deck?{deck}:null);
 }
-function startSea(){
+async function startSea(){
  if(seaState())return notify('Bereits eine Seeexpedition unterwegs.');
  if(freeSeaShips()<1)return notify('Du benötigst einen freien Schiffsplatz.');
  const btn=document.querySelector('#seaStart');if(btn)btn.disabled=true;
