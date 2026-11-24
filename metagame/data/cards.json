@@ -495,7 +495,24 @@
         "water": "#365d61",
         "obstacle": "🌾",
         "detail": "🍄",
-        "mapArt": {}
+        "mapArt": {
+          "grass": [
+            "swamp/boden_01.png",
+            "swamp/boden_02.png",
+            "swamp/boden_03.png"
+          ],
+          "grassFallback": "swamp/boden_01.png",
+          "vegetation": [
+            "swamp/weide.png",
+            "swamp/totholz.png",
+            "swamp/schilf.png"
+          ],
+          "sprites": {
+            "flowers": "swamp/pilze.png",
+            "supply": "swamp/proviant.png",
+            "goal": "swamp/altar.png"
+          }
+        }
       },
       "label": "🌫️ Nebelsümpfe · mittel"
     },
@@ -515,7 +532,24 @@
         "water": "#3b7892",
         "obstacle": "🪨",
         "detail": "⛰️",
-        "mapArt": {}
+        "mapArt": {
+          "grass": [
+            "highlands/boden_01.png",
+            "highlands/boden_02.png",
+            "highlands/boden_03.png"
+          ],
+          "grassFallback": "highlands/boden_01.png",
+          "vegetation": [
+            "highlands/tanne.png",
+            "highlands/busch.png",
+            "highlands/felsen.png"
+          ],
+          "sprites": {
+            "flowers": "highlands/kristalle.png",
+            "supply": "highlands/proviant.png",
+            "goal": "highlands/kristallaltar.png"
+          }
+        }
       },
       "label": "⛰️ Wilde Hochlande · schwer"
     },
@@ -535,7 +569,24 @@
         "water": "#34516e",
         "obstacle": "🏛️",
         "detail": "🪦",
-        "mapArt": {}
+        "mapArt": {
+          "grass": [
+            "ruins/boden_01.png",
+            "ruins/boden_02.png",
+            "ruins/boden_03.png"
+          ],
+          "grassFallback": "ruins/boden_01.png",
+          "vegetation": [
+            "ruins/totholz.png",
+            "ruins/magiebaum.png",
+            "ruins/torbogen.png"
+          ],
+          "sprites": {
+            "flowers": "ruins/mauerreste.png",
+            "supply": "ruins/proviant.png",
+            "goal": "ruins/portal.png"
+          }
+        }
       },
       "label": "🏚️ Verfluchte Ruinen · schwer"
     }
