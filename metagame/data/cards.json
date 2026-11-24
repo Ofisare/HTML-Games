@@ -517,7 +517,10 @@
             83,
             139,
             102
-          ]
+          ],
+          "manifest": "swamp/tile_manifest.json",
+          "groundManifest": "swamp/boden_manifest.json",
+          "ocean": "swamp/wasser.jpg"
         }
       },
       "label": "🌫️ Nebelsümpfe · mittel"
@@ -560,7 +563,10 @@
             79,
             168,
             211
-          ]
+          ],
+          "manifest": "highlands/tile_manifest.json",
+          "groundManifest": "highlands/boden_manifest.json",
+          "ocean": "highlands/wasser.jpg"
         }
       },
       "label": "⛰️ Wilde Hochlande · schwer"
@@ -603,7 +609,10 @@
             114,
             108,
             183
-          ]
+          ],
+          "manifest": "ruins/tile_manifest.json",
+          "groundManifest": "ruins/boden_manifest.json",
+          "ocean": "ruins/wasser.jpg"
         }
       },
       "label": "🏚️ Verfluchte Ruinen · schwer"
