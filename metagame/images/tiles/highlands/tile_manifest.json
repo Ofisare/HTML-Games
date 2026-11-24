@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 2,
+  "size": 256,
+  "tiles": [
+    {
+      "file": "highlands/kueste_maske_01.png",
+      "corners": {
+        "NW": "grass",
+        "NE": "water",
+        "SE": "water",
+        "SW": "water"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "highlands/kueste_maske_03.png",
+      "corners": {
+        "NW": "grass",
+        "NE": "grass",
+        "SE": "water",
+        "SW": "water"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "highlands/kueste_maske_05.png",
+      "corners": {
+        "NW": "grass",
+        "NE": "water",
+        "SE": "grass",
+        "SW": "water"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "highlands/kueste_maske_07.png",
+      "corners": {
+        "NW": "grass",
+        "NE": "grass",
+        "SE": "grass",
+        "SW": "water"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    }
+  ]
+}
