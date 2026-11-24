@@ -511,7 +511,13 @@
             "flowers": "swamp/pilze.png",
             "supply": "swamp/proviant.png",
             "goal": "swamp/altar.png"
-          }
+          },
+          "clusteredGround": true,
+          "shoreGlow": [
+            83,
+            139,
+            102
+          ]
         }
       },
       "label": "🌫️ Nebelsümpfe · mittel"
@@ -548,7 +554,13 @@
             "flowers": "highlands/kristalle.png",
             "supply": "highlands/proviant.png",
             "goal": "highlands/kristallaltar.png"
-          }
+          },
+          "clusteredGround": true,
+          "shoreGlow": [
+            79,
+            168,
+            211
+          ]
         }
       },
       "label": "⛰️ Wilde Hochlande · schwer"
@@ -585,7 +597,13 @@
             "flowers": "ruins/mauerreste.png",
             "supply": "ruins/proviant.png",
             "goal": "ruins/portal.png"
-          }
+          },
+          "clusteredGround": true,
+          "shoreGlow": [
+            114,
+            108,
+            183
+          ]
         }
       },
       "label": "🏚️ Verfluchte Ruinen · schwer"
