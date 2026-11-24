@@ -520,7 +520,14 @@
           ],
           "manifest": "swamp/tile_manifest.json",
           "groundManifest": "swamp/boden_manifest.json",
-          "ocean": "swamp/wasser.jpg"
+          "ocean": "swamp/wasser.jpg",
+          "objectShadow": true,
+          "sizes": {
+            "supply": 1.25,
+            "goal": 1.5
+          },
+          "groundFilter": "brightness(0.84) saturate(0.65) contrast(0.78)",
+          "vegetationScale": 1.3
         }
       },
       "label": "🌫️ Nebelsümpfe · mittel"
@@ -566,7 +573,12 @@
           ],
           "manifest": "highlands/tile_manifest.json",
           "groundManifest": "highlands/boden_manifest.json",
-          "ocean": "highlands/wasser.jpg"
+          "ocean": "highlands/wasser.jpg",
+          "objectShadow": true,
+          "sizes": {
+            "supply": 1.25,
+            "goal": 1.5
+          }
         }
       },
       "label": "⛰️ Wilde Hochlande · schwer"
@@ -612,7 +624,12 @@
           ],
           "manifest": "ruins/tile_manifest.json",
           "groundManifest": "ruins/boden_manifest.json",
-          "ocean": "ruins/wasser.jpg"
+          "ocean": "ruins/wasser.jpg",
+          "objectShadow": true,
+          "sizes": {
+            "supply": 1.25,
+            "goal": 1.5
+          }
         }
       },
       "label": "🏚️ Verfluchte Ruinen · schwer"
