@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 2,
+  "size": 256,
+  "tiles": [
+    {
+      "file": "swamp/boden_uebergang_1112.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_01",
+        "SE": "boden_01",
+        "SW": "boden_02"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1113.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_01",
+        "SE": "boden_01",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1122.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_01",
+        "SE": "boden_02",
+        "SW": "boden_02"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1123.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_01",
+        "SE": "boden_02",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1133.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_01",
+        "SE": "boden_03",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1212.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_02",
+        "SE": "boden_01",
+        "SW": "boden_02"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1213.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_02",
+        "SE": "boden_01",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1222.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_02",
+        "SE": "boden_02",
+        "SW": "boden_02"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1223.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_02",
+        "SE": "boden_02",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1232.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_02",
+        "SE": "boden_03",
+        "SW": "boden_02"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1233.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_02",
+        "SE": "boden_03",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1313.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_03",
+        "SE": "boden_01",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1323.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_03",
+        "SE": "boden_02",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_1333.png",
+      "corners": {
+        "NW": "boden_01",
+        "NE": "boden_03",
+        "SE": "boden_03",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_2223.png",
+      "corners": {
+        "NW": "boden_02",
+        "NE": "boden_02",
+        "SE": "boden_02",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_2233.png",
+      "corners": {
+        "NW": "boden_02",
+        "NE": "boden_02",
+        "SE": "boden_03",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_2323.png",
+      "corners": {
+        "NW": "boden_02",
+        "NE": "boden_03",
+        "SE": "boden_02",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    },
+    {
+      "file": "swamp/boden_uebergang_2333.png",
+      "corners": {
+        "NW": "boden_02",
+        "NE": "boden_03",
+        "SE": "boden_03",
+        "SW": "boden_03"
+      },
+      "rotatable": true,
+      "mirrorable": true,
+      "weight": 1
+    }
+  ]
+}
