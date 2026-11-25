@@ -92,4 +92,4 @@ Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolg
 
 - Undo-Asset: ausschließlich freigestellter goldener Pfeil; Rahmen und Hintergrund werden durch die gemeinsamen HUD-Buttonstile erzeugt. Waldlichtung bei Überarbeitung unter bestehendem Dateinamen ersetzen.
 
-- Fallrichtungsaktionen verwenden `images/icons/fell.png`, ausgehend von rechts um 0/90/180/−90 Grad gedreht. Rahmen bleiben CSS-basiert; bei fehlender Grafik bleibt der Richtungspfeil als Text sichtbar.
+- Fallrichtungsaktionen verwenden `images/icons/fell.png`, rechts unverändert, links horizontal gespiegelt (`scaleX(-1)`) statt um 180 Grad gedreht, unten um 90 und oben um −90 Grad gedreht. Rahmen bleiben CSS-basiert; bei fehlender Grafik bleibt der Richtungspfeil als Text sichtbar.
