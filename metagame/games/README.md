@@ -4,7 +4,7 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 
 ## Einheitlicher Spielablauf
 
-1. **Hilfe:** Oben rechts befindet sich das vorhandene illustrierte Hilfesymbol. Es klappt die Spielanleitung direkt unter dem Header als nichtmodales Overlay über dem Spielfeld auf und zu, ohne dessen Größe oder Position zu ändern, ohne modales Popup, Abdunklung oder zusätzlichen Schließen-Button. Bei geöffneter Hilfe ist das Symbol goldfarben hinterlegt. Die zuletzt gewählte Sichtbarkeit wird dauerhaft gespeichert (z. B. per `localStorage`, mit einem eigenen Schlüssel je Minispiel).
+1. **Hilfe:** Oben rechts befindet sich das vorhandene illustrierte Hilfesymbol. Es klappt die Spielanleitung direkt unter dem HUD als nichtmodales Overlay über dem Spielfeld auf und zu, ohne dessen Größe oder Position zu ändern, ohne modales Popup, Abdunklung oder zusätzlichen Schließen-Button. Bei geöffneter Hilfe ist das Symbol goldfarben hinterlegt. Die zuletzt gewählte Sichtbarkeit wird dauerhaft gespeichert (z. B. per `localStorage`, mit einem eigenen Schlüssel je Minispiel).
 2. **Während der Runde:** Ein gut sichtbarer **„Abbrechen“ / „Zurück zur Insel“**-Button führt zum Inselspiel zurück. Beim Abbrechen gibt es **keine unverdiente Belohnung**. Bereits ausdrücklich gewährte Teilfortschritte (z. B. Bauzeitersparnis beim Bauhelfer) bleiben bestehen.
 3. **Bei Erfolg:** Ein **modaler Erfolgsdialog mittig über dem Spielfeld** erscheint, statt eines bloßen Erfolgsbereichs unter dem Spielfeld. Er enthält eine klare Erfolgsmeldung, gegebenenfalls die Belohnung und einen eindeutigen Button **„Zurück zur Insel“** mit vorhandenem Inselrückkehrsymbol.
 4. **Belohnungen:** Nur einmal pro erfolgreich abgeschlossener Runde gutschreiben; bestehende Lagergrenzen und den gemeinsamen Spielstand beachten. Die Beschriftung soll klar machen, ob die Gutschrift bereits erfolgt ist oder erst beim Zurückkehren erfolgt.
@@ -29,7 +29,7 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 
 ## Checkliste vor Veröffentlichung
 
-- [ ] Hilfesymbol oben rechts klappt Hilfe direkt unter dem Header auf und zu; Zustand bleibt nach erneutem Öffnen erhalten.
+- [ ] Hilfesymbol oben rechts klappt Hilfe direkt unter dem HUD auf und zu; Zustand bleibt nach erneutem Öffnen erhalten.
 - [ ] Abbrechen führt ohne unverdiente Belohnung zur Insel zurück.
 - [ ] Erfolg öffnet ein mittiges Popup mit eindeutiger Rückkehr-Schaltfläche.
 - [ ] Belohnungen/Teilfortschritte werden nicht doppelt vergeben.
@@ -81,7 +81,7 @@ Jahreszeiten-Ernte: Doppeltipp auf Getreidefeld startet das Bauernhofspiel. Geer
 
 ## Gestaltung
 
-Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolgsdialoge verwenden dunkles Petrol, goldene Rahmen, vorhandene Illustrationen und einen breiten Rückkehrbutton. Bei frei scrollenden Spielwelten (z. B. Kurs halten) ist das Spielfeld rahmenlos, das HUD liegt darüber. Wasser, Küsten, Hindernisse und Wind bewegen sich mit gemeinsamer Weltgeschwindigkeit; Spawnpositionen müssen frei von Küsten sein. Bereits erspielte Zeitersparnis bleibt beim Verlassen erhalten.
+Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolgsdialoge verwenden dunkles Petrol, goldene Rahmen, vorhandene Illustrationen und einen breiten Rückkehrbutton. Das Inselabenteuer ist die HUD-Designreferenz: Titel, Hilfe, Rückkehr und Spielinformationen in einer schwebenden goldgerahmten Petrolfläche. Die Hilfe schließt direkt darunter an, ohne Layoutänderung. Bei frei scrollenden Spielwelten (z. B. Kurs halten) liegt das HUD über der vollflächigen Spielwelt; bei Rasterrätseln bleibt das gesamte Raster darunter sichtbar. Fortschrittsbalken verwenden den grünen Verlauf mit Goldrahmen des Inselabenteuers. Wasser, Küsten, Hindernisse und Wind bewegen sich mit gemeinsamer Weltgeschwindigkeit; Spawnpositionen müssen frei von Küsten sein. Bereits erspielte Zeitersparnis bleibt beim Verlassen erhalten.
 
 ## Holzfäller – Grafik
-- Wald-Tiles, Tannen, Felsen, Holzressource und Holzfällerhütte aus den vorhandenen Insel-Assets wiederverwenden. Spielfigur: `images/characters/lumberjack.png` (transparentes PNG, relativ zu `metagame/`). Raster und Fallrichtungen bleiben sichtbar. Kein Neustartbutton. Spielhinweise stehen in der Hilfe; nur situative Fehlermeldungen erscheinen kurz über dem Spielfeld. Einheitlicher Header nach Vorbild von Kurs halten, Walduntergrund über die gesamte verbleibende Fläche, quadratisches Raster mittig in der verfügbaren Spielfläche. Erfolgsdialog mit Figurenillustration, hervorgehobener Holzbelohnung und den Aktionen „Noch eine Runde“ und „Zurück zur Insel“.
+- Wald-Tiles, Tannen, Felsen, Holzressource und Holzfällerhütte aus den vorhandenen Insel-Assets wiederverwenden. Spielfigur: `images/characters/lumberjack.png` (transparentes PNG, relativ zu `metagame/`). Raster und Fallrichtungen bleiben sichtbar. Kein Neustartbutton. Spielhinweise stehen in der Hilfe; nur situative Fehlermeldungen erscheinen kurz über dem Spielfeld. Schwebendes HUD nach Vorbild des Inselabenteuers mit Holzfortschrittsbalken und Zugzähler, Walduntergrund über die gesamte Bildschirmfläche, quadratisches Raster mittig in der verfügbaren Spielfläche. Erfolgsdialog mit Figurenillustration, hervorgehobener Holzbelohnung und den Aktionen „Noch eine Runde“ und „Zurück zur Insel“.

@@ -6,11 +6,11 @@ Diese Richtlinien gelten für Heimatinsel, Abenteuerinseln, Cardbattler und zuge
 - Illustrierter Fantasy-Stil statt flacher SVG-Platzhalter oder Emojis, sofern passende eigene Grafiken existieren.
 - Dunkles Petrol für UI-Flächen, Gold für Überschriften, Rahmen und aktive Navigation, helle Schrift; Grün für positive Zustände, Rot für Probleme.
 - Vorhandene Grafiken aus images/icons wiederverwenden, insbesondere Hilfe, Inselrückkehr, Ressourcen und Minispiele.
-- Spielflächen wie Inseln und Meer rahmenlos über die verfügbare Fläche bis zum Header; HUD bei solchen Ansichten darüberlegen.
+- Spielwelten rahmenlos über die gesamte verfügbare Bildschirmfläche. Das Inselabenteuer ist die Designreferenz für Minispiel-HUDs: schwebende, leicht transparente Petrolfläche mit goldener Umrandung, integrierter Titelgrafik, Hilfe und Inselrückkehr sowie kompakten spielrelevanten Informationen. Quadratische Rätsel bleiben unterhalb des HUD vollständig sichtbar.
 - Keine unnötigen verschachtelten Panels, Rahmen oder redundanten Überschriften.
 
 ## Navigation und Bedienelemente
-- Hilfe oben rechts: direkt unter dem Header als nichtmodales Overlay über dem Spielfeld aufklappen, ohne Spielfeld oder HUD zu verschieben oder zu verkleinern, erneut antippen zum Einklappen; aktives Symbol goldfarben, kein modales Popup, keine Abdunklung, kein zusätzlicher Schließen-Button.
+- Hilfe oben rechts: direkt unter dem gesamten HUD als nichtmodales Overlay über dem Spielfeld aufklappen, ohne Spielfeld oder HUD zu verschieben oder zu verkleinern, erneut antippen zum Einklappen; aktives Symbol goldfarben, kein modales Popup, keine Abdunklung, kein zusätzlicher Schließen-Button.
 - Aufklappbare Bereiche und eigene Dropdowns mit gefülltem Dreieck rechts; Richtung zeigt Zustand. Dropdowns im Fantasy-Stil mit vorhandenen Bildern statt nativer Systemoptik.
 - Aktionen als einheitliche breite Buttons mit Bildsymbol links und Text; destruktive Aktionen rot kennzeichnen und in einem gestalteten Dialog bestätigen.
 - Startaktionen bei fehlenden Ressourcen deaktivieren und fehlende Voraussetzungen darunter erklären.
