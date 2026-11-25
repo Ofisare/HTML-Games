@@ -23,6 +23,10 @@ Diese Richtlinien gelten für Heimatinsel, Abenteuerinseln, Cardbattler und zuge
 - Fortschrittsbalken goldfarben; graues Label links, verbleibende Zeit rechts.
 - Expeditionsarten als aufklappbare Bereiche; Geologe vor Seeabenteuer. Nur notwendige Informationen anzeigen.
 
+## Abenteuer-Einstellungen
+- Söldner und Seeabenteuer merken sich Gebiet und Deck unabhängig voneinander im lokalen Browser. Auswahl, Vorschau, Kosten und gestartetes Abenteuer müssen übereinstimmen. Laufende Abenteuer bleiben unverändert.
+- Die bisherige Option „Mein gespeichertes Deck“ bleibt bis zur Erprobung der automatischen Speicherung erhalten.
+
 ## Minispiele
 Siehe [Minispielkonventionen](games/README.md). Mobile Hochformatansicht (Android/Firefox) zuerst prüfen. Hilfe und UI-Änderungen dürfen keinen Spielfortschritt zurücksetzen.
 
