@@ -1,5 +1,5 @@
 {
-  "version": "1.0.24",
+  "version": "1.0.25",
   "files": {
     "games/bauernhof.html": "1.0.2",
     "games/bauhelfer.html": "1.0.3",
@@ -7,7 +7,7 @@
     "games/coalmine.html": "1.0.2",
     "games/geologe.html": "1.0.5",
     "games/goldmine.html": "1.0.2",
-    "games/holzfaellen.html": "1.0.8",
+    "games/holzfaellen.html": "1.0.9",
     "games/oremine.html": "1.0.5",
     "games/saegewerk.html": "1.0.2",
     "games/steinbruch.html": "1.0.2",
@@ -70,7 +70,13 @@
     "images/cards/brood_spider.jpg": "1.0.0",
     "images/cards/venom_spider.jpg": "1.0.0",
     "images/cards/wolf.jpg": "1.0.0",
-    "images/tiles/waldlichtung.jpg": "1.0.0",
-    "images/tiles/felsen.png": "1.0.1"
+    "images/tiles/waldlichtung.jpg": "1.0.1",
+    "images/tiles/felsen.png": "1.0.1",
+    "images/tiles/baum_kiefer.png": "1.0.0",
+    "images/tiles/stamm_2.png": "1.0.0",
+    "images/tiles/stamm_3.png": "1.0.0",
+    "images/tiles/stamm_4.png": "1.0.0",
+    "images/icons/undo.png": "1.0.1",
+    "images/icons/fell.png": "1.0.0"
   }
 }
