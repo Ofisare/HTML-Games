@@ -4,9 +4,9 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 
 ## Einheitlicher Spielablauf
 
-1. **Hilfe (❓):** Oben rechts befindet sich ein Fragezeichen-Button. Er blendet die Spielanleitung ein und aus. Die zuletzt gewählte Sichtbarkeit wird dauerhaft gespeichert (z. B. per `localStorage`, mit einem eigenen Schlüssel je Minispiel).
+1. **Hilfe:** Oben rechts befindet sich das vorhandene illustrierte Hilfesymbol. Es klappt die Spielanleitung direkt unter dem Header auf und zu, ohne modales Popup, Abdunklung oder zusätzlichen Schließen-Button. Bei geöffneter Hilfe ist das Symbol goldfarben hinterlegt. Die zuletzt gewählte Sichtbarkeit wird dauerhaft gespeichert (z. B. per `localStorage`, mit einem eigenen Schlüssel je Minispiel).
 2. **Während der Runde:** Ein gut sichtbarer **„Abbrechen“ / „Zurück zur Insel“**-Button führt zum Inselspiel zurück. Beim Abbrechen gibt es **keine unverdiente Belohnung**. Bereits ausdrücklich gewährte Teilfortschritte (z. B. Bauzeitersparnis beim Bauhelfer) bleiben bestehen.
-3. **Bei Erfolg:** Ein **modaler Erfolgsdialog mittig über dem Spielfeld** erscheint, statt eines bloßen Erfolgsbereichs unter dem Spielfeld. Er enthält eine klare Erfolgsmeldung, gegebenenfalls die Belohnung und einen eindeutigen Button **„🏝️ Zurück zur Insel“**.
+3. **Bei Erfolg:** Ein **modaler Erfolgsdialog mittig über dem Spielfeld** erscheint, statt eines bloßen Erfolgsbereichs unter dem Spielfeld. Er enthält eine klare Erfolgsmeldung, gegebenenfalls die Belohnung und einen eindeutigen Button **„Zurück zur Insel“** mit vorhandenem Inselrückkehrsymbol.
 4. **Belohnungen:** Nur einmal pro erfolgreich abgeschlossener Runde gutschreiben; bestehende Lagergrenzen und den gemeinsamen Spielstand beachten. Die Beschriftung soll klar machen, ob die Gutschrift bereits erfolgt ist oder erst beim Zurückkehren erfolgt.
 5. **Neustart:** Wenn ein Minispiel einen Neustart anbietet, soll dessen Verhalten eindeutig sein (gleiches Rätsel oder neues Rätsel). Keine unnötigen zusätzlichen Bedienelemente.
 
@@ -29,7 +29,7 @@ Diese Regeln gelten für **alle bestehenden und zukünftigen Minispiele** unter 
 
 ## Checkliste vor Veröffentlichung
 
-- [ ] ❓ oben rechts klappt Hilfe auf und zu; Zustand bleibt nach erneutem Öffnen erhalten.
+- [ ] Hilfesymbol oben rechts klappt Hilfe direkt unter dem Header auf und zu; Zustand bleibt nach erneutem Öffnen erhalten.
 - [ ] Abbrechen führt ohne unverdiente Belohnung zur Insel zurück.
 - [ ] Erfolg öffnet ein mittiges Popup mit eindeutiger Rückkehr-Schaltfläche.
 - [ ] Belohnungen/Teilfortschritte werden nicht doppelt vergeben.
@@ -78,3 +78,7 @@ Jahreszeiten-Ernte: Doppeltipp auf Getreidefeld startet das Bauernhofspiel. Geer
 - Alle Vorkommen verwenden dieselbe gezeichnete Gesteinsform, mit materialspezifischer Farbe. Funde werden im Bau-Tab als Kacheln platziert.
 - Kohle wird in `coalDeposits` und `geology.inventory.coal` gespeichert; ältere Spielstände werden automatisch ergänzt.
 - Das Geologen-Match-3 führt Kohle in mittleren Tiefen ein und verschiebt Erz/Gold in tiefere Schichten.
+
+## Gestaltung
+
+Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolgsdialoge verwenden dunkles Petrol, goldene Rahmen, vorhandene Illustrationen und einen breiten Rückkehrbutton. Bei frei scrollenden Spielwelten (z. B. Kurs halten) ist das Spielfeld rahmenlos, das HUD liegt darüber. Wasser, Küsten, Hindernisse und Wind bewegen sich mit gemeinsamer Weltgeschwindigkeit; Spawnpositionen müssen frei von Küsten sein. Bereits erspielte Zeitersparnis bleibt beim Verlassen erhalten.
