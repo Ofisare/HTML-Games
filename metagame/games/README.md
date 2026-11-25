@@ -91,3 +91,5 @@ Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolg
 - Tannen (2), Laubbäume (3) und Kiefern (4) benötigen entsprechend viele freie Felder in Fallrichtung. Stämme bleiben dauerhaft liegen und blockieren Wege; die ehemalige Baumzelle wird frei. Holz zählt beim Fällen, Lagergutschrift erst nach Rückkehr. Fünf Bäume ergeben 12 Holz, begrenzt durch Lagerkapazität. Generator akzeptiert nur per Suchverfahren bestätigte Rätsel. Undo im HUD (`images/icons/undo.png`) nimmt Bewegung oder Fällen inklusive Fortschritt zurück. Stammgrafiken `stamm_2.png` bis `stamm_4.png` werden gedreht.
 
 - Undo-Asset: ausschließlich freigestellter goldener Pfeil; Rahmen und Hintergrund werden durch die gemeinsamen HUD-Buttonstile erzeugt. Waldlichtung bei Überarbeitung unter bestehendem Dateinamen ersetzen.
+
+- Fallrichtungsaktionen verwenden `images/icons/fell.png`, ausgehend von rechts um 0/90/180/−90 Grad gedreht. Rahmen bleiben CSS-basiert; bei fehlender Grafik bleibt der Richtungspfeil als Text sichtbar.
