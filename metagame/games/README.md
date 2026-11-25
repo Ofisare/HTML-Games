@@ -85,3 +85,5 @@ Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolg
 
 ## Holzfäller – Grafik
 - Wald-Tiles, Tannen, Felsen, Holzressource und Holzfällerhütte aus den vorhandenen Insel-Assets wiederverwenden. Spielfigur: `images/characters/lumberjack.png` (transparentes PNG, relativ zu `metagame/`). Raster und Fallrichtungen bleiben sichtbar. Kein Neustartbutton. Spielhinweise stehen in der Hilfe; nur situative Fehlermeldungen erscheinen kurz über dem Spielfeld. Schwebendes HUD nach Vorbild des Inselabenteuers mit Holzfortschrittsbalken und Zugzähler, Walduntergrund über die gesamte Bildschirmfläche, quadratisches Raster mittig in der verfügbaren Spielfläche. Erfolgsdialog mit Figurenillustration, hervorgehobener Holzbelohnung und den Aktionen „Noch eine Runde“ und „Zurück zur Insel“.
+
+- Die Umgebung außerhalb des Holzfäller-Rasters verwendet `images/tiles/waldlichtung.jpg` als vollflächige, nicht wiederholte Illustration aus erhöhter Perspektive. Raster-Tiles bleiben unverändert; Hintergrund und Spielfeld müssen klar unterscheidbar bleiben. Die gemeinsame Felsgrafik `images/tiles/felsen.png` benötigt einen sauber freigestellten Alphakanal.
