@@ -82,3 +82,6 @@ Jahreszeiten-Ernte: Doppeltipp auf Getreidefeld startet das Bauernhofspiel. Geer
 ## Gestaltung
 
 Die [gemeinsamen Fantasy-Designstandards](../readme.md) gelten auch hier. Erfolgsdialoge verwenden dunkles Petrol, goldene Rahmen, vorhandene Illustrationen und einen breiten Rückkehrbutton. Bei frei scrollenden Spielwelten (z. B. Kurs halten) ist das Spielfeld rahmenlos, das HUD liegt darüber. Wasser, Küsten, Hindernisse und Wind bewegen sich mit gemeinsamer Weltgeschwindigkeit; Spawnpositionen müssen frei von Küsten sein. Bereits erspielte Zeitersparnis bleibt beim Verlassen erhalten.
+
+## Holzfäller – Grafik
+- Wald-Tiles, Tannen, Felsen, Holzressource und Holzfällerhütte aus den vorhandenen Insel-Assets wiederverwenden. Spielfigur: `images/characters/lumberjack.png` (transparentes PNG, relativ zu `metagame/`). Raster und Fallrichtungen bleiben sichtbar. Neustart setzt dasselbe Rätsel zurück.
