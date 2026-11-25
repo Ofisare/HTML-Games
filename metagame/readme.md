@@ -10,7 +10,7 @@ Diese Richtlinien gelten für Heimatinsel, Abenteuerinseln, Cardbattler und zuge
 - Keine unnötigen verschachtelten Panels, Rahmen oder redundanten Überschriften.
 
 ## Navigation und Bedienelemente
-- Hilfe oben rechts: direkt unter dem Header aufklappen, erneut antippen zum Einklappen; aktives Symbol goldfarben, kein modales Popup, keine Abdunklung, kein zusätzlicher Schließen-Button.
+- Hilfe oben rechts: direkt unter dem Header als nichtmodales Overlay über dem Spielfeld aufklappen, ohne Spielfeld oder HUD zu verschieben oder zu verkleinern, erneut antippen zum Einklappen; aktives Symbol goldfarben, kein modales Popup, keine Abdunklung, kein zusätzlicher Schließen-Button.
 - Aufklappbare Bereiche und eigene Dropdowns mit gefülltem Dreieck rechts; Richtung zeigt Zustand. Dropdowns im Fantasy-Stil mit vorhandenen Bildern statt nativer Systemoptik.
 - Aktionen als einheitliche breite Buttons mit Bildsymbol links und Text; destruktive Aktionen rot kennzeichnen und in einem gestalteten Dialog bestätigen.
 - Startaktionen bei fehlenden Ressourcen deaktivieren und fehlende Voraussetzungen darunter erklären.
