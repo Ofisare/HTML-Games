@@ -1,5 +1,5 @@
 {
-  "version": "1.0.21",
+  "version": "1.0.22",
   "files": {
     "games/bauernhof.html": "1.0.2",
     "games/bauhelfer.html": "1.0.3",
@@ -7,7 +7,7 @@
     "games/coalmine.html": "1.0.2",
     "games/geologe.html": "1.0.5",
     "games/goldmine.html": "1.0.2",
-    "games/holzfaellen.html": "1.0.5",
+    "games/holzfaellen.html": "1.0.6",
     "games/oremine.html": "1.0.5",
     "games/saegewerk.html": "1.0.2",
     "games/steinbruch.html": "1.0.2",
