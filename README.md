@@ -42,7 +42,7 @@ Diese Regeln gelten für neue Spiele und für die schrittweise Modernisierung be
 
 - Touch-Ziele ausreichend groß und eindeutig; ausgewählte und anklickbare Ziele sichtbar hervorheben.
 - Meldungen und Animationen dürfen die Position von Spielfeld, Karten und Buttons nicht verschieben. Längere Texte **innerhalb** ihres Bereichs scrollen lassen.
-- Hilfe als bei Bedarf geöffnetes, separat scrollbares Overlay zeigen, ohne die Spielfläche zu verdrängen.
+- Hilfe über das Hilfesymbol direkt unter dem Header auf- und zuklappen; kein modales Hilfe-Popup. Lange Hilfeinhalte separat scrollen lassen.
 - Auf kleinen Bildschirmen zuerst überflüssige Abstände reduzieren, nicht wichtige Bedienelemente entfernen.
 - Keine horizontalen Überläufe für Hauptlayout und Aktionsbuttons; horizontal scrollbare Kartenhand ist ausdrücklich erlaubt.
 - Bestehende Spiellogik, Spielstände und die Offline-Funktion beim Layoutumbau unverändert lassen.
@@ -61,7 +61,7 @@ Diese Regeln gelten für neue Spiele und für die schrittweise Modernisierung be
 }
 .game-header, .game-actions, .game-cards { flex: 0 0 auto; }
 .game-playfield { flex: 1 1 auto; min-height: 0; overflow: auto; }
-.game-help { position: absolute; overflow-y: auto; }
+.game-help { flex: 0 0 auto; max-height: 40dvh; overflow-y: auto; }
 ```
 
 Dieses Muster ist eine **Richtlinie**, kein Zwang zu identischen Höhen: Je nach Spiel kann die Spielfläche statt eines Meldungsbereichs flexibel sein. Bei begrenzter Inhaltshöhe freie Fläche nicht künstlich mit `space-between` aufblähen.
@@ -71,5 +71,7 @@ Dieses Muster ist eine **Richtlinie**, kein Zwang zu identischen Höhen: Je nach
 - Android Firefox im Hochformat: alle Hauptaktionen sichtbar und erreichbar?
 - Querformat und Desktop: keine abgeschnittenen Karten oder Buttons?
 - Lange Namen, viele Statussymbole und mehrzeilige Meldungen: kein Layoutsprung?
-- Hilfe öffnen/schließen: Spielposition bleibt unverändert?
+- Hilfe öffnen/schließen: kein Neustart oder Verlust des Spielfortschritts?
 - Spielstand und Spielmechanik nach der Änderung unverändert?
+
+Fantasy-spezifische Gestaltung: [Designstandards der Verzauberten Inseln](metagame/readme.md).
