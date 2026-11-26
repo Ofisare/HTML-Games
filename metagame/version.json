@@ -1,5 +1,5 @@
 {
-  "version": "1.0.27",
+  "version": "1.0.28",
   "files": {
     "games/bauernhof.html": "1.0.2",
     "games/bauhelfer.html": "1.0.3",
@@ -15,7 +15,7 @@
     "games/waffenschmied.html": "1.0.5",
     "games/muenzpraegestaette.html": "1.0.3",
     "games/segeln.html": "1.0.15",
-    "games/inselabenteuer.html": "1.0.88",
+    "games/inselabenteuer.html": "1.0.89",
     "games/fischer.html": "1.0.1",
     "games/deckbuilder.html": "1.0.2",
     "data/cards.json": "1.0.12",
