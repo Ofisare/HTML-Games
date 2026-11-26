@@ -16,6 +16,8 @@ Diese Richtlinien gelten für Heimatinsel, Abenteuerinseln, Cardbattler und zuge
 - Startaktionen bei fehlenden Ressourcen deaktivieren und fehlende Voraussetzungen darunter erklären.
 - Erfolg und Ankunft als gestalteter mittiger Dialog mit eindeutigem Button „Zurück zur Insel“, nicht als Browser-Alert.
 
+- Rein informative Kartenvergrößerungen (Kampfsystem und künftig Deckbuilder) ohne sichtbaren Schließen-Button: Karte oder abgedunkelten Hintergrund antippen, alternativ Escape. Das Schließen darf keine darunterliegende Spielaktion auslösen. Bestehende Auswahl- und Ausspielgesten bleiben unverändert.
+
 ## Informationen
 - Gebäudebild und Name, Stufe und Produktionsstatus direkt darunter. Status grün bei laufender Produktion, neutral bei Pause oder vollem Lager, rot bei fehlenden Voraussetzungen.
 - Kapazität, Verbrauch und Produktion als getrennte kompakte Listen mit Ressourcensymbol, Anzahl und ausgeschriebenem Namen; bei Verbrauch/Produktion zusätzlich Stundenrate.
